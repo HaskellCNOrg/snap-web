@@ -37,7 +37,9 @@ Executable ahaskellcnorg
     digestive-functors-snap   >= 0.3   && < 0.4,
     mongoDB                   >= 1.2   && < 2.0,
     snaplet-mongodb-minimalistic >= 0.0.6 && < 0.0.7,
-    snaplet-i18n              >= 0.0.1 && < 0.0.2
+    snaplet-i18n              >= 0.0.1 && < 0.0.2,
+    configurator       >= 0.2   && < 0.3
+
 
 
   if flag(development)

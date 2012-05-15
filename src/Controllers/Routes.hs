@@ -13,7 +13,7 @@ import           Snap.Util.FileServe
 
 import           Application
 import           Controllers.Home
-import           Controllers.Login
+import           Controllers.User
 
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/",             index)

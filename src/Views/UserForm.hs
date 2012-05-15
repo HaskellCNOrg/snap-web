@@ -2,10 +2,11 @@
 module Views.UserForm where
 
 import Control.Applicative ((<$>), (<*>))
-
 import qualified Data.Text as T
 import Data.Text (Text)
 import Text.Digestive
+import qualified Data.ByteString as BS
+import qualified Data.Configurator.Types as Config
 
 import Views.Validators
 
@@ -14,11 +15,10 @@ data LoginUser = LoginUser
     , password :: Text
     } deriving (Show)
 
--- TODO: fetch message from i10n snaplet.
---
-userForm :: Monad m => Form Text m LoginUser
-userForm = LoginUser
-    <$> "loginName" .: check "loginName is required" requiredValidator (text Nothing)
-    <*> "password" .: check "Password is required" requiredValidator (text Nothing)
-
+-- | Need a better design to get message from i18n snaplet.
+-- 
+userForm :: Monad m => (Text, Text) -> Form Text m LoginUser
+userForm (a, b) = LoginUser
+    <$> "loginName" .: check a requiredValidator (text Nothing)
+    <*> "password" .:  check b requiredValidator (text Nothing)
 

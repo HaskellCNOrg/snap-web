@@ -1,5 +1,9 @@
 This will be for a.haskellcn.org
 
+## Impl TODOS
+1. dig details of snaplet-auth, valitation checking.
+2. use mongoDB auth backend rather than JSON
+
 ## couple of notes
   - rm personal section from sidebar to settings.
     (page probably need to be re-design)
