@@ -10,7 +10,7 @@ import           Snap.Http.Server
 import           Snap.Snaplet
 import           Snap.Core
 import           System.IO
-import           Site
+import           Controllers.Site
 
 #ifdef DEVELOPMENT
 import           Snap.Loader.Devel

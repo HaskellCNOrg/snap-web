@@ -6,7 +6,7 @@
     <div class="control-group">
       <label class="control-label" for="input01"><i18n name="email"/></label>
       <div class="controls">
-        <input type="text" class="input-large" id="input01">
+        <input type="text" class="input-large" name="username" id="input01">
       </div>
     </div>
     <div class="control-group">
@@ -19,7 +19,7 @@
     <div class="control-group">
       <label class="control-label" for="input01"><i18n name="password"/></label>
       <div class="controls">
-        <input type="password" class="input-large" id="input02">
+        <input type="password" class="input-large" name="password" id="input02">
       </div>
     </div>
 
@@ -31,7 +31,7 @@
     </div>
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-large"><i18n name="login"/></button>
+        <button type="submit" class="btn btn-large"><i18n name="register"/></button>
     </div>
 
 </form>

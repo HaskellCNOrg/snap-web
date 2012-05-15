@@ -2,3 +2,4 @@ dist
 log/*.log
 tmp*
 _*
+log

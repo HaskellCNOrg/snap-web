@@ -6,7 +6,10 @@
     <meta name="description" content="haskell chinese community"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <link href="/css/markdown.css" rel="stylesheet" />
+    <!-- =========================================== -->
+    <!-- FOR PRODUCTION -->
+    <!-- <link rel="stylesheet/less" href="/css/main.css" /> -->
+    <!-- =========================================== -->
 
     <!-- =========================================== -->
     <!-- FOR DEVELOPMENT -->
@@ -20,11 +23,8 @@
       <apply template="layout-nav"/>
 
       <div class="container">
-        
           <content />
-
           <apply template="layout-footer" />
-
       </div>
 
       <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
