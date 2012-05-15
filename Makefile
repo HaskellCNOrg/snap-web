@@ -36,7 +36,7 @@ rebuild: clean build
 
 ## preview
 preview:
-	$(PROG_PREV) -p 8800
+	$(PROG_PREV) -p 9900
 
 p: preview
 

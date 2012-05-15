@@ -7,10 +7,12 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
+import           Text.Digestive.Heist
+import           Text.Digestive.Snap
 
 import           Application
 import           Controllers.Utils
-
+import           Views.UserForm
 ------------------------------------------------------------------------------
 -- TODO
 -- 1. catch error for auth snaplet.
@@ -34,21 +36,20 @@ signupP = do
 ------------------------------------------------------------------------------
 --
 -- TODO
--- 1. catch error for auth snaplet.
--- 2. FIXME: ERROR Handler, e.g. user doesnot exists, password incorrect
---   FIXME: use `loginUser` function
-
-
-signinG :: AppHandler ()
-signinG = do
-    heistLocal (bindString "test" "Login") $ render "signin"
-
-signinP :: AppHandler ()
-signinP = do
-    userName <- decodedParam "username"
-    password <- decodedParam "password"
-    with appAuth $ loginByUsername userName (ClearText password) True
-    redirect "/"
+-- 1. [ ] catch error for auth snaplet.
+-- 2. [ ] FIXME: ERROR Handler, e.g. user doesnot exists, password incorrect
+-- 3. [ ] FIXME: use `loginUser` function
+-- 4. [ ] Question: since GET / POST goes to this single point, 
+--             will runForm check for secure when GET the result should be Nothing ???
+-- 
+signin :: AppHandler ()
+signin = do
+    (view, result) <- runForm "form" userForm
+    case result of
+        Just x -> (with appAuth $ loginByUsername (username' x) (password' x) True) >> redirect "/"
+        Nothing -> heistLocal (bindDigestiveSplices view) $ render "signin"
+    where username' (LoginUser u _) = textToBs u
+          password' (LoginUser _ p) = ClearText $ textToBs p
 
 ------------------------------------------------------------------------------
 
@@ -56,4 +57,3 @@ signinP = do
 -- 
 signoutG :: AppHandler ()
 signoutG = with appAuth $ logoutUser (redirect "/")
-

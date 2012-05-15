@@ -1,27 +1,34 @@
 <apply template="layout">
 
 <div class="registration">
-<form class="form-horizontal" action="signin" method="POST">
+
+<dfForm class="form-horizontal" action="signin">
+
+    <dfIfChildErrors>
+      <div class="alert alert-error"> 
+         <dfChildErrorList ref=""></dfChildErrorList>
+      </div>
+    </dfIfChildErrors>
 
     <div class="control-group">
-      <label class="control-label" for="input01"><i18n name="email"/></label>
+      <dfLabel class="control-label" ref="loginName"><i18n name="email"/></dfLabel>
       <div class="controls">
-        <input type="text" class="input-large" name="username" id="input01">
+        <dfInputText class="input-large" ref="loginName" />
       </div>
     </div>
 
     <div class="control-group">
-      <label class="control-label" for="input01"><i18n name="password"/></label>
+      <dfLabel class="control-label" ref="password"><i18n name="password"/></dfLabel>
       <div class="controls">
-        <input type="password" class="input-large" name="password" id="input02">
+        <dfInputPassword class="input-large" ref="password" />
       </div>
     </div>
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-large"><i18n name="login"/></button>
+        <dfInputSubmit class="btn btn-large"><i18n name="login"/></dfInputSubmit>
     </div>
 
-</form>
+</dfForm>
 </div>
 
 </apply>
