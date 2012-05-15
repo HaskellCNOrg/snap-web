@@ -1,9 +1,5 @@
-<html>
-  <head>
-    <title>Snap web server</title>
-    <link rel="stylesheet" type="text/css" href="/screen.css"/>
-  </head>
-  <body>
+<apply template="layout">
+
     <div id="content">
       <h1>It works!</h1>
       <p>
@@ -27,6 +23,6 @@
           <td><current-time/></td>
         </tr>
       </table>
-    </div>
-  </body>
-</html>
+  </div>
+  
+</apply>
