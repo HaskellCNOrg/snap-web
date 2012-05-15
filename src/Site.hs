@@ -26,6 +26,7 @@ import           Text.Templating.Heist
 import           Text.XmlHtml hiding (render)
 ------------------------------------------------------------------------------
 import           Application
+import Snap.Snaplet.I18N
 
 
 ------------------------------------------------------------------------------
@@ -73,7 +74,7 @@ echo = do
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/",            index)
-         , ("/echo/:stuff", echo)
+         , ("/signup", render "signup")
          , ("", with heist heistServe)
          , ("", serveDirectory "static")
          ]
@@ -84,7 +85,8 @@ app :: SnapletInit App App
 app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     sTime <- liftIO getCurrentTime
     h <- nestSnaplet "heist" heist $ heistInit "templates"
+    i <- nestSnaplet "i18n" i18n $ initI18NSnaplet (Just "zh_CN") Nothing
     addRoutes routes
-    return $ App h sTime
+    return $ App h sTime i
 
 
