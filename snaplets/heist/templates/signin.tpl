@@ -1,5 +1,6 @@
 <apply template="layout">
 
+<ifLoggedOut>
 <div class="registration">
 
 <dfForm class="form-horizontal" action="signin">
@@ -31,5 +32,10 @@
 
 </dfForm>
 </div>
+</ifLoggedOut>
+
+<ifLoggedIn>
+  <p>You already signin as <loggedInUser/></p>
+</ifLoggedIn>
 
 </apply>
