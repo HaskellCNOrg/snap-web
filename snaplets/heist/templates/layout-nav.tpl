@@ -15,8 +15,6 @@
           <li><a href="/signout">Sign out</a></li>
           </ifLoggedIn>
 
-          <li><a href="/abount">About</a></li>
-
       </ul>
     </div>
   </div>
