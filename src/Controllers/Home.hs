@@ -27,3 +27,5 @@ import           Application
 index :: Handler App App ()
 index = ifTop $ render "index"
 
+redirectToHome :: Handler App App ()
+redirectToHome = redirect "/"

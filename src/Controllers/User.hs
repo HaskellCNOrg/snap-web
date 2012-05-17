@@ -10,12 +10,16 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
+import           Text.Digestive
 import           Text.Digestive.Heist
 import           Text.Digestive.Snap
 --import           Control.Monad.Trans
+import           Text.Templating.Heist
+import qualified Data.Text as T
 
 import           Application
 import           Controllers.Utils
+import           Controllers.Home
 import           Views.UserForm
 
 ------------------------------------------------------------------------------
@@ -34,9 +38,7 @@ signupG = render "signup"
 -- 
 --   
 signupP :: AppHandler ()
-signupP = do
-    with appAuth $ registerUser "username" "password"
-    redirect "/"
+signupP = with appAuth (registerUser "username" "password") >> redirectToHome
 
 ------------------------------------------------------------------------------
 --
@@ -45,22 +47,38 @@ signupP = do
 -- 2. [ ] FIXME: ERROR Handler, e.g. user doesnot exists, password incorrect
 -- 3. [ ] FIXME: use `loginUser` function
 -- 
--- THIS FUNCTION IS ANNOYING. FIX IT.
---
+
+-- | Sign in the user.
+-- 
 signin :: AppHandler ()
 signin = do
-    errorMsg      <- (,) <$> lookupI18NValue "requiredLoginname" 
-                         <*> lookupI18NValue "requiredPassword"
+    -- 
+    -- 1. fetch i18n message for error
+    -- 2. run digestive functor form
+    -- 3. return to signin page if form validation failed.
+    -- 4. otherwise doing authentication
+    -- 5. return to sign page if any errors 
+    -- 6. otherwise return to home page.
+    -- 
+    errorMsg       <- (,) <$> lookupI18NValue "requiredLoginname" 
+                          <*> lookupI18NValue "requiredPassword"
     (view, result) <- runForm "form" $ userForm errorMsg
     case result of
-        Just x -> (with appAuth $ loginByUsername (username' x) (password' x) True) >> redirect "/"
-        Nothing -> heistLocal (bindDigestiveSplices view) $ render "signin"
-    where username' (LoginUser u _) = textToBs u
+        Just form -> do
+                  authResult <- with appAuth $ loginUser' form
+                  either (renderToSigninPage . upadteErrors view) toHome authResult
+        Nothing -> renderToSigninPage view
+    where loginUser' x              = loginByUsername (username' x) (password' x) True
+          username' (LoginUser u _) = textToBs u
           password' (LoginUser _ p) = ClearText $ textToBs p
+          -- FIXME: user friendly error message per errors.
+          upadteErrors v e          = v { viewErrors = viewErrors v ++ [([], T.pack $ show e)]}
+          renderToSigninPage v      = heistLocal (bindDigestiveSplices v) $ render "signin"
+          toHome x                  = redirectToHome
 
 ------------------------------------------------------------------------------
 
 -- | log out
 -- 
 signoutG :: AppHandler ()
-signoutG = with appAuth $ logoutUser (redirect "/")
+signoutG = with appAuth logout >> redirect "/"
