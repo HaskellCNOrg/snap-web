@@ -19,27 +19,26 @@ Executable ahaskellcnorg
   main-is: Main.hs
 
   Build-depends:
-    base >= 4 && < 5,
-    bytestring >= 0.9.1 && < 0.10,
-    data-lens >= 2.0.1 && < 2.1,
-    data-lens-template >= 2.1 && < 2.2,
-    heist >= 0.8 && < 0.9,
-    MonadCatchIO-transformers >= 0.2.1 && < 0.3,
-    mtl >= 2 && < 3,
-    snap == 0.8.*,
+    base                         >= 4     && < 5,
+    bytestring                   >= 0.9.1 && < 0.10,
+    data-lens                    >= 2.0.1 && < 2.1,
+    data-lens-template           >= 2.1   && < 2.2,
+    heist                        >= 0.8   && < 0.9,
+    MonadCatchIO-transformers    >= 0.2.1 && < 0.3,
+    mtl                          >= 2     && < 3,
+    snap        == 0.8.*,
     snap-core   == 0.8.*,
     snap-server == 0.8.*,
-    text >= 0.11 && < 0.12,
-    time >= 1.1 && < 1.5,
-    xmlhtml == 0.1.*,
-    digestive-functors        >= 0.3   && < 0.4,
-    digestive-functors-heist  >= 0.3   && < 0.4,
-    digestive-functors-snap   >= 0.3   && < 0.4,
-    mongoDB                   >= 1.2   && < 2.0,
+    xmlhtml     == 0.1.*,
+    text                         >= 0.11  && < 0.12,
+    time                         >= 1.1   && < 1.5,
+    digestive-functors           >= 0.3   && < 0.4,
+    digestive-functors-heist     >= 0.3   && < 0.4,
+    digestive-functors-snap      >= 0.3   && < 0.4,
+    mongoDB                      >= 1.2   && < 2.0,
     snaplet-mongodb-minimalistic >= 0.0.6 && < 0.0.7,
-    snaplet-i18n              >= 0.0.1 && < 0.0.2,
-    configurator       >= 0.2   && < 0.3
-
+    snaplet-i18n                 >= 0.0.2 && < 0.1,
+    configurator                 >= 0.2   && < 0.3
 
 
   if flag(development)

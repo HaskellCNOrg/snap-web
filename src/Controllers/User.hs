@@ -2,19 +2,17 @@
 
 module Controllers.User where
 
-import           Control.Monad.Trans
+------------------------------------------------------------------------------
+
+import Control.Applicative ((<$>), (<*>))
 import           Snap.Core
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
-import           Text.Templating.Heist
 import           Text.Digestive.Heist
 import           Text.Digestive.Snap
-import qualified Data.Text as T
-
-import qualified Data.Configurator as Config
-import qualified Data.Configurator.Types as Config
+--import           Control.Monad.Trans
 
 import           Application
 import           Controllers.Utils
@@ -51,10 +49,9 @@ signupP = do
 --
 signin :: AppHandler ()
 signin = do
-    (I18NMessage message) <- getI18NMessages
-    eln <- liftIO $ lookupI18NValue message "requiredLoginname"
-    erp <- liftIO $ lookupI18NValue message "requiredPassword"
-    (view, result) <- runForm "form" $ userForm (eln, erp)
+    errorMsg      <- (,) <$> lookupI18NValue "requiredLoginname" 
+                         <*> lookupI18NValue "requiredPassword"
+    (view, result) <- runForm "form" $ userForm errorMsg
     case result of
         Just x -> (with appAuth $ loginByUsername (username' x) (password' x) True) >> redirect "/"
         Nothing -> heistLocal (bindDigestiveSplices view) $ render "signin"
