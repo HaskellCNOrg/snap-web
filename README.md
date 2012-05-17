@@ -1,7 +1,8 @@
 This will be for a.haskellcn.org
 
 ## Impl TODOS
-1. [ ] dig details of snaplet-auth, valitation checking.
+1. [X] dig details of snaplet-auth, valitation checking.
+    - directly display error msg from snaplet-auth
 2. [ ] use mongoDB auth backend rather than JSON
 
 ## couple of notes

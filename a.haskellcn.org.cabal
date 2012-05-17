@@ -38,7 +38,11 @@ Executable ahaskellcnorg
     mongoDB                      >= 1.2   && < 2.0,
     snaplet-mongodb-minimalistic >= 0.0.6 && < 0.0.7,
     snaplet-i18n                 >= 0.0.2 && < 0.1,
-    configurator                 >= 0.2   && < 0.3
+    configurator                 >= 0.2   && < 0.3,
+    clientsession                >= 0.7.4 && < 0.8,
+    resource-pool                >= 0.2   && < 0.3,
+    unordered-containers         >= 0.1.4 && < 0.2,
+    aeson                        >= 0.6   && < 0.7
 
 
   if flag(development)
