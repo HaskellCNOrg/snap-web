@@ -1,4 +1,6 @@
-This will be for a.haskellcn.org
+## Travis CI
+
+[![Build Status](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
 
 ## Impl TODOS
 1. [X] dig details of snaplet-auth, valitation checking.
