@@ -4,6 +4,17 @@ This will be for a.haskellcn.org
 1. [X] dig details of snaplet-auth, valitation checking.
     - directly display error msg from snaplet-auth
 2. [ ] use mongoDB auth backend rather than JSON
+3. [ ] Be able to do post
+4. [ ] list posts in home page
+5. [ ] Be able to view Post detail page.
+6. [ ] Be able to edit post.
+
+- [ ] Be able to comment
+- [ ] be able to comment to comment
+- [ ] Allow tag post
+
+- [ ] Message to user when new comments
+- [ ] mail integration (active, reset, etc..)
 
 ## couple of notes
   - rm personal section from sidebar to settings.
