@@ -29,6 +29,8 @@ import           Controllers.Utils
 import           Controllers.Home
 import           Views.UserForm
 import qualified Models.User as MD
+import           Models.Exception
+
 
 
 ------------------------------------------------------------------------------
@@ -44,7 +46,7 @@ signup = do
           case result of
               Just u -> do
                         result <- try (with appAuth (MD.createNewUser u))
-                        either (toPage . updateViewErrors view . showE) toHome result
+                        either (toPage . updateViewErrors view . showUE) toHome result
               Nothing -> toPage view
           where toHome x = redirectToHome
                 toPage = renderDfPage "signup" 
@@ -69,8 +71,8 @@ signin = do
     (view, result) <- runForm "form" $ signinForm errorMsg
     case result of
         Just usr -> do
-                  authResult <- try (with appAuth $ MD.loginUser usr)
-                  either (toPage . updateViewErrors view . showE) toHome authResult
+                  result <- try (with appAuth $ MD.loginUser usr)
+                  either (toPage . updateViewErrors view . showUE) toHome result
         Nothing -> toPage view
     where toPage = renderDfPage "signin"
           toHome x = redirectToHome

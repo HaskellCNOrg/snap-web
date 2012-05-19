@@ -1,3 +1,4 @@
+
 module Models.User where
 
 import           Control.Applicative ((<$>), (<*>))
@@ -15,8 +16,10 @@ import           Control.Monad.Trans
 import           Text.Templating.Heist
 import           Control.Monad.CatchIO (try, throw,  Exception(..))
 import qualified Data.Text as T
+import           Data.Typeable
 
-import           Controllers.Utils
+import           Models.Exception
+import           Models.Utils
 
 data LoginUser = LoginUser
     { loginName :: T.Text
@@ -32,12 +35,11 @@ data LoginUser = LoginUser
 createNewUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 createNewUser usr = do
     mp <- gets minPasswdLen
-    when (passLength usr < mp) (throw $ BackendError $ "password length must longer than " ++ show mp)
-    -- ^ Password min length validation
+    when (passLength usr < mp) (throw $ PasswordTooShort mp)
     exists <- usernameExists (loginName usr)
-    when exists (throw $ BackendError "User Already Exists.")
+    when exists (throw UserAlreadyExists)
     authUsr <- createUser (loginName usr) (password' usr)
-    forceLogin authUsr >>= either throw return
+    forceLogin authUsr >>= either throwUE return
   where passLength    = T.length . password
         password'     = textToBs . password
 
@@ -45,7 +47,10 @@ createNewUser usr = do
 
 loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 loginUser u = do
-              res <- loginByUsername (username' u) (password' u) True 
-              either throw return res
+              res <- loginByUsername (username' u) (password' u) True
+              either throwUE return res
               where username' = textToBs . loginName
                     password' = ClearText . textToBs . password
+
+
+------------------------------------------------------------------------------
