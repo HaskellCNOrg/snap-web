@@ -3,30 +3,19 @@
 module Models.Topic where
 
 import           Control.Applicative ((<$>), (<*>))
-import           Control.Monad
 import           Control.Monad.State
-import           Snap.Core
 import           Snap.Snaplet.Auth
-import           Snap.Snaplet
-import           Snap.Snaplet.Heist
-import           Snap.Snaplet.I18N
--- import           Text.Digestive
--- import           Text.Digestive.Heist
 import           Snap.Snaplet.MongoDB
-import           Text.Digestive.Snap
-import           Control.Monad.Trans
-import           Text.Templating.Heist
-import           Control.Monad.CatchIO (try, throw,  Exception(..))
+--import           Control.Monad.Trans
+import           Control.Monad.CatchIO (throw)
 import qualified Data.Text as T
 import           Data.Bson
 import           Data.Baeson.Types
-import Data.Baeson.Types
 import Database.MongoDB
 
 import           Application
 import           Models.Exception
-import           Models.Utils
-import           Models.Types
+import Models.Types
 
 -- | 
 -- 
@@ -52,6 +41,8 @@ createNewTopic topic = do
 
 ------------------------------------------------------------------------------
 
+-- | Find One Topic
+-- 
 findOneTopic :: ObjectId -> AppHandler (Maybe Topic)
 findOneTopic oid = do
     res <- eitherWithDB $ findOne (select [ "_id" =: oid ] topicCollection)
@@ -65,6 +56,16 @@ usrFromMongThrow :: Document -> IO Topic
 usrFromMongThrow d =  case parseEither documentToTopic d of
   Left e -> throw $ BackendError $ show e
   Right r -> return r
+  
+------------------------------------------------------------------------------
+
+-- | Find All Topic
+-- 
+findAllTopic :: AppHandler [Topic]
+findAllTopic  = do
+    xs <- eitherWithDB $ rest =<< find (select [] topicCollection)
+    liftIO $ (mapM usrFromMongThrow) $ either (const []) id xs  
+
   
 ------------------------------------------------------------------------------
 

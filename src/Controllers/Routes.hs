@@ -6,7 +6,6 @@ module Controllers.Routes
 
 import           Control.Applicative
 import           Data.ByteString (ByteString)
-import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Snap.Util.FileServe

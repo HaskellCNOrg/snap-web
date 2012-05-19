@@ -1,21 +1,21 @@
 <apply template="layout">
 
     <div id="content">
-      <h1>It works!</h1>
-      <p>
-        This is a simple demo page served using
+
+      <h2>
         <a href="/topic">New Topic</a>
+      </h2>
+
+      <h2>Topics List</h2>
+      <!-- if count of topics > 0 -->
+      <p>
+       <allTopics>
+         <ul>
+           <li><a href="/topic/${oid}"><topicTitle/></a></li>
+         </ul>
+       </allTopics>
       </p>
-      <table id="info">
-        <tr>
-          <td>Config generated at:</td>
-          <td><start-time/></td>
-        </tr>
-        <tr>
-          <td>Page generated at:</td>
-          <td><current-time/></td>
-        </tr>
-      </table>
+
   </div>
   
 </apply>

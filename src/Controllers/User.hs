@@ -9,23 +9,15 @@ module Controllers.User
 ------------------------------------------------------------------------------
 
 import           Control.Applicative ((<$>), (<*>))
-import           Control.Monad
-import           Control.Monad.State
 import           Snap.Core
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet
-import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
-import           Text.Digestive
-import           Text.Digestive.Heist
 import           Text.Digestive.Snap
 import           Control.Monad.Trans
-import           Text.Templating.Heist
-import           Control.Monad.CatchIO (try, throw,  Exception(..))
-import qualified Data.Text as T
+import           Control.Monad.CatchIO (try)
 import qualified Data.Text.Encoding as T
 import qualified Data.ByteString as BS
-import           Data.Typeable
 
 import           Application
 import           Controllers.Utils
@@ -61,8 +53,8 @@ signup = do
           (view, result) <- runForm "form" $ signupForm errorMsg
           case result of
               Just u -> do
-                        result <- try (with appAuth (MD.createNewUser u))
-                        either (toPage . updateViewErrors view . showUE) toHome result
+                        result' <- try (with appAuth (MD.createNewUser u))
+                        either (toPage . updateViewErrors view . showUE) toHome result'
               Nothing -> toPage view
           where toHome x = redirectToHome
                 toPage = renderDfPage "signup" 
@@ -87,8 +79,8 @@ signin = do
     (view, result) <- runForm "form" $ signinForm errorMsg
     case result of
         Just usr -> do
-                  result <- try (with appAuth $ MD.loginUser usr)
-                  either (toPage . updateViewErrors view . showUE) toHome result
+                  result' <- try (with appAuth $ MD.loginUser usr)
+                  either (toPage . updateViewErrors view . showUE) toHome result'
         Nothing -> toPage view
     where toPage = renderDfPage "signin"
           toHome x = redirectToHome

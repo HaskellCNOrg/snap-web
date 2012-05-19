@@ -4,22 +4,18 @@ module Controllers.Topic
        ( routes ) where
 
 import           Data.Bson
-import           Control.Monad
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.Auth
-import           Snap.Snaplet.MongoDB
 import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import           Control.Monad.Trans
-import           Control.Applicative ((<$>), (<*>))
 import           Text.Digestive
-import           Text.Digestive.Heist
 import           Text.Digestive.Snap
 import qualified Data.Text as T
 import           Data.Maybe (fromJust)
-import           Control.Monad.CatchIO (try, throw,  Exception(..))
+import           Control.Monad.CatchIO (try, Exception(..))
 
 import           Application
 
@@ -88,3 +84,4 @@ viewTopic = do
     Just x  -> heistLocal (bindString "topicTitle" (_title x)) $ render "topic-detail"
                      
 
+------------------------------------------------------------------------------
