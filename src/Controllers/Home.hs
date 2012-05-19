@@ -5,6 +5,8 @@ module Controllers.Home where
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
+import           Control.Monad.Trans
+import           Snap.Snaplet.Auth
 
 import           Application
 
@@ -16,7 +18,9 @@ import           Application
 -- Otherwise, the way the route table is currently set up, this action
 -- would be given every request.
 index :: Handler App App ()
-index = ifTop $ render "index"
+index = ifTop $ do
+        with appAuth currentUser >>= liftIO . print
+        render "index"
 
 redirectToHome :: Handler App App ()
 redirectToHome = redirect "/"

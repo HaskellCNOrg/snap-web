@@ -29,6 +29,9 @@ forceNonEmpty x = x
 
 ----------------------------------------------------------------
 
+stringToText :: Show s => s -> T.Text
+stringToText = T.pack . show 
+
 toStrickBS' :: LBS.ByteString -> BS.ByteString
 toStrickBS' = BS.concat . LBS.toChunks
 

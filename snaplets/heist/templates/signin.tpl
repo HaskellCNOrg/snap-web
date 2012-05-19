@@ -13,21 +13,23 @@
     <loginErrors />
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="loginName"><i18n name="username"/></dfLabel>
+      <dfLabel class="control-label" ref="loginName"><i18n name="user-username"/></dfLabel>
       <div class="controls">
         <dfInputText class="input-large" ref="loginName" />
       </div>
     </div>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="password"><i18n name="password"/></dfLabel>
+      <dfLabel class="control-label" ref="password"><i18n name="user-password"/></dfLabel>
       <div class="controls">
         <dfInputPassword class="input-large" ref="password" />
       </div>
     </div>
 
     <div class="form-actions">
-        <dfInputSubmit class="btn btn-large"><i18n name="login"/></dfInputSubmit>
+      <i18n name="user-login">
+        <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
+      </i18n>
     </div>
 
 </dfForm>

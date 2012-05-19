@@ -13,17 +13,17 @@ import           Snap.Util.FileServe
 
 import           Application
 import           Controllers.Home
-import           Controllers.User
+import qualified Controllers.User as User
+import qualified Controllers.Topic as Topic
 
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/",             index)
          , ("/index",        index)
          ]
          <|>
-         [ ("/signup",  signup)
-         , ("/signin",  signin)
-         , ("/signout", method GET signoutG)           
-         ]
+         User.routes
+         <|>
+         Topic.routes
          <|>
          [ ("", with heist heistServe)
          , ("", serveDirectory "static")

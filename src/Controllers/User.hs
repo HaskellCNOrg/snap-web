@@ -1,7 +1,10 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
 {-# LANGUAGE DeriveDataTypeable         #-}
 
-module Controllers.User where
+module Controllers.User 
+       ( routes 
+       , redirectToSignin 
+       , withAuthUser ) where
 
 ------------------------------------------------------------------------------
 
@@ -32,6 +35,19 @@ import qualified Models.User as MD
 import           Models.Exception
 
 
+routes :: [(BS.ByteString, Handler App App ())]
+routes =  [ ("/signup",  signup)
+          , ("/signin",  signin)
+          , ("/signout", signout) 
+          ]
+
+redirectToSignin :: AppHandler ()
+redirectToSignin = redirect "/signin"
+
+-- | Perform a action `AppHandler ()` within Auth user otherwise redirect to signin.
+--
+withAuthUser :: AppHandler () -> AppHandler ()
+withAuthUser = requireUser appAuth redirectToSignin
 
 ------------------------------------------------------------------------------
     
@@ -82,8 +98,8 @@ signin = do
 
 -- | log out
 -- 
-signoutG :: AppHandler ()
-signoutG = with appAuth logout >> redirectToHome
+signout :: AppHandler ()
+signout = with appAuth logout >> redirectToHome
 
 
 ------------------------------------------------------------------------------
