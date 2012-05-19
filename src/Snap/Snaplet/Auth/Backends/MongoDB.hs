@@ -10,17 +10,17 @@ module Snap.Snaplet.Auth.Backends.MongoDB where
 
 import Control.Applicative
 import Control.Arrow
-import Control.Concurrent.STM
+--import Control.Concurrent.STM
 import Control.Monad.CatchIO(throw)
 import Control.Monad.Error
 import Data.Baeson.Types
 import Data.Lens.Lazy
-import Data.Map (Map)
+--import Data.Map (Map)
 import Data.Maybe(fromMaybe)
 import Data.Text(Text)
 import qualified Data.Configurator as C
 import qualified Data.HashMap.Lazy as HM
-import qualified Data.Map as Map
+--import qualified Data.Map as Map
 import qualified Data.Text.Encoding as T
 import qualified Database.MongoDB as M
 import qualified Snap.Snaplet.MongoDB as SM
@@ -72,9 +72,9 @@ initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
     authSettings <- settingsFromConfig
     key <- liftIO $ getKey (fromMaybe (asSiteKey authSettings) sk)
     let
-      lens = getL snapletValue db
-      manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens)
-                (SM.mongoPool lens)
+      lens' = getL snapletValue db
+      manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens')
+                (SM.mongoPool lens')
     rng <- liftIO mkRNG
     return $ AuthManager
       { backend = manager

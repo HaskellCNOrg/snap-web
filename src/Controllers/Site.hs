@@ -14,7 +14,6 @@ import           Database.MongoDB (host)
 import           Control.Monad.Trans
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
-import           Snap.Snaplet.Auth.Backends.JsonFile
 import           Snap.Snaplet.Auth.Backends.MongoDB
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N

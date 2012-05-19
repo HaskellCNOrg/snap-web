@@ -6,12 +6,8 @@ import Data.Text (Text)
 import Text.Digestive
 
 import Views.Validators
+import Models.User
 
-data LoginUser = LoginUser
-    { loginName :: Text
-    , password  :: Text
-    , repeatPassword :: Text
-    } deriving (Show)
 
 -- | FIXME: Need a better design to get message from i18n snaplet.
 -- 
