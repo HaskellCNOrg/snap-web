@@ -45,9 +45,7 @@ Executable ahaskellcnorg
     aeson                        >= 0.6   && < 0.7,
     bson                         >= 0.1.7 && < 0.2,
     containers                   >= 0.4   && < 0.5,
-    compact-string-fix           >= 0.3   && < 0.4,
-    stm                          >= 2.2   && < 3.0
-
+    compact-string-fix           >= 0.3   && < 0.4
 
   if flag(development)
     cpp-options: -DDEVELOPMENT

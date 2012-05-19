@@ -1,6 +1,9 @@
 <apply template="layout">
 
 
+<h2>
+<topicTitle />
+</h2>
 
     <div class="control-group">
       <dfLabel class="control-label" ref="title"><i18n name="topic-title"/></dfLabel>
