@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE DeriveDataTypeable         #-}
 
 module Controllers.User where
 
 ------------------------------------------------------------------------------
 
-import Control.Applicative ((<$>), (<*>))
+import           Control.Applicative ((<$>), (<*>))
+import           Control.Monad
 import           Snap.Core
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet
@@ -13,40 +15,53 @@ import           Snap.Snaplet.I18N
 import           Text.Digestive
 import           Text.Digestive.Heist
 import           Text.Digestive.Snap
---import           Control.Monad.Trans
+import           Control.Monad.Trans
 import           Text.Templating.Heist
+import           Control.Monad.CatchIO
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
+import qualified Data.ByteString as BS
+import           Data.Typeable
 
 import           Application
 import           Controllers.Utils
 import           Controllers.Home
 import           Views.UserForm
 
+
+
 ------------------------------------------------------------------------------
+
 -- TODO
--- 1. catch error for auth snaplet.
--- 2. FIXME: required field validation. e.g. password required.
---    display user-friendly message.
+-- 2. why browser ask for remember password when signup but not signin.
 
+-- 3. auto login after signup successfully.
 
--- | Show sign up page
--- 
-signupG :: AppHandler ()
-signupG = render "signup"
     
--- | sign up user and redirect to home page
+-- | sign up user and redirect to home page.
+--   Snap `registerUser` allow empty username and password
 -- 
---   
-signupP :: AppHandler ()
-signupP = with appAuth (registerUser "username" "password") >> redirectToHome
+signup :: AppHandler ()
+signup = do
+          errorMsg       <- (,) <$> lookupI18NValue "requiredLoginname" 
+                                <*> lookupI18NValue "requiredPassword"
+          (view, result) <- runForm "form" $ signupForm errorMsg
+          case result of
+              Just u -> do
+                        exitst <- with appAuth (usernameExists (loginName u))
+                        if exitst then
+                            renderToSignupPage $ upadteErrors view $ BackendError "UserExists"
+                            else (do
+                                     result <- try (with appAuth (createUser (loginName u) (password' u)))
+                                     either (renderToSignupPage . upadteErrors view) toHome result )
+              Nothing -> renderToSignupPage view
+          where toHome  x                 = with appAuth loginByRememberToken >> redirectToHome
+                upadteErrors              :: View T.Text -> BackendError -> View T.Text
+                upadteErrors v e          = v { viewErrors = viewErrors v ++ [([], T.pack $ show e)]}
+                password'                 = textToBs . password
+                renderToSignupPage v      = heistLocal (bindDigestiveSplices v) $ render "signup"
 
 ------------------------------------------------------------------------------
---
--- TODO
--- 1. [ ] catch error for auth snaplet.
--- 2. [ ] FIXME: ERROR Handler, e.g. user doesnot exists, password incorrect
--- 3. [ ] FIXME: use `loginUser` function
--- 
 
 -- | Sign in the user.
 -- 
@@ -62,19 +77,21 @@ signin = do
     -- 
     errorMsg       <- (,) <$> lookupI18NValue "requiredLoginname" 
                           <*> lookupI18NValue "requiredPassword"
-    (view, result) <- runForm "form" $ userForm errorMsg
+    (view, result) <- runForm "form" $ signinForm errorMsg
     case result of
         Just form -> do
                   authResult <- with appAuth $ loginUser' form
                   either (renderToSigninPage . upadteErrors view) toHome authResult
         Nothing -> renderToSigninPage view
     where loginUser' x              = loginByUsername (username' x) (password' x) True
-          username' (LoginUser u _) = textToBs u
-          password' (LoginUser _ p) = ClearText $ textToBs p
-          -- FIXME: user friendly error message per errors.
-          upadteErrors v e          = v { viewErrors = viewErrors v ++ [([], T.pack $ show e)]}
+          username' = textToBs . loginName
+          password' = ClearText . textToBs . password
           renderToSigninPage v      = heistLocal (bindDigestiveSplices v) $ render "signin"
           toHome x                  = redirectToHome
+
+          ----------------------------FIXME: user friendly error message per errors.
+          upadteErrors v e          = v { viewErrors = viewErrors v ++ [([], T.pack $ show e)]}
+          
 
 ------------------------------------------------------------------------------
 

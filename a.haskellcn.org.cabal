@@ -42,7 +42,11 @@ Executable ahaskellcnorg
     clientsession                >= 0.7.4 && < 0.8,
     resource-pool                >= 0.2   && < 0.3,
     unordered-containers         >= 0.1.4 && < 0.2,
-    aeson                        >= 0.6   && < 0.7
+    aeson                        >= 0.6   && < 0.7,
+    bson                         >= 0.1.7 && < 0.2,
+    containers                   >= 0.4   && < 0.5,
+    compact-string-fix           >= 0.3   && < 0.4,
+    stm                          >= 2.2   && < 3.0
 
 
   if flag(development)

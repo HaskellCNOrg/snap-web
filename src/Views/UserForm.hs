@@ -9,12 +9,24 @@ import Views.Validators
 
 data LoginUser = LoginUser
     { loginName :: Text
-    , password :: Text
+    , password  :: Text
+    , repeatPassword :: Text
     } deriving (Show)
 
 -- | FIXME: Need a better design to get message from i18n snaplet.
 -- 
-userForm :: Monad m => (Text,Text) -> Form Text m LoginUser
-userForm (a,b) = LoginUser
-    <$> "loginName" .: check a requiredValidator (text Nothing)
-    <*> "password"  .: check b requiredValidator (text Nothing)
+signinForm :: Monad m => (Text,Text) -> Form Text m LoginUser
+signinForm (a,b) = LoginUser
+    <$> "loginName"      .: check a requiredValidator (text Nothing)
+    <*> "password"       .: check b requiredValidator (text Nothing)
+    <*> "repeatPassword" .: text Nothing
+
+signupForm :: Monad m => (Text,Text) -> Form Text m LoginUser
+signupForm (a,b) = check "Input password must be same" samePasswordValidator $ 
+    LoginUser
+    <$> "loginName"       .: check a requiredValidator (text Nothing)
+    <*> "password"        .: check b requiredValidator (text Nothing)
+    <*> "repeatPassword"  .: text Nothing
+
+samePasswordValidator :: LoginUser -> Bool
+samePasswordValidator x = password x == repeatPassword x

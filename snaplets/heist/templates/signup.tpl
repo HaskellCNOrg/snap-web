@@ -1,40 +1,46 @@
 <apply template="layout">
 
+<ifLoggedOut>
+
 <div class="registration">
-<form class="form-horizontal" action="signup" method="POST">
+<dfForm class="form-horizontal" action="signup">
+
+    <dfIfChildErrors>
+      <div class="alert alert-error"> 
+         <dfChildErrorList ref=""></dfChildErrorList>
+      </div>
+    </dfIfChildErrors>
+    <loginErrors />
 
     <div class="control-group">
-      <label class="control-label" for="input01"><i18n name="email"/></label>
+      <dfLabel class="control-label" ref="loginName"><i18n name="username"/></dfLabel>
       <div class="controls">
-        <input type="text" class="input-large" name="username" id="input01">
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="input01"><i18n name="repeatEmail"/></label>
-      <div class="controls">
-        <input type="text" class="input-large" id="input01">
-      </div>
-    </div>
-
-    <div class="control-group">
-      <label class="control-label" for="input01"><i18n name="password"/></label>
-      <div class="controls">
-        <input type="password" class="input-large" name="password" id="input02">
+        <dfInputText class="input-large" ref="loginName" />
       </div>
     </div>
 
     <div class="control-group">
-      <label class="control-label" for="input01"><i18n name="repeatPassword"/></label>
+      <dfLabel class="control-label" ref="password"><i18n name="password"/></dfLabel>
       <div class="controls">
-        <input type="password" class="input-large" id="input02">
+        <dfInputPassword class="input-large" ref="password" />
+      </div>
+    </div>
+
+     <div class="control-group">
+      <label class="control-label" ref="repeatPassword"><i18n name="repeatPassword"/></label>
+      <div class="controls">
+        <dfInputPassword class="input-large" ref="repeatPassword" />
       </div>
     </div>
 
     <div class="form-actions">
-        <button type="submit" class="btn btn-large"><i18n name="register"/></button>
+        <dfInputSubmit class="btn btn-large"><i18n name="signup"/></dfInputSubmit>
     </div>
 
-</form>
+</dfForm>
 </div>
+
+</ifLoggedOut>
+
 
 </apply>

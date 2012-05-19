@@ -20,7 +20,7 @@ routes = [ ("/",             index)
          , ("/index",        index)
          ]
          <|>
-         [ ("/signup",  method GET signupG <|> method POST signupP)
+         [ ("/signup",  signup)
          , ("/signin",  signin)
          , ("/signout", method GET signoutG)           
          ]

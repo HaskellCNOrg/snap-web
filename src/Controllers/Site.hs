@@ -14,7 +14,7 @@ import           Database.MongoDB (host)
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Auth.Backends.JsonFile
---import           Snap.Snaplet.Auth.Backends.MongoDB
+import           Snap.Snaplet.Auth.Backends.MongoDB
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Snap.Snaplet.MongoDB
@@ -33,8 +33,8 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     i  <- nestSnaplet "i18n" i18n $ initI18NSnaplet (Just "zh_CN")
     s  <- nestSnaplet "session" appSession cookieSessionMgr'
     d  <- nestSnaplet "mongoDB" appMongoDB $ mongoDBInit 10 (host "127.0.0.1") "haskellcn-mongodb"    
-    a  <- nestSnaplet "auth" appAuth $ initJsonFileAuthManager authSettings' appSession "log/auth.json"
-    --a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d
+    --a  <- nestSnaplet "auth" appAuth $ initJsonFileAuthManager authSettings' appSession "log/auth.json"
+    a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d
     addRoutes routes
     addAuthSplices appAuth    
     return $ App h i s d a

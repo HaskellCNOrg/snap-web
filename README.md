@@ -1,12 +1,13 @@
 ## Travis CI
 
-[![Master](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
-[![Branch/0.1](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=branch/0.1)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
+- [![Master](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
+- [![Branch/0.1](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=branch/0.1)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
 
 ## Impl TODOS
 1. [X] dig details of snaplet-auth, valitation checking.
     - directly display error msg from snaplet-auth
 2. [ ] use mongoDB auth backend rather than JSON
+2.1 [ ] not able to read cfg file
 3. [ ] Be able to do post
 4. [ ] list posts in home page
 5. [ ] Be able to view Post detail page.

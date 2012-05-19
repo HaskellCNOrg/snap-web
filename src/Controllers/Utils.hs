@@ -11,8 +11,25 @@ import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text.Encoding as T
 import qualified Data.Text as T
 
+----------------------------------------------------------------
+
 decodedParam :: MonadSnap m => BS.ByteString -> m BS.ByteString
 decodedParam p = fromMaybe "" <$> getParam p
+
+-- | force Just "" to be Nothing during decode.
+-- 
+decodedParam' :: MonadSnap m => BS.ByteString -> m (Maybe BS.ByteString)
+decodedParam' p = forceNonEmpty <$> getParam p
+
+decodedParamText :: MonadSnap m => BS.ByteString -> m (Maybe T.Text)
+decodedParamText p =  fmap T.decodeUtf8 <$> forceNonEmpty <$>getParam p
+
+forceNonEmpty :: Maybe BS.ByteString -> Maybe BS.ByteString
+forceNonEmpty Nothing = Nothing
+forceNonEmpty (Just "") = Nothing
+forceNonEmpty x = x
+
+----------------------------------------------------------------
 
 toStrickBS' :: LBS.ByteString -> BS.ByteString
 toStrickBS' = BS.concat . LBS.toChunks
@@ -28,3 +45,6 @@ textToBs = T.encodeUtf8
 
 loggerDebug :: (Show a, MonadIO m) => a -> m ()
 loggerDebug = liftIO . print 
+
+----------------------------------------------------------------
+

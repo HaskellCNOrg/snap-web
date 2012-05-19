@@ -1,44 +1,51 @@
-{-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 
 {-
-THIS WORK IS COPY FROM: https://gist.github.com/2347061
+FROM: https://gist.github.com/2725402
 -}
 
-module Snap.Snaplet.Auth.Backends.MongoDB
-  ( initMongoAuth
-  ) where
+module Snap.Snaplet.Auth.Backends.MongoDB where
 
-------------------------------------------------------------------------------
-import           Control.Arrow
-import           Data.Aeson
+import Control.Arrow
+import Control.Concurrent.STM
+import Control.Applicative
+import Control.Monad.Error
+
+import Control.Monad.CatchIO(throw)
+
 import qualified Data.Configurator as C
-import qualified Data.HashMap.Lazy as HM
-import qualified Data.Text as T
-import           Data.Text (Text)
+
+import Data.Baeson.Types
+import Data.Maybe(fromMaybe)
+import Data.Map (Map)
+import qualified Data.Map as Map
+
 import qualified Data.Text.Encoding as T
-import           Data.Maybe
-import           Data.Pool
-import           Database.MongoDB (Document, Val(..), u, Field((:=)))
-import           Database.MongoDB as M
-import           Snap
-import           Snap.Snaplet.Auth
-import           Snap.Snaplet.MongoDB
-import           Snap.Snaplet.Session
-import           Snap.Snaplet.Session.Common
-import           System.IO.Pool (Pool, Factory (Factory))
-import           Web.ClientSession
-import           Snap.Snaplet.MongoDB
+import Data.Text(Text)
 
-data MongoAuthManager = MongoAuthManager
-    { mongoTable    :: String
-    , mongoConnPool :: MongoDB
-    }
+import qualified Data.HashMap.Lazy as HM
 
+import Snap.Snaplet
+import Snap.Snaplet.Auth
+import Snap.Snaplet.Session
+import Snap.Snaplet.Session.Common
+import qualified Snap.Snaplet.MongoDB as SM
+
+import Database.MongoDB (Database, Host, Pipe, (=:),
+                                   AccessMode (UnconfirmedWrites),
+                                   close, isClosed, connect, Action,
+                                   Failure(..), access)
+import qualified Database.MongoDB as M
+import System.IO.Pool (Pool, Factory (Factory), newPool, aResource)
+
+import Web.ClientSession
+import Data.Lens.Lazy
+
+import qualified Data.HashMap.Lazy as HM
 
 ------------------------------------------------------------------------------
--- | Simple function to get auth settings from a config file.  All options
+-- | Simple function to get auth settings from a config file. All options
 -- are optional and default to what's in defAuthSettings if not supplied.
 settingsFromConfig :: Initializer b (AuthManager b) AuthSettings
 settingsFromConfig = do
@@ -52,7 +59,10 @@ settingsFromConfig = do
     lockout <- liftIO $ C.lookup config "lockout"
     let lo = maybe id (\x s -> s { asLockout = Just (second fromInteger x) })
                    lockout
-    siteKey <- liftIO $ C.lookup config "siteKey"
+    siteKey <- liftIO $ C.lookup config "app.siteKey"
+    --liftIO $ print $ root config
+    liftIO $ print . HM.lookup "siteKey" =<< (liftIO $ C.getMap config)
+    liftIO $ print =<< (liftIO $ fmap HM.elems $ C.getMap config)    
     let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey
     return $ (pw . rc . rp . lo . sk) defAuthSettings
 
@@ -60,18 +70,18 @@ settingsFromConfig = do
 ------------------------------------------------------------------------------
 -- | Initializer for the MongoDB backend to the auth snaplet.
 --
-initMongoAuth
-  :: Lens b (Snaplet SessionManager)  -- ^ Lens to the session snaplet
-  -> Snaplet MongoDB  -- ^ The mongodb snaplet
-  -> SnapletInit b (AuthManager b)
-initMongoAuth sess db = makeSnaplet "mongodb-auth" desc datadir $ do
+initMongoAuth :: Lens b (Snaplet SessionManager)
+                 -> Snaplet SM.MongoDB
+                 -> SnapletInit b (AuthManager b)
+initMongoAuth sess db = makeSnaplet "mongodb-auth" desc Nothing $ do
     config <- getSnapletUserConfig
-    authTable <- liftIO $ C.lookupDefault "snap_auth_user" config "authTable"
+    authTable <- liftIO $ C.lookupDefault "auth_user" config "authCollection"
     authSettings <- settingsFromConfig
     key <- liftIO $ getKey (asSiteKey authSettings)
-    let manager = MongoAuthManager authTable $
-                                      pgPool $ getL snapletValue db
-    liftIO $ createTableIfMissing manager
+    let
+      lens = getL snapletValue db
+      manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens)
+                (SM.mongoPool lens)
     rng <- liftIO mkRNG
     return $ AuthManager
       { backend = manager
@@ -86,55 +96,147 @@ initMongoAuth sess db = makeSnaplet "mongodb-auth" desc datadir $ do
       }
   where
     desc = "A MongoDB backend for user authentication"
-    datadir = Just $ liftM (++"/resources/auth") getDataDir
+    datadir = "/resources/auth" :: String
 
 
-instance IAuthBackend MongoAuthManager where
-    save MongoAuthManager{..} u@AuthUser{..} = do
+data MongoBackend = MongoBackend
+    { mongoCollection :: M.Collection
+    , mongoDatabase :: Database
+    , mongoPool :: Pool IOError Pipe
+    }
+
+accessMode = UnconfirmedWrites
+
+mongoSave :: MongoBackend -> AuthUser -> IO AuthUser
+mongoSave mong usr = do
+  --oid <- M.genObjectId
+  let usrDoc = usrToMong usr
+  res <- dbQuery mong $ M.save (mongoCollection mong) usrDoc
+  case res of
+    Left (WriteFailure 11000 msg) -> throw $ DuplicateLogin
+    Left v -> throw $ BackendError $ show v
+    Right _ -> return usr
+
+mongoAct :: MongoBackend -> Action IO a -> (a ->IO b) -> IO b
+mongoAct mong act conv = do
+  res <- dbQuery mong act
+  case res of
+    Left e -> throw $ BackendError $ show e
+    Right r -> conv r
+
+mongoLookup :: MongoBackend -> M.Document -> IO (Maybe AuthUser)
+mongoLookup mong doc =
+  mongoAct mong act conv
+  where
+    act = M.findOne $ M.select doc (mongoCollection mong)
+    conv = maybe (return Nothing) parseUsr
+    parseUsr u = usrFromMongThrow u >>= return . Just
+
+mongoLookupByLogin :: MongoBackend -> Text -> IO (Maybe AuthUser)
+mongoLookupByLogin mong login = mongoLookup mong ["login" .= login]
+
+mongoLookupById :: MongoBackend -> UserId -> IO (Maybe AuthUser)
+mongoLookupById mong uid = mongoLookup mong ["_id" .= uid]
+
+mongoLookupByToken :: MongoBackend -> Text -> IO (Maybe AuthUser)
+mongoLookupByToken mong tok = mongoLookup mong ["rememberToken" .= tok]
+
+mongoDestroy :: MongoBackend -> AuthUser -> IO ()
+mongoDestroy mong usr = do
+  maybe (return ()) actonid $ userId usr
+  where
+    coll = mongoCollection mong
+    actonid uid = mongoAct mong (act uid) return
+    act uid =  M.deleteOne (M.select ["_id" .= uid] coll)
+
+instance IAuthBackend MongoBackend where
+  save = mongoSave
+  lookupByUserId = mongoLookupById
+  lookupByLogin = mongoLookupByLogin
+  lookupByRememberToken = mongoLookupByToken
+  destroy = mongoDestroy
+
+dbQuery :: (MonadIO m)
+           => MongoBackend
+           -> Action IO a
+           -> m (Either Failure a)
+dbQuery mong action = do
+  let
+    pool = mongoPool mong
+    database = mongoDatabase mong
+    mode = accessMode
+  ep <- liftIO $ runErrorT $ aResource pool
+  case ep of
+    Left  err -> return $ Left $ ConnectionFailure err
+    Right pip -> liftIO $ M.access pip mode database action
 
 
-    lookupByUserId MongoAuthManager{..} uid = do
+instance ToBSON Password where
+  toBSON (Encrypted p) = toBSON p
+  toBSON _ = error "Can't store unencrypted password"
 
-    lookupByLogin MongoAuthManager{..} login = do
+instance FromBSON Password where
+  fromBSON v = Encrypted <$> fromBSON v
 
-    lookupByRememberToken MongoAuthManager{..} token = do
+instance ToBSON Role where
+  toBSON (Role r) = toBSON $ T.decodeUtf8 r
 
-    destroy MongoAuthManager{..} AuthUser{..} = do
+instance FromBSON Role where
+  fromBSON v = Role . T.encodeUtf8 <$> fromBSON v
 
-userToDoc AuthUser{..} =
-    [ "_id"                  =: userId
-    , "login"                =: userLogin
-    , "password"             =: userPassword
-    , "activatedAt"          =: userActivatedAt
-    , "suspendedAt"          =: usersuspendedAt
-    , "rememberToken"        =: userRememberToken
-    , "loginCount"           =: userLoginCount
-    , "userFailedLoginCount" =: userFailedLoginCount
-    , "lockedOutUntil"       =: userLockedOutUntil
-    , "currentLoginAt"       =: userCurrentLoginAt
-    , "lastLoginAt"          =: userLastLoginAt
-    , "currentLoginIp"       =: userCurrentLoginIp
-    , "lastLoginIp"          =: userLastLoginIp
-    , "createdAt"            =: userCreatedAt
-    , "updatedAt"            =: userUpdatedAt
-    , "roles"                =: userRoles
-    ]
+-- | UserId is stored as UUID in mongoDB.
+--
+instance FromBSON UserId where
+  fromBSON (M.Uuid (M.UUID v)) = pure $ UserId $ T.decodeUtf8 v
 
-userFromDoc doc = AuthUser
-    <$> T.pack . cast =<< M.look "_id" doc
-    <*> cast =<< M.look "login" doc
-    <*> cast =<< M.look "password" doc
-    <*> cast =<< M.look "activatedAt" doc
-    <*> cast =<< M.look "suspendedAt" doc
-    <*> cast =<< M.look "rememberToken" doc
-    <*> cast =<< M.look "loginCount" doc
-    <*> cast =<< M.look "userFailedLoginCount" doc
-    <*> cast =<< M.look "lockedOutUntil" doc
-    <*> cast =<< M.look "currentLoginAt" doc
-    <*> cast =<< M.look "lastLoginAt" doc
-    <*> cast =<< M.look "currentLoginIp" doc
-    <*> cast =<< M.look "lastLoginIp" doc
-    <*> cast =<< M.look "createdAt" doc
-    <*> cast =<< M.look "updatedAt" doc
-    <*> cast =<< M.look "roles" doc
-    <*> retur HM.empty
+instance ToBSON UserId where
+  toBSON = M.Uuid . M.UUID . T.encodeUtf8 . unUid
+
+-- | Transform UserLogin name to UUID for unique id.
+--
+userLoginToUUID :: Text -> M.UUID
+userLoginToUUID  = M.UUID . T.encodeUtf8
+
+usrToMong :: AuthUser -> M.Document
+usrToMong usr = [ "_id" =: (userLoginToUUID $ userLogin usr) ] 
+                ++ 
+                [ "login" .= userLogin usr
+                , "password" .= userPassword usr
+                , "activatedAt" .= userActivatedAt usr
+                , "suspendedAt" .= userSuspendedAt usr
+                , "rememberToken" .= userRememberToken usr
+                , "loginCount" .= userLoginCount usr
+                , "userFailedLoginCount" .= userFailedLoginCount usr
+                , "lockedOutUntil" .= userLockedOutUntil usr
+                , "currentLoginAt" .= userCurrentLoginAt usr
+                , "lastLoginAt" .= userLastLoginAt usr
+                , "currentLoginIp" .= userCurrentLoginIp usr
+                , "lastLoginIp" .= userLastLoginIp usr
+                , "createdAt" .= userCreatedAt usr
+                , "updatedAt" .= userUpdatedAt usr
+                , "roles" .= userRoles usr
+                ]
+usrFromMong :: M.Document -> Parser AuthUser
+usrFromMong d = AuthUser
+                <$> d .: "_id"
+                <*> d .: "login"
+                <*> d .:? "password"
+                <*> d .: "activatedAt"
+                <*> d .: "suspendedAt"
+                <*> d .: "rememberToken"
+                <*> d .: "loginCount"
+                <*> d .: "userFailedLoginCount"
+                <*> d .: "lockedOutUntil"
+                <*> d .: "currentLoginAt"
+                <*> d .: "lastLoginAt"
+                <*> d .: "currentLoginIp"
+                <*> d .: "lastLoginIp"
+                <*> d .: "createdAt"
+                <*> d .: "updatedAt"
+                <*> d .: "roles" .!= []
+                <*> pure HM.empty
+
+usrFromMongThrow :: M.Document -> IO AuthUser
+usrFromMongThrow d =  case parseEither usrFromMong d of
+  Left e -> throw $ BackendError $ show e
+  Right r -> return r
