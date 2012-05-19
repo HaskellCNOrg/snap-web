@@ -11,6 +11,7 @@ module Controllers.Site
 
 ------------------------------------------------------------------------------
 import           Database.MongoDB (host)
+import           Control.Monad.Trans
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Auth.Backends.JsonFile
@@ -33,15 +34,15 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     i  <- nestSnaplet "i18n" i18n $ initI18NSnaplet (Just "zh_CN")
     s  <- nestSnaplet "session" appSession cookieSessionMgr'
     d  <- nestSnaplet "mongoDB" appMongoDB $ mongoDBInit 10 (host "127.0.0.1") "haskellcn-mongodb"    
-    --a  <- nestSnaplet "auth" appAuth $ initJsonFileAuthManager authSettings' appSession "log/auth.json"
-    a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d
+    a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d (Just "data/auth-sitekey.txt")
     addRoutes routes
-    addAuthSplices appAuth    
+    addAuthSplices appAuth
     return $ App h i s d a
   where
-    cookieSessionMgr' = initCookieSessionManager "log/cookies-sitekey.txt" "myapp-session" (Just 600)
-    authSettings'    = defAuthSettings { asSiteKey = "log/auth-sitekey.txt" }
+    cookieSessionMgr' = initCookieSessionManager "data/session-sitekey.txt" "myapp-session" (Just 600)
 
 
 ------------------------------------------------------------------------------
 
+--a  <- nestSnaplet "auth" appAuth $ initJsonFileAuthManager authSettings' appSession "data/auth.json"
+--     authSettings'    = defAuthSettings { asSiteKey = "data/auth-sitekey.txt" }

@@ -7,42 +7,35 @@ FROM: https://gist.github.com/2725402
 
 module Snap.Snaplet.Auth.Backends.MongoDB where
 
+
+import Control.Applicative
 import Control.Arrow
 import Control.Concurrent.STM
-import Control.Applicative
-import Control.Monad.Error
-
 import Control.Monad.CatchIO(throw)
-
-import qualified Data.Configurator as C
-
+import Control.Monad.Error
 import Data.Baeson.Types
-import Data.Maybe(fromMaybe)
+import Data.Lens.Lazy
 import Data.Map (Map)
-import qualified Data.Map as Map
-
-import qualified Data.Text.Encoding as T
+import Data.Maybe(fromMaybe)
 import Data.Text(Text)
-
+import qualified Data.Configurator as C
 import qualified Data.HashMap.Lazy as HM
-
+import qualified Data.Map as Map
+import qualified Data.Text.Encoding as T
+import qualified Database.MongoDB as M
+import qualified Snap.Snaplet.MongoDB as SM
 import Snap.Snaplet
 import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
 import Snap.Snaplet.Session.Common
-import qualified Snap.Snaplet.MongoDB as SM
+import System.IO.Pool (Pool, Factory (Factory), newPool, aResource)
+import Web.ClientSession
 
 import Database.MongoDB (Database, Host, Pipe, (=:),
                                    AccessMode (UnconfirmedWrites),
                                    close, isClosed, connect, Action,
                                    Failure(..), access)
-import qualified Database.MongoDB as M
-import System.IO.Pool (Pool, Factory (Factory), newPool, aResource)
 
-import Web.ClientSession
-import Data.Lens.Lazy
-
-import qualified Data.HashMap.Lazy as HM
 
 ------------------------------------------------------------------------------
 -- | Simple function to get auth settings from a config file. All options
@@ -59,10 +52,9 @@ settingsFromConfig = do
     lockout <- liftIO $ C.lookup config "lockout"
     let lo = maybe id (\x s -> s { asLockout = Just (second fromInteger x) })
                    lockout
-    siteKey <- liftIO $ C.lookup config "app.siteKey"
-    --liftIO $ print $ root config
-    liftIO $ print . HM.lookup "siteKey" =<< (liftIO $ C.getMap config)
-    liftIO $ print =<< (liftIO $ fmap HM.elems $ C.getMap config)    
+    siteKey <- liftIO (C.lookup config "siteKey")
+    -- ^ very wired that not able to lookup anything from config even exists.
+
     let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey
     return $ (pw . rc . rp . lo . sk) defAuthSettings
 
@@ -72,12 +64,13 @@ settingsFromConfig = do
 --
 initMongoAuth :: Lens b (Snaplet SessionManager)
                  -> Snaplet SM.MongoDB
+                 -> Maybe String    -- ^ Site Key path
                  -> SnapletInit b (AuthManager b)
-initMongoAuth sess db = makeSnaplet "mongodb-auth" desc Nothing $ do
+initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
     config <- getSnapletUserConfig
     authTable <- liftIO $ C.lookupDefault "auth_user" config "authCollection"
     authSettings <- settingsFromConfig
-    key <- liftIO $ getKey (asSiteKey authSettings)
+    key <- liftIO $ getKey (fromMaybe (asSiteKey authSettings) sk)
     let
       lens = getL snapletValue db
       manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens)

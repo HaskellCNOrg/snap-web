@@ -3,3 +3,5 @@ log/*.log
 tmp*
 _*
 log
+data/*.txt
+data/auth.json
