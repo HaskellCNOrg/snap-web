@@ -31,10 +31,6 @@ import           Views.UserForm
 import qualified Models.User as MD
 
 
--- TODO
--- 2. why browser ask for remember password when signup but not signin.
--- 3. auto login after signup successfully.
-
 ------------------------------------------------------------------------------
     
 -- | sign up user and redirect to home page.
@@ -50,10 +46,9 @@ signup = do
                         result <- try (with appAuth (MD.createNewUser u))
                         either (toPage . updateViewErrors view . showE) toHome result
               Nothing -> toPage view
-          where toHome x  = redirectToHome
+          where toHome x = redirectToHome
                 toPage = renderDfPage "signup" 
-                showE :: BackendError -> String
-                showE = show 
+                
 
 
 ------------------------------------------------------------------------------
@@ -74,8 +69,8 @@ signin = do
     (view, result) <- runForm "form" $ signinForm errorMsg
     case result of
         Just usr -> do
-                  authResult <- with appAuth $ MD.loginUser usr
-                  either (toPage . updateViewErrors view . show) toHome authResult
+                  authResult <- try (with appAuth $ MD.loginUser usr)
+                  either (toPage . updateViewErrors view . showE) toHome authResult
         Nothing -> toPage view
     where toPage = renderDfPage "signin"
           toHome x = redirectToHome
@@ -86,7 +81,7 @@ signin = do
 -- | log out
 -- 
 signoutG :: AppHandler ()
-signoutG = with appAuth logout >> redirect "/"
+signoutG = with appAuth logout >> redirectToHome
 
 
 ------------------------------------------------------------------------------

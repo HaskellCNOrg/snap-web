@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+-- {-# LANGUAGE RecordWildCards   #-}
 
 {-
 FROM: https://gist.github.com/2725402
@@ -10,13 +10,12 @@ module Snap.Snaplet.Auth.Backends.MongoDB where
 
 import Control.Applicative
 import Control.Arrow
---import Control.Concurrent.STM
+import Control.Monad
 import Control.Monad.CatchIO(throw)
 import Control.Monad.Error
 import Data.Baeson.Types
 import Data.Lens.Lazy
---import Data.Map (Map)
-import Data.Maybe(fromMaybe)
+import Data.Maybe
 import Data.Text(Text)
 import qualified Data.Configurator as C
 import qualified Data.HashMap.Lazy as HM
@@ -76,7 +75,7 @@ initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
       manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens')
                 (SM.mongoPool lens')
     rng <- liftIO mkRNG
-    return $ AuthManager
+    return AuthManager
       { backend = manager
       , session = sess
       , activeUser = Nothing
@@ -100,15 +99,18 @@ data MongoBackend = MongoBackend
 
 accessMode = UnconfirmedWrites
 
+-- | default UserId is Nothing thus set to same as UserLogin
+-- 
 mongoSave :: MongoBackend -> AuthUser -> IO AuthUser
 mongoSave mong usr = do
-  --oid <- M.genObjectId
-  let usrDoc = usrToMong usr
-  res <- dbQuery mong $ M.save (mongoCollection mong) usrDoc
+  let usr' = case userId usr of
+               Nothing -> usr {userId = Just . UserId $ userLogin usr}
+               _       -> usr
+  res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong usr'
   case res of
-    Left (WriteFailure 11000 msg) -> throw $ DuplicateLogin
+    Left (WriteFailure 11000 msg) -> throw DuplicateLogin
     Left v -> throw $ BackendError $ show v
-    Right _ -> return usr
+    Right _ -> return usr'
 
 mongoAct :: MongoBackend -> Action IO a -> (a ->IO b) -> IO b
 mongoAct mong act conv = do
@@ -123,7 +125,7 @@ mongoLookup mong doc =
   where
     act = M.findOne $ M.select doc (mongoCollection mong)
     conv = maybe (return Nothing) parseUsr
-    parseUsr u = usrFromMongThrow u >>= return . Just
+    parseUsr = liftM Just . usrFromMongThrow
 
 mongoLookupByLogin :: MongoBackend -> Text -> IO (Maybe AuthUser)
 mongoLookupByLogin mong login = mongoLookup mong ["login" .= login]
@@ -191,9 +193,8 @@ userLoginToUUID :: Text -> M.UUID
 userLoginToUUID  = M.UUID . T.encodeUtf8
 
 usrToMong :: AuthUser -> M.Document
-usrToMong usr = [ "_id" =: (userLoginToUUID $ userLogin usr) ] 
-                ++ 
-                [ "login" .= userLogin usr
+usrToMong usr = [ "_id" .= userId usr
+                , "login" .= userLogin usr
                 , "password" .= userPassword usr
                 , "activatedAt" .= userActivatedAt usr
                 , "suspendedAt" .= userSuspendedAt usr

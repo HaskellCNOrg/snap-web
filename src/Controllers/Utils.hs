@@ -1,5 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+{-
+
+ALL utils just sit here. Maybe separation.
+
+-}
+
 module Controllers.Utils where
 
 ----------------------------------------------------------------
@@ -8,6 +14,7 @@ import           Control.Monad.Trans
 import           Control.Applicative
 import           Data.Maybe (fromMaybe)
 import           Snap.Core
+import           Snap.Snaplet.Auth
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text.Encoding as T
@@ -20,7 +27,10 @@ import           Text.Digestive.Heist
 import           Snap.Snaplet.Heist
 import Application
 
+----------------------------------------------------------------
 
+showE :: BackendError -> String
+showE = show 
 
 ----------------------------------------------------------------
 -- Utils for Digestive Functor form

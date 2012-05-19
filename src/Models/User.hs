@@ -26,21 +26,26 @@ data LoginUser = LoginUser
 
 ------------------------------------------------------------------------------
 
-createNewUser :: LoginUser -> Handler b (AuthManager b) ()
+-- | Create user without activation appoach thus login automatically.
+--   Maybe use userLockedOutUntil when like to use mail activation.
+--
+createNewUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 createNewUser usr = do
     mp <- gets minPasswdLen
-    -- when (passLength usr < mp) (throw $ BackendError $ "password length must longer than " ++ show mp)
+    when (passLength usr < mp) (throw $ BackendError $ "password length must longer than " ++ show mp)
     -- ^ Password min length validation
     exists <- usernameExists (loginName usr)
     when exists (throw $ BackendError "User Already Exists.")
-    createUser (loginName usr) (password' usr)
-    return ()
+    authUsr <- createUser (loginName usr) (password' usr)
+    forceLogin authUsr >>= either throw return
   where passLength    = T.length . password
         password'     = textToBs . password
 
 ------------------------------------------------------------------------------
 
-loginUser :: LoginUser -> Handler b (AuthManager b) (Either AuthFailure AuthUser)
-loginUser u = loginByUsername (username' u) (password' u) True
+loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
+loginUser u = do
+              res <- loginByUsername (username' u) (password' u) True 
+              either throw return res
               where username' = textToBs . loginName
                     password' = ClearText . textToBs . password
