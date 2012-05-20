@@ -1,4 +1,4 @@
-This will be for a.haskellcn.org
+[![Build Status](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
 
 ## couple of notes
   - rm personal section from sidebar to settings.
