@@ -14,9 +14,7 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet
 import           Snap.Snaplet.I18N
 import           Text.Digestive.Snap
-import           Control.Monad.Trans
 import           Control.Monad.CatchIO (try)
-import qualified Data.Text.Encoding as T
 import qualified Data.ByteString as BS
 
 import           Application
@@ -56,7 +54,7 @@ signup = do
                         result' <- try (with appAuth (MD.createNewUser u))
                         either (toPage . updateViewErrors view . showUE) toHome result'
               Nothing -> toPage view
-          where toHome x = redirectToHome
+          where toHome = const redirectToHome
                 toPage = renderDfPage "signup" 
                 
 
@@ -83,7 +81,7 @@ signin = do
                   either (toPage . updateViewErrors view . showUE) toHome result'
         Nothing -> toPage view
     where toPage = renderDfPage "signin"
-          toHome x = redirectToHome
+          toHome = const redirectToHome
 
           
 ------------------------------------------------------------------------------

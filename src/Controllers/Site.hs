@@ -4,14 +4,14 @@
 -- | This module is where all the routes and handlers are defined for your
 --   site. The 'app' function is the initializer that combines everything
 --   together and is exported by this module.
---
+-- 
 module Controllers.Site
   ( app
   ) where
 
 ------------------------------------------------------------------------------
+
 import           Database.MongoDB (host)
-import           Control.Monad.Trans
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Auth.Backends.MongoDB
@@ -19,6 +19,7 @@ import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Snap.Snaplet.MongoDB
 import           Snap.Snaplet.Session.Backends.CookieSession
+
 ------------------------------------------------------------------------------
 
 import           Application

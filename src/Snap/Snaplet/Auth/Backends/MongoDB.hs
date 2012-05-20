@@ -19,7 +19,6 @@ import Data.Maybe
 import Data.Text(Text)
 import qualified Data.Configurator as C
 import qualified Data.HashMap.Lazy as HM
---import qualified Data.Map as Map
 import qualified Data.Text.Encoding as T
 import qualified Database.MongoDB as M
 import qualified Snap.Snaplet.MongoDB as SM
@@ -27,13 +26,12 @@ import Snap.Snaplet
 import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
 import Snap.Snaplet.Session.Common
-import System.IO.Pool (Pool, Factory (Factory), newPool, aResource)
+import System.IO.Pool (Pool, aResource)
 import Web.ClientSession
 
-import Database.MongoDB (Database, Host, Pipe, (=:),
-                                   AccessMode (UnconfirmedWrites),
-                                   close, isClosed, connect, Action,
-                                   Failure(..), access)
+import Database.MongoDB ( Database, Pipe
+                        , AccessMode (UnconfirmedWrites)
+                        , Action, Failure(..))
 
 
 ------------------------------------------------------------------------------
@@ -42,19 +40,19 @@ import Database.MongoDB (Database, Host, Pipe, (=:),
 settingsFromConfig :: Initializer b (AuthManager b) AuthSettings
 settingsFromConfig = do
     config <- getSnapletUserConfig
-    minPasswordLen <- liftIO $ C.lookup config "minPasswordLen"
-    let pw = maybe id (\x s -> s { asMinPasswdLen = x }) minPasswordLen
-    rememberCookie <- liftIO $ C.lookup config "rememberCookie"
-    let rc = maybe id (\x s -> s { asRememberCookieName = x }) rememberCookie
-    rememberPeriod <- liftIO $ C.lookup config "rememberPeriod"
-    let rp = maybe id (\x s -> s { asRememberPeriod = Just x }) rememberPeriod
-    lockout <- liftIO $ C.lookup config "lockout"
+    minPasswordLen' <- liftIO $ C.lookup config "minPasswordLen"
+    let pw = maybe id (\x s -> s { asMinPasswdLen = x }) minPasswordLen'
+    rememberCookie' <- liftIO $ C.lookup config "rememberCookie"
+    let rc = maybe id (\x s -> s { asRememberCookieName = x }) rememberCookie'
+    rememberPeriod' <- liftIO $ C.lookup config "rememberPeriod"
+    let rp = maybe id (\x s -> s { asRememberPeriod = Just x }) rememberPeriod'
+    lockout' <- liftIO $ C.lookup config "lockout"
     let lo = maybe id (\x s -> s { asLockout = Just (second fromInteger x) })
-                   lockout
-    siteKey <- liftIO (C.lookup config "siteKey")
+                   lockout'
+    siteKey' <- liftIO (C.lookup config "siteKey")
     -- ^ very wired that not able to lookup anything from config even exists.
 
-    let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey
+    let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey'
     return $ (pw . rc . rp . lo . sk) defAuthSettings
 
 
@@ -88,7 +86,7 @@ initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
       }
   where
     desc = "A MongoDB backend for user authentication"
-    datadir = "/resources/auth" :: String
+    --datadir = "/resources/auth" :: String
 
 
 data MongoBackend = MongoBackend
@@ -97,6 +95,7 @@ data MongoBackend = MongoBackend
     , mongoPool :: Pool IOError Pipe
     }
 
+accessMode :: AccessMode
 accessMode = UnconfirmedWrites
 
 -- | default UserId is Nothing thus set to same as UserLogin
@@ -108,7 +107,7 @@ mongoSave mong usr = do
                _       -> usr
   res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong usr'
   case res of
-    Left (WriteFailure 11000 msg) -> throw DuplicateLogin
+    Left (WriteFailure 11000 _) -> throw DuplicateLogin
     Left v -> throw $ BackendError $ show v
     Right _ -> return usr'
 

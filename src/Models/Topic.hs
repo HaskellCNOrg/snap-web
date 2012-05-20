@@ -3,19 +3,21 @@
 module Models.Topic where
 
 import           Control.Applicative ((<$>), (<*>))
+import           Control.Monad.CatchIO (throw)
 import           Control.Monad.State
+import           Data.Baeson.Types
+import           Data.Bson
+import           Database.MongoDB
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
---import           Control.Monad.Trans
-import           Control.Monad.CatchIO (throw)
 import qualified Data.Text as T
-import           Data.Bson
-import           Data.Baeson.Types
-import Database.MongoDB
 
 import           Application
 import           Models.Exception
-import Models.Types
+import           Models.Types
+
+--import           Data.Time
+--import           Control.Monad.Trans
 
 -- | 
 -- 
@@ -26,6 +28,13 @@ data Topic = Topic
     , _author  :: T.Text
     } deriving (Show)
 
+{-
+	create_at: { type: Date, default: Date.now },
+	update_at: { type: Date, default: Date.now },
+	last_reply: { type: ObjectId },
+	last_reply_at: { type: Date, default: Date.now },
+-}
+
 topicCollection :: Collection
 topicCollection = u "topics"
 
@@ -35,53 +44,54 @@ topicCollection = u "topics"
 --  
 createNewTopic ::  Topic -> AppHandler Topic
 createNewTopic topic = do
-    res <- eitherWithDB $ insert topicCollection $ makeTopicDocument topic
-    either throwUE (\e->return topic) res 
+    res <- eitherWithDB $ insert topicCollection $ topicToDocument topic
+    either failureToUE (const $ return topic) res 
 
 
 ------------------------------------------------------------------------------
 
 -- | Find One Topic
 -- 
-findOneTopic :: ObjectId -> AppHandler (Maybe Topic)
+findOneTopic :: ObjectId -> AppHandler Topic
 findOneTopic oid = do
-    res <- eitherWithDB $ findOne (select [ "_id" =: oid ] topicCollection)
---    either throwUE (\e->return topic) res 
-    case res of
-      Left x -> return Nothing
-      Right Nothing -> return Nothing
-      Right (Just y) -> liftIO $ fmap Just $ usrFromMongThrow y
+    res <- eitherWithDB $ fetch (select [ "_id" =: oid ] topicCollection)
+    either failureToUE (liftIO . topicFromDocumentOrThrow) res 
 
-usrFromMongThrow :: Document -> IO Topic
-usrFromMongThrow d =  case parseEither documentToTopic d of
-  Left e -> throw $ BackendError $ show e
-  Right r -> return r
-  
 ------------------------------------------------------------------------------
 
--- | Find All Topic
+-- | Find All Topic.
+--   FIXME: pagination.  
 -- 
 findAllTopic :: AppHandler [Topic]
 findAllTopic  = do
     xs <- eitherWithDB $ rest =<< find (select [] topicCollection)
-    liftIO $ (mapM usrFromMongThrow) $ either (const []) id xs  
+    liftIO $ (mapM topicFromDocumentOrThrow) $ either (const []) id xs  
 
   
 ------------------------------------------------------------------------------
 
-makeTopicDocument :: Topic -> Document
-makeTopicDocument topic = [ "_id" =: _topicId topic ]
-                          ++ 
-                          [ "title"   .= _title topic
-                          , "content" .= _content topic
-                          , "author"  .= _author topic
-                          ]
-
+-- | Transform @Topic@ to mongoDB document.
+-- 
+topicToDocument :: Topic -> Document
+topicToDocument topic = [ "_id"     .= _topicId topic 
+                        , "title"   .= _title topic
+                        , "content" .= _content topic
+                        , "author"  .= _author topic
+                        ]
+                        
+-- | Transform mongo Document to be a Topic parser.
+-- 
 documentToTopic :: Document -> Parser Topic
 documentToTopic d = Topic
-                <$> d .: "_id"
-                <*> d .: "title"
-                <*> d .: "content"
-                <*> d .: "author"
+                    <$> d .: "_id"
+                    <*> d .: "title"
+                    <*> d .: "content"
+                    <*> d .: "author"
+
+topicFromDocumentOrThrow :: Document -> IO Topic
+topicFromDocumentOrThrow d = case parseEither documentToTopic d of
+    Left e  -> throw $ BackendError $ show e
+    Right r -> return r
+  
 
 ------------------------------------------------------------------------------

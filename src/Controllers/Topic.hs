@@ -11,16 +11,18 @@ import           Snap.Snaplet.Auth
 import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import           Control.Monad.Trans
+import           Control.Monad
 import           Text.Digestive
 import           Text.Digestive.Snap
 import qualified Data.Text as T
-import           Data.Maybe (fromJust)
-import           Control.Monad.CatchIO (try, Exception(..))
+import           Data.Maybe (fromJust, isNothing)
+import           Control.Monad.CatchIO (try)
 
 import           Application
 
 import           Controllers.User hiding (routes)
 import           Views.TopicForm
+import           Views.TopicSplices
 import           Controllers.Utils
 import           Models.Utils
 import  Models.Topic 
@@ -52,8 +54,9 @@ createTopic' tv = do
                   loginName <- fmap (userLogin . fromJust) $ with appAuth currentUser
                   topic     <- try $ MT.createNewTopic (topicVoToTopic tv objid loginName)
                   case topic of 
-                    Left e  -> liftIO $ print $ showUE e -- return to detail edit page with errors.
-                    Right t -> redirect $ "/topic/" `BS.append` (pack' $ show objid)
+                    Left e  -> liftIO $ print $ showUE e 
+                               -- ^ FIXME:  return to detail edit page with errors.
+                    Right _ -> redirect $ "/topic/" `BS.append` (pack' $ show objid)
 
 
 -- | must be used after user login. 
@@ -61,9 +64,9 @@ createTopic' tv = do
 topicVoToTopic :: TopicVo -> ObjectId -> T.Text -> MT.Topic
 topicVoToTopic tv objid author = Topic 
                                  { _topicId = objid
-                                 , _title = title tv
+                                 , _title   = title tv
                                  , _content = content tv
-                                 , _author = author
+                                 , _author  = author
                                  }
                     
 toTopicFormPage :: View T.Text -> AppHandler ()
@@ -71,17 +74,17 @@ toTopicFormPage = renderDfPage "topic-form"
             
 ------------------------------------------------------------------------------
                     
--- | what should do when 
---   1. no tid found, `when (isNothing tid) ...`
---   2. no result found
+-- | topic detail viewer.
 -- 
 viewTopic :: AppHandler ()
 viewTopic = do
-  (Just tid) <- decodedParam' "topicid"
-  t <- findOneTopic (read $ unpack' tid)
-  case t of
-    Nothing -> render "topic-detail"
-    Just x  -> heistLocal (bindString "topicTitle" (_title x)) $ render "topic-detail"
-                     
+    tid <- decodedParamMaybe "topicid"
+    when (isNothing tid) (toTopicDetailPage (Left $ UserException "tid not specifed"))
+    toTopicDetailPage =<< try (findOneTopic (read $ unpack' $ fromJust tid))
+
+
+toTopicDetailPage :: Either UserException Topic -> AppHandler ()    
+toTopicDetailPage result = heistLocal (bindSplices (topicDetailSplices result)) $ render "topic-detail"
+
 
 ------------------------------------------------------------------------------

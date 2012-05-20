@@ -2,13 +2,12 @@
 
 module Views.TopicForm where
 
-import Control.Applicative ((<$>), (<*>), pure)
+import Control.Applicative ((<$>), (<*>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Text.Digestive
 
 import Views.Validators
-import Models.Utils
 
 -- | VO is created because it is not quite easy to use single
 --   model @Models.Topic.Topic@.

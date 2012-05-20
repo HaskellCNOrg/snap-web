@@ -6,7 +6,8 @@ import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
-import           Control.Monad.Trans
+
+--import           Control.Monad.Trans
 --import           Snap.Snaplet.Auth
 --import           Snap.Snaplet.MongoDB
 --import           Snap.Snaplet.Auth
