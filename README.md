@@ -8,15 +8,18 @@
 1. [X] dig details of snaplet-auth, valitation checking.
     - directly display error msg from snaplet-auth
 2. [X] use mongoDB auth backend rather than JSON
-2.1 [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
 
-3. [ ] Be able to do post
-4. [ ] list posts in home page
-5. [ ] Be able to view Post detail page.
-6. [ ] Be able to edit post.
+    2.1 [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
+
+3. [X] Be able to do post
+4. [X] list posts in home page
+5. [X] Be able to view Post detail page.
+6. [X] Integrate with Markdown
+7. [ ] Be able to edit post.
 
 7. [ ] Extra user fileds, e.g. email, homeUrl...
 
+- [ ] Styles
 - [ ] Be able to comment
 - [ ] be able to comment to comment
 - [ ] Allow tag post
