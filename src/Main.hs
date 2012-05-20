@@ -63,7 +63,7 @@ main = do
                                           'getActions
                                           ["snaplets/heist/templates"])
 
-    _ <- try $ httpServe conf $ site :: IO (Either SomeException ())
+    _ <- try $ httpServe conf site :: IO (Either SomeException ())
     cleanup
 
 

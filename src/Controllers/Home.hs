@@ -21,8 +21,7 @@ import Views.TopicSplices
 -- | Renders the front page of the sample site.
 -- 
 index :: Handler App App ()
-index = ifTop $ do
-        heistLocal (bindSplices topicSplices) $ render "index"
+index = ifTop $ heistLocal (bindSplices topicSplices) $ render "index"
 
 redirectToHome :: Handler App App ()
 redirectToHome = redirect "/"

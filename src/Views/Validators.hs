@@ -21,5 +21,5 @@ checkForRequired msg = check msg requiredValidator
 -- | Check for min length reqirued.
 -- 
 checkForMinLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
-checkForMinLength l = check ("Content is simple. min length " `T.append` stringToText l ) minLength
+checkForMinLength l = check ("Content is simple. min length " `T.append` sToText l ) minLength
                       where minLength = (>= l) . T.length  

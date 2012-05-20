@@ -28,23 +28,23 @@ forceNonEmpty x = x
 
 ----------------------------------------------------------------
 
-stringToText :: Show s => s -> T.Text
-stringToText = T.pack . show 
+sToText :: Show s => s -> T.Text
+sToText = T.pack . show 
 
-toStrickBS' :: LBS.ByteString -> BS.ByteString
-toStrickBS' = BS.concat . LBS.toChunks
+lbsToStrickBS :: LBS.ByteString -> BS.ByteString
+lbsToStrickBS = BS.concat . LBS.toChunks
 
-pack' :: String -> BS.ByteString
-pack' = T.encodeUtf8 . T.pack
+sToBS :: String -> BS.ByteString
+sToBS = T.encodeUtf8 . T.pack
 
-unpack' ::  BS.ByteString -> String
-unpack' = T.unpack . T.decodeUtf8
+bsToS ::  BS.ByteString -> String
+bsToS = T.unpack . T.decodeUtf8
 
 lbsToText :: LBS.ByteString -> T.Text
-lbsToText = T.decodeUtf8 . toStrickBS'
+lbsToText = T.decodeUtf8 . lbsToStrickBS
 
-textToBs :: T.Text -> BS.ByteString
-textToBs = T.encodeUtf8
+textToBS :: T.Text -> BS.ByteString
+textToBS = T.encodeUtf8
 
 loggerDebug :: (Show a, MonadIO m) => a -> m ()
 loggerDebug = liftIO . print 

@@ -1,9 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
--- {-# LANGUAGE RecordWildCards   #-}
 
-{-
-FROM: https://gist.github.com/2725402
--}
+-- | The work is mainly steal from https://gist.github.com/2725402
+-- 
+-- 
 
 module Snap.Snaplet.Auth.Backends.MongoDB where
 
@@ -50,7 +49,7 @@ settingsFromConfig = do
     let lo = maybe id (\x s -> s { asLockout = Just (second fromInteger x) })
                    lockout'
     siteKey' <- liftIO (C.lookup config "siteKey")
-    -- ^ very wired that not able to lookup anything from config even exists.
+    -- very wired that not able to lookup anything from config even exists.
 
     let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey'
     return $ (pw . rc . rp . lo . sk) defAuthSettings
@@ -136,7 +135,7 @@ mongoLookupByToken :: MongoBackend -> Text -> IO (Maybe AuthUser)
 mongoLookupByToken mong tok = mongoLookup mong ["rememberToken" .= tok]
 
 mongoDestroy :: MongoBackend -> AuthUser -> IO ()
-mongoDestroy mong usr = do
+mongoDestroy mong usr =
   maybe (return ()) actonid $ userId usr
   where
     coll = mongoCollection mong

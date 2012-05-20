@@ -11,12 +11,12 @@ import           Database.MongoDB
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
+import           Data.Time (UTCTime)
 
 import           Application
 import           Models.Exception
 import           Models.Types
 
---import           Data.Time
 --import           Control.Monad.Trans
 
 -- | 
@@ -26,11 +26,11 @@ data Topic = Topic
     , _title   :: T.Text
     , _content :: T.Text
     , _author  :: T.Text
+    , _createAt :: UTCTime
+    , _updateAt :: UTCTime
     } deriving (Show)
 
 {-
-	create_at: { type: Date, default: Date.now },
-	update_at: { type: Date, default: Date.now },
 	last_reply: { type: ObjectId },
 	last_reply_at: { type: Date, default: Date.now },
 -}
@@ -65,7 +65,7 @@ findOneTopic oid = do
 findAllTopic :: AppHandler [Topic]
 findAllTopic  = do
     xs <- eitherWithDB $ rest =<< find (select [] topicCollection)
-    liftIO $ (mapM topicFromDocumentOrThrow) $ either (const []) id xs  
+    liftIO $ mapM topicFromDocumentOrThrow $ either (const []) id xs  
 
   
 ------------------------------------------------------------------------------
@@ -77,8 +77,10 @@ topicToDocument topic = [ "_id"     .= _topicId topic
                         , "title"   .= _title topic
                         , "content" .= _content topic
                         , "author"  .= _author topic
+                        , "createAt" .= _createAt topic
+                        , "updateAt" .= _updateAt topic
                         ]
-                        
+
 -- | Transform mongo Document to be a Topic parser.
 -- 
 documentToTopic :: Document -> Parser Topic
@@ -87,6 +89,8 @@ documentToTopic d = Topic
                     <*> d .: "title"
                     <*> d .: "content"
                     <*> d .: "author"
+                    <*> d .: "createAt" 
+                    <*> d .: "updateAt"
 
 topicFromDocumentOrThrow :: Document -> IO Topic
 topicFromDocumentOrThrow d = case parseEither documentToTopic d of

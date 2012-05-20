@@ -14,5 +14,4 @@ import           Models.Exception
 
 renderUE:: Maybe UserException -> Splice AppHandler
 renderUE Nothing  = return []
-renderUE (Just e) = runChildrenWithText $ 
-                    [ ("exceptionValue", showUE e) ]
+renderUE (Just e) = runChildrenWithText [ ("exceptionValue", showUE e) ]

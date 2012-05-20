@@ -31,7 +31,7 @@ createNewUser usr = do
     authUsr <- createUser (loginName usr) (password' usr)
     forceLogin authUsr >>= either throwUE return
   where passLength    = T.length . password
-        password'     = textToBs . password
+        password'     = textToBS . password
 
 ------------------------------------------------------------------------------
 
@@ -39,8 +39,8 @@ loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 loginUser u = do
               res <- loginByUsername (username' u) (password' u) True
               either throwUE return res
-              where username' = textToBs . loginName
-                    password' = ClearText . textToBs . password
+              where username' = textToBS . loginName
+                    password' = ClearText . textToBS . password
 
 
 ------------------------------------------------------------------------------
