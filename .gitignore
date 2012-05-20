@@ -5,3 +5,4 @@ _*
 log
 data/*.txt
 data/auth.json
+report.html

@@ -11,7 +11,7 @@
       <p>
        <allTopics>
          <ul>
-           <li><a href="/topic/${oid}"><topicTitle/></a></li>
+           <li><a href="/topic/${oid}"><topicTitle/></a>, <topicAuthor/></li>
          </ul>
        </allTopics>
       </p>

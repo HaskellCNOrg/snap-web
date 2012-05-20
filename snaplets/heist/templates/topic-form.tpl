@@ -19,9 +19,14 @@
     </div>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="content"><i18n name="topic-content"/></dfLabel>
+      <dfLabel class="control-label" ref="content" for="wmd-input"><i18n name="topic-content"/></dfLabel>
+
       <div class="controls">
-        <dfInputTextArea class="input-large" ref="content" />
+        <div class="wmd-panel">
+          <div id="wmd-button-bar"></div>
+          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" />
+        </div>
+        <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
       </div>
     </div>
 
@@ -33,5 +38,18 @@
 
 </dfForm>
 </div>
+
+<bind tag="bottom-scripts">
+  <script type="text/javascript" src="/js/Markdown.Converter.js"></script>
+  <script type="text/javascript" src="/js/Markdown.Sanitizer.js"></script>
+  <script type="text/javascript" src="/js/Markdown.Editor.js"></script>
+  <script>
+    (function () {
+      var converter1 = Markdown.getSanitizingConverter();
+      var editor1 = new Markdown.Editor(converter1);
+      editor1.run();
+    })();
+  </script>
+  </bind>
 
 </apply>

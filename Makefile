@@ -7,6 +7,9 @@ default: build-dev
 clean:
 	rm -rf $(DIST)
 
+hlint:
+	hlint src/ --report
+
 ###########################
 ## Enable Development mode
 ## 
@@ -16,6 +19,7 @@ conf-dev:
 
 build-dev: conf-dev
 	cabal build
+	$(hlint)
 
 bp: build-dev preview
 rp: clean build-dev preview
@@ -31,12 +35,17 @@ rp: clean build-dev preview
 build:
 	cabal configure
 	cabal build
+	$(hlint)
 
 rebuild: clean build
 
-## preview
+####################### preview
 preview:
 	$(PROG_PREV) -p 9900
 
 p: preview
 
+####################### Doc
+
+doc:
+	cabal haddock --executable
