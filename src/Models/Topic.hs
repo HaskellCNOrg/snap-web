@@ -8,6 +8,7 @@ import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
 import           Database.MongoDB
+import qualified Database.MongoDB as DB
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
@@ -47,6 +48,13 @@ createNewTopic topic = do
     res <- eitherWithDB $ insert topicCollection $ topicToDocument topic
     either failureToUE (const $ return topic) res 
 
+-- | save a new topic. 
+--   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
+--  
+saveTopic ::  Topic -> AppHandler Topic
+saveTopic topic = do
+    res <- eitherWithDB $ DB.save topicCollection $ topicToDocument topic
+    either failureToUE (const $ return topic) res 
 
 ------------------------------------------------------------------------------
 

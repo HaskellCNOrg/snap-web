@@ -16,9 +16,13 @@
 5. [X] Be able to view Post detail page.
 6. [X] Integrate with Markdown
 7. [ ] Be able to edit post.
+    - 7.1 unfiy those 3 utils 
+    - 7.2 display time per client. check example?
 
 7. [ ] Extra user fileds, e.g. email, homeUrl...
 
+- [ ] authorization.
+- [ ] sub folders for tpl?
 - [ ] Styles
 - [ ] Be able to comment
 - [ ] be able to comment to comment

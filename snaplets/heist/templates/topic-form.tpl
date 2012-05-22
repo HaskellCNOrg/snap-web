@@ -30,6 +30,8 @@
       </div>
     </div>
 
+    <dfInputHidden ref="tid" />
+
     <div class="form-actions">
         <i18n name="topic-submit">
           <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>

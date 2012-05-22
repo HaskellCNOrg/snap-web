@@ -2,9 +2,7 @@
 
     <div id="content">
 
-      <h2>
-        <a href="/topic">New Topic</a>
-      </h2>
+      <a class="btn btn-primary" href="/topic">New Topic</a>
 
       <h2>Topics List</h2>
       <!-- if count of topics > 0 -->

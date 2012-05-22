@@ -28,6 +28,9 @@ forceNonEmpty x = x
 
 ----------------------------------------------------------------
 
+textToS :: T.Text -> String
+textToS = T.unpack
+
 sToText :: Show s => s -> T.Text
 sToText = T.pack . show 
 
