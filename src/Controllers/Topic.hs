@@ -62,7 +62,7 @@ doCreateTopic' tv = do
                   case topic of 
                     Left e  -> writeText $ showUE e 
                                -- FIXME:  return to detail edit page with errors.
-                    Right t -> redirectTopicDetailPage (show $ _topicId t)
+                    Right t -> redirectTopicDetailPage (topicIdToString t)
 
 
 
@@ -106,7 +106,7 @@ editTopicH = withAuthUser $ do
     toEditTopicPageOr' =<< try (findOneTopic (read $ bsToS $ fromJust tid))
 
 toEditTopicPageOr' :: Either UserException Topic -> AppHandler ()    
-toEditTopicPageOr' result = either (toTopicDetailPage . Left) toEditingPage result
+toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
     where toEditingPage t = runForm "edit-topic-form" (topicEditForm t) >>= (toTopicFormPage . fst)
 
 
@@ -131,7 +131,7 @@ doUpdateTopic' tv = do
                                    case result of 
                                          Left e  -> writeText $ showUE e 
                                                      -- FIXME:  return to detail edit page with errors.
-                                         Right t -> redirectTopicDetailPage (show $ _topicId t)
+                                         Right t -> redirectTopicDetailPage (topicIdToString t)
 
 ------------------------------------------------------------------------------
 
@@ -139,10 +139,9 @@ doUpdateTopic' tv = do
 -- 
 topicVoToNewTopic :: TopicVo -> T.Text -> IO MT.Topic
 topicVoToNewTopic tv author = do
-    objid <- genObjectId
     now <- getCurrentTime
     return  Topic 
-             { _topicId = objid
+             { _topicId = Nothing
              , _title   = title tv
              , _content = content tv
              , _author  = author

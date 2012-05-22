@@ -4,18 +4,16 @@ module Views.TopicSplices
        ( topicSplices 
        , topicDetailSplices ) where
 
-import           Control.Applicative ((<|>))
-import           Control.Monad
 import           Text.Templating.Heist
 import           Control.Monad.Trans
 import qualified Data.Text as T
-import           Data.Time
-import             Control.Arrow (second)
+--import           Data.Time
+import           Data.Maybe (isJust)
+import           Control.Arrow (second)
 
 import           Application
 import Models.Exception
 import Models.Topic
-import Models.Utils
 import Views.ExceptionSplices
 import Views.MarkdownSplices
 import Views.Utils
@@ -33,7 +31,7 @@ topicSplices = [("allTopics", allTopicsSplice)]
 allTopicsSplice :: Splice AppHandler
 allTopicsSplice = do
     t <- lift findAllTopic  
-    mapSplices renderTopicSimple t
+    mapSplices renderTopicSimple $ filter (isJust . _topicId) t
 
 ------------------------------------------------------------------------------
 
@@ -57,7 +55,7 @@ renderTopicSimple :: Topic -> Splice AppHandler
 renderTopicSimple tag = runChildrenWithText 
       [ ("topicTitle", _title tag)
       , ("topicAuthor", _author tag)
-      , ("oid", T.pack $ show (_topicId tag)) ]
+      , ("oid", topicIdToText tag) ]
 
 renderTopic :: Maybe Topic -> Splice AppHandler
 renderTopic Nothing = return []
@@ -66,6 +64,6 @@ renderTopic (Just tag) = runChildrenWith $
                               , ("topicAuthor", _author tag)
                               , ("topicCreateAt", formatUTCTime $ _createAt tag)
                               , ("topicUpdateAt", formatUTCTime $ _updateAt tag)
-                              , ("oid", sToText (_topicId tag)) ]
+                              , ("oid", topicIdToText tag) ]
       ++ [ ("topicContent", markdownToHtmlSplice $ _content tag) ]
-    
+

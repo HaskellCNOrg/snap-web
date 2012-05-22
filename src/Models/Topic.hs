@@ -8,6 +8,7 @@ import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
 import           Database.MongoDB
+import qualified Data.Bson as BSON
 import qualified Database.MongoDB as DB
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
@@ -23,7 +24,7 @@ import           Models.Types
 -- | 
 -- 
 data Topic = Topic
-    { _topicId :: ObjectId
+    { _topicId :: Maybe ObjectId
     , _title   :: T.Text
     , _content :: T.Text
     , _author  :: T.Text
@@ -45,13 +46,17 @@ topicCollection = u "topics"
 --  
 createNewTopic ::  Topic -> AppHandler Topic
 createNewTopic topic = do
-    res <- eitherWithDB $ insert topicCollection $ topicToDocument topic
-    either failureToUE (const $ return topic) res 
+    res <- eitherWithDB $ DB.insert topicCollection $ topicToDocument topic
+    liftIO $ print res
+    either failureToUE (return . insertId') res 
+  where insertId' x = topic { _topicId = BSON.cast' x}
 
 -- | save a new topic. 
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
---  
-saveTopic ::  Topic -> AppHandler Topic
+-- 
+--   FIXME: better to make sure _id exists because Nothing objectId will cause error other when viewing.
+-- 
+saveTopic :: Topic -> AppHandler Topic
 saveTopic topic = do
     res <- eitherWithDB $ DB.save topicCollection $ topicToDocument topic
     either failureToUE (const $ return topic) res 
@@ -72,22 +77,30 @@ findOneTopic oid = do
 -- 
 findAllTopic :: AppHandler [Topic]
 findAllTopic  = do
-    xs <- eitherWithDB $ rest =<< find (select [] topicCollection)
-    liftIO $ mapM topicFromDocumentOrThrow $ either (const []) id xs  
+    let topicSelection = select [] topicCollection
+    xs <- eitherWithDB $ rest =<< find (topicSelection {sort = sortByUpdateAtDesc} )
+    liftIO $ mapM topicFromDocumentOrThrow $ either (const []) id xs
+  where 
 
-  
+sortByUpdateAtDesc :: Order
+sortByUpdateAtDesc = [ "updateAt" =: -1 ]
+
 ------------------------------------------------------------------------------
 
 -- | Transform @Topic@ to mongoDB document.
+--   Nothing of id mean new topic thus empty "_id" let mongoDB generate objectId.
 -- 
 topicToDocument :: Topic -> Document
-topicToDocument topic = [ "_id"     .= _topicId topic 
-                        , "title"   .= _title topic
-                        , "content" .= _content topic
-                        , "author"  .= _author topic
-                        , "createAt" .= _createAt topic
-                        , "updateAt" .= _updateAt topic
-                        ]
+topicToDocument topic = case _topicId topic of 
+                          Nothing -> docs
+                          Just x  -> ("_id" .= _topicId topic) : docs
+                        where docs = 
+                                [  "title"   .= _title topic
+                                , "content"  .= _content topic
+                                , "author"   .= _author topic
+                                , "createAt" .= _createAt topic
+                                , "updateAt" .= _updateAt topic
+                                ]
 
 -- | Transform mongo Document to be a Topic parser.
 -- 
@@ -100,10 +113,18 @@ documentToTopic d = Topic
                     <*> d .: "createAt" 
                     <*> d .: "updateAt"
 
+-- | parse the topic document
+-- 
 topicFromDocumentOrThrow :: Document -> IO Topic
 topicFromDocumentOrThrow d = case parseEither documentToTopic d of
     Left e  -> throw $ BackendError $ show e
     Right r -> return r
   
+
+topicIdToString :: Topic -> String
+topicIdToString t = maybe "" show (_topicId t)
+
+topicIdToText :: Topic -> T.Text
+topicIdToText = T.pack . topicIdToString
 
 ------------------------------------------------------------------------------
