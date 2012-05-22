@@ -15,7 +15,7 @@
 4. [X] list posts in home page
 5. [X] Be able to view Post detail page.
 6. [X] Integrate with Markdown
-7. [ ] Be able to edit post.
+7. [X] Be able to edit post.
     - 7.1 unfiy those 3 utils 
     - 7.2 display time per client. check example?
 

@@ -6,7 +6,6 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.CatchIO (try)
 import           Control.Monad.Trans
-import           Data.Bson
 import           Data.Maybe (fromJust, isNothing)
 import           Data.Time
 import           Snap.Core
@@ -22,12 +21,12 @@ import qualified Data.Text as T
 
 import           Application
 import           Controllers.User hiding (routes)
-import           Controllers.Utils
 import           Models.Exception 
 import           Models.Topic 
 import           Models.Utils
 import           Views.TopicForm
 import           Views.TopicSplices
+import           Views.Utils
 import qualified Models.Topic as MT
 
 

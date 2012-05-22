@@ -18,11 +18,11 @@ import           Control.Monad.CatchIO (try)
 import qualified Data.ByteString as BS
 
 import           Application
-import           Controllers.Utils
 import           Controllers.Home
-import           Views.UserForm
-import qualified Models.User as MD
 import           Models.Exception
+import           Views.UserForm
+import           Views.Utils
+import qualified Models.User as MD
 
 
 routes :: [(BS.ByteString, Handler App App ())]
