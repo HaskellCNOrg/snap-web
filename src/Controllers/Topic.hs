@@ -4,7 +4,7 @@ module Controllers.Topic
        ( routes ) where
 
 import           Control.Monad
-import           Control.Monad.CatchIO (try)
+import           Control.Monad.CatchIO (try,throw,Exception(..))
 import           Control.Monad.Trans
 import           Data.Maybe (fromJust, isNothing)
 import           Data.Time
@@ -33,10 +33,10 @@ import qualified Models.Topic as MT
 ------------------------------------------------------------------------------
 
 routes :: [(BS.ByteString, Handler App App ())]
-routes =  [ ("/topic",  createTopicH)  -- save new topic
+routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topic/:topicid", Snap.method GET viewTopicH)    -- view a topic
           , ("/topicput/:topicid", Snap.method GET editTopicH) -- show detail for editing
-          , ("/topicput/topic", Snap.method POST saveTopicH)  -- save editing changes.
+          , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes.
           ]
 
 topicIdParam :: BS.ByteString
@@ -79,12 +79,8 @@ redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
 viewTopicH :: AppHandler ()
 viewTopicH = do
     tid <- decodedParamMaybe topicIdParam
-    -- FIXME: Actually this when will not terminate the computation thus will result in error forwards.
-    --        Use `error` for work around.
-    --        how to reproduce: use a incorrect param, e.g. "testp"
-    --   when (isNothing tid) (toTopicDetailPage (Left $ UserException "tid not specifed"))
-    when (isNothing tid) (error "tid not specifed")
-    toTopicDetailPage =<< try (findOneTopic (read $ bsToS $ fromJust tid))
+    try (do when (isNothing tid) (throw (UserException "Fatal: tid not specifed."))
+            findOneTopic (read . bsToS . fromJust $ tid)) >>= toTopicDetailPage
 
 toTopicDetailPage :: Either UserException Topic -> AppHandler ()    
 toTopicDetailPage result = heistLocal (bindSplices (topicDetailSplices result)) $ render "topic-detail"
@@ -98,6 +94,7 @@ toTopicDetailPage result = heistLocal (bindSplices (topicDetailSplices result)) 
 --  1. same problem with viewTopicH
 --  2. tid must be valid objectId in order to be parsed. otherwise error.
 --     reproduce: access to /topicput/testing (read: no parse)
+-- 
 editTopicH :: AppHandler ()
 editTopicH = withAuthUser $ do
     tid <- decodedParamMaybe topicIdParam
@@ -124,7 +121,7 @@ doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
                   findTopic <- try (findOneTopic (read $ textToS $ topicId tv ))
                   case findTopic of
-                      Left  l -> writeText $ showUE l
+                      Left  l -> writeText $ showUE l -- FIXME:  return to detail edit page with errors.
                       Right r -> do
                                    result <- try $ MT.saveTopic =<< liftIO (topicVoToTopic tv r)
                                    case result of 
