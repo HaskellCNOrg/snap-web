@@ -9,35 +9,46 @@ module Controllers.User
 ------------------------------------------------------------------------------
 
 import           Control.Applicative ((<$>), (<*>))
+import           Control.Monad.CatchIO (try)
 import           Snap.Core
-import           Snap.Snaplet.Auth
 import           Snap.Snaplet
+import           Snap.Snaplet.Auth
+import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Text.Digestive.Snap
-import           Control.Monad.CatchIO (try)
 import qualified Data.ByteString as BS
+import           Text.Templating.Heist
 
 import           Application
 import           Controllers.Home
 import           Models.Exception
 import           Views.UserForm
 import           Views.Utils
+import           Views.UserSplices
 import qualified Models.User as MD
 
 
 routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/signup",  signup)
           , ("/signin",  signin)
-          , ("/signout", signout) 
+          , ("/signout", signout)
+          , ("/user/:userid", viewUser)
           ]
 
-redirectToSignin :: AppHandler ()
-redirectToSignin = redirect "/signin"
+paramUserId :: BS.ByteString
+paramUserId = "userid"
+
+------------------------------------------------------------------------------
 
 -- | Perform a action `AppHandler ()` within Auth user otherwise redirect to signin.
 --
 withAuthUser :: AppHandler () -> AppHandler ()
 withAuthUser = requireUser appAuth redirectToSignin
+
+-- | Redirect to signin page.
+-- 
+redirectToSignin :: AppHandler ()
+redirectToSignin = redirect "/signin"
 
 ------------------------------------------------------------------------------
     
@@ -57,7 +68,6 @@ signup = do
           where toHome = const redirectToHome
                 toPage = renderDfPage "signup" 
                 
-
 
 ------------------------------------------------------------------------------
 
@@ -94,3 +104,7 @@ signout = with appAuth logout >> redirectToHome
 
 ------------------------------------------------------------------------------
 
+viewUser :: AppHandler ()
+viewUser = withAuthUser $ do
+    (Just user) <- with appAuth currentUser
+    heistLocal (bindSplices (userDetailSplices user)) $ render "user-detail"
