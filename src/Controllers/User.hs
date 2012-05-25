@@ -62,7 +62,8 @@ signup = do
           (view, result) <- runForm "form" $ signupForm errorMsg
           case result of
               Just u -> do
-                        result' <- try (with appAuth (MD.createNewUser u))
+                        --result' <- try (with appAuth (MD.createNewUser u))
+                        result' <- try (MD.createNewUser u)
                         either (toPage . updateViewErrors view . showUE) toHome result'
               Nothing -> toPage view
           where toHome = const redirectToHome
@@ -104,7 +105,10 @@ signout = with appAuth logout >> redirectToHome
 
 ------------------------------------------------------------------------------
 
+-- | Fetch @User@ details. As this handler used with @withAuthUser@, 
+--   use `Just` for pattern matching.
+-- 
 viewUser :: AppHandler ()
 viewUser = withAuthUser $ do
-    (Just user) <- with appAuth currentUser
+    user <- MD.findCurrentUser
     heistLocal (bindSplices (userDetailSplices user)) $ render "user-detail"

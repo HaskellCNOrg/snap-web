@@ -16,8 +16,8 @@
 5. [X] Be able to view Post detail page.
 6. [X] Integrate with Markdown
 7. [X] Be able to edit post.
-    - 7.1 unfiy those 3 utils 
-    - 7.2 display time per client. check example?
+    - [X] 7.1 unfiy those 3 utils 
+    - [ ] 7.2 display time per client. check example?
 
 7. [ ] Extra user fileds, e.g. email, homeUrl...
 
@@ -50,6 +50,10 @@
     + tumblr.com
 
 ## Know bugs
-  #. annoy message ("follow myself") when follow people.
-  #. not display correctly when admin modified post of someone else.
+  -  annoy message ("follow myself") when follow people.
+  - not display correctly when admin modified post of someone else.
      (It shows modify my author rather than admin)
+
+## Dev question
+
+- The `when.. throw.. or continue` is very impretive. how functional?

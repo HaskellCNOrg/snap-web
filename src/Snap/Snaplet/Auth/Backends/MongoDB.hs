@@ -13,12 +13,14 @@ import Control.Monad
 import Control.Monad.CatchIO(throw)
 import Control.Monad.Error
 import Data.Baeson.Types
+import qualified Data.Bson as BSON
 import Data.Lens.Lazy
 import Data.Maybe
 import Data.Text(Text)
 import qualified Data.Configurator as C
 import qualified Data.HashMap.Lazy as HM
 import qualified Data.Text.Encoding as T
+import qualified Data.Text as T
 import qualified Database.MongoDB as M
 import qualified Snap.Snaplet.MongoDB as SM
 import Snap.Snaplet
@@ -101,14 +103,24 @@ accessMode = UnconfirmedWrites
 -- 
 mongoSave :: MongoBackend -> AuthUser -> IO AuthUser
 mongoSave mong usr = do
-  let usr' = case userId usr of
-               Nothing -> usr {userId = Just . UserId $ userLogin usr}
-               _       -> usr
-  res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong usr'
-  case res of
-    Left (WriteFailure 11000 _) -> throw DuplicateLogin
-    Left v -> throw $ BackendError $ show v
-    Right _ -> return usr'
+  case userId usr of
+      Nothing -> insertUser' usr
+      _       -> saveUser' usr
+  where  insertUser' u = do
+                        res <- dbQuery mong $ M.insert (mongoCollection mong) $ usrToMong u
+                        case res of
+                            Left (WriteFailure 11000 _) -> throw DuplicateLogin
+                            Left v  -> throwBE v
+                            Right r -> return (insertId' r)
+         insertId' x = usr { userId = fmap objectIdToUserId $ BSON.cast' x}
+         saveUser' u = do
+                       res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong u
+                       case res of 
+                           Left (WriteFailure 11000 _) -> throw DuplicateLogin
+                           Left v  -> throwBE v
+                           Right _ -> return u
+         throwBE = throw . BackendError . show 
+
 
 mongoAct :: MongoBackend -> Action IO a -> (a ->IO b) -> IO b
 mongoAct mong act conv = do
@@ -177,13 +189,21 @@ instance ToBSON Role where
 instance FromBSON Role where
   fromBSON v = Role . T.encodeUtf8 <$> fromBSON v
 
--- | UserId is stored as UUID in mongoDB.
+-- | UserId is stored as ObjectId in mongoDB.
 --
 instance FromBSON UserId where
-  fromBSON (M.Uuid (M.UUID v)) = pure $ UserId $ T.decodeUtf8 v
+  fromBSON (M.ObjId oid) = pure $ objectIdToUserId oid
 
+objectIdToUserId :: BSON.ObjectId -> UserId
+objectIdToUserId = UserId . T.pack . show
+
+userIdToObjectId :: UserId -> BSON.ObjectId 
+userIdToObjectId = read . T.unpack . unUid
+
+-- | Transform UserId to ObjectId
+-- 
 instance ToBSON UserId where
-  toBSON = M.Uuid . M.UUID . T.encodeUtf8 . unUid
+  toBSON = M.ObjId . read . T.unpack . unUid
 
 -- | Transform UserLogin name to UUID for unique id.
 --
@@ -191,23 +211,26 @@ userLoginToUUID :: Text -> M.UUID
 userLoginToUUID  = M.UUID . T.encodeUtf8
 
 usrToMong :: AuthUser -> M.Document
-usrToMong usr = [ "_id" .= userId usr
-                , "login" .= userLogin usr
-                , "password" .= userPassword usr
-                , "activatedAt" .= userActivatedAt usr
-                , "suspendedAt" .= userSuspendedAt usr
-                , "rememberToken" .= userRememberToken usr
-                , "loginCount" .= userLoginCount usr
-                , "userFailedLoginCount" .= userFailedLoginCount usr
-                , "lockedOutUntil" .= userLockedOutUntil usr
-                , "currentLoginAt" .= userCurrentLoginAt usr
-                , "lastLoginAt" .= userLastLoginAt usr
-                , "currentLoginIp" .= userCurrentLoginIp usr
-                , "lastLoginIp" .= userLastLoginIp usr
-                , "createdAt" .= userCreatedAt usr
-                , "updatedAt" .= userUpdatedAt usr
-                , "roles" .= userRoles usr
-                ]
+usrToMong usr = case userId usr of
+                    Nothing -> docs
+                    Just x  -> ("_id" .= x ) : docs
+                where docs = [ "login" .= userLogin usr
+                              , "password" .= userPassword usr
+                              , "activatedAt" .= userActivatedAt usr
+                              , "suspendedAt" .= userSuspendedAt usr
+                              , "rememberToken" .= userRememberToken usr
+                              , "loginCount" .= userLoginCount usr
+                              , "userFailedLoginCount" .= userFailedLoginCount usr
+                              , "lockedOutUntil" .= userLockedOutUntil usr
+                              , "currentLoginAt" .= userCurrentLoginAt usr
+                              , "lastLoginAt" .= userLastLoginAt usr
+                              , "currentLoginIp" .= userCurrentLoginIp usr
+                              , "lastLoginIp" .= userLastLoginIp usr
+                              , "createdAt" .= userCreatedAt usr
+                              , "updatedAt" .= userUpdatedAt usr
+                              , "roles" .= userRoles usr
+                              ]
+
 usrFromMong :: M.Document -> Parser AuthUser
 usrFromMong d = AuthUser
                 <$> d .: "_id"

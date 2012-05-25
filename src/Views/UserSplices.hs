@@ -23,11 +23,11 @@ import Views.Utils
 -- | Splices used at user Detail page. 
 --   Display either a user or error msg.    
 -- 
-userDetailSplices :: AuthUser -> [(T.Text, Splice AppHandler)]
+userDetailSplices :: User -> [(T.Text, Splice AppHandler)]
 userDetailSplices u = userDetailSplices' u
 
 
-userDetailSplices' :: AuthUser -> [(T.Text, Splice AppHandler)]
+userDetailSplices' :: User -> [(T.Text, Splice AppHandler)]
 userDetailSplices' u = [ ("ifUser", renderUser u) ]
                           --, ("ifuserError", renderUE e)]
 
@@ -41,12 +41,14 @@ userDetailSplices' u = [ ("ifUser", renderUser u) ]
 --      , ("userAuthor", _author tag)
 --      , ("oid", userIdToText tag) ]
 
-renderUser :: AuthUser -> Splice AppHandler
+renderUser :: User -> Splice AppHandler
 renderUser user = runChildrenWithText $
-                     [ ("userLogin", userLogin user)
-                     , ("userLastLoginAt", formatUTCTime' $ userLastLoginAt user)
-                     , ("userCreatedAt", formatUTCTime' $ userCreatedAt user)
-                     , ("userId", unUid $ fromJust $ userId user) ]
+                     [ ("userLogin", userLogin $ _authUser user)
+                     , ("userLastLoginAt", formatUTCTime' $ userLastLoginAt $ _authUser  user)
+                     , ("userCreatedAt", formatUTCTime' $ userCreatedAt $ _authUser  user)
+                     , ("userId", unUid $ fromJust $ userId $ _authUser user)
+                     , ("userEmail", _userEmail user)
+                     , ("userDisplayName", _displayName user) ]
                   where formatUTCTime' Nothing  = ""
                         formatUTCTime'  (Just x) = formatUTCTime x 
 

@@ -47,7 +47,6 @@ topicCollection = u "topics"
 createNewTopic ::  Topic -> AppHandler Topic
 createNewTopic topic = do
     res <- eitherWithDB $ DB.insert topicCollection $ topicToDocument topic
-    liftIO $ print res
     either failureToUE (return . insertId') res 
   where insertId' x = topic { _topicId = BSON.cast' x}
 

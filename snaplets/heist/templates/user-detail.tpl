@@ -22,6 +22,8 @@
     <p><userLogin/></p>
     <p><userLastLoginAt/></p>
     <p><userCreatedAt/></p>
+    <p><userEmail/></p>
+    <p><userDisplayName/></p>
     <p>
       <userId />
     </p>
