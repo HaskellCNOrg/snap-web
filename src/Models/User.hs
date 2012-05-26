@@ -6,9 +6,7 @@ module Models.User
     , createNewUser
     , loginUser
     , findCurrentUser
-    , saveUser
-    , getUserIdText
-    , getUserLoginName ) where
+    , saveUser ) where
 
 import           Control.Applicative ((<$>), (<*>), pure)
 import           Control.Monad
@@ -86,7 +84,7 @@ createAuthUser' usr = do
   where passLength    = T.length . password
         password'     = textToBS . password
 
--- http://hpaste.org/69009
+-- http://hpaste.org/69009, failure piece of code about `withBackend`.
 
 
 ------------------------------------------------------------------------------
@@ -101,7 +99,7 @@ loginUser u = do
 
 ------------------------------------------------------------------------------
 
--- | Assume this handler will be used after login. a.k.a will be used in @withAuthUser@.
+-- | NOTES: Assume this handler will be used after login. a.k.a will be used in @withAuthUser@.
 --   Maybe improve in future.
 -- 
 findCurrentUser :: AppHandler User
@@ -122,16 +120,18 @@ saveUser u = do
              res <- eitherWithDB $ DB.save authUserCollection $ userToDocument u
              either failureToUE (const $ return u) res 
 
+
 ------------------------------------------------------------------------------
 
 -- | Transform @User@ to mongoDB document.
 --   Nothing of id mean new topic thus empty "_id" let mongoDB generate objectId.
 -- 
 userToDocument :: User -> Document
-userToDocument user =  [ "_id"          .= (userId $ _authUser user)
+userToDocument user =  [ "_id"          .= userId (_authUser user)
                         , "userEmail"   .= _userEmail user
                         , "displayName" .= _displayName user
                         ]
+
 
 -- | Kind of ORM.
 -- 
@@ -141,15 +141,15 @@ userToTopic au d = User
                    <*> d .: "userEmail"
                    <*> d .: "displayName"
 
+
 userFromDocumentOrThrow :: (Document -> Parser User) -> Document -> IO User
 userFromDocumentOrThrow f d = case parseEither f d of
     Left e  -> throw $ BackendError $ show e
     Right r -> return r
 
+
 ------------------------------------------------------------------------------
 
-getUserIdText :: User -> Maybe T.Text
-getUserIdText = fmap unUid . userId . _authUser
+--getUserIdText :: User -> Maybe T.Text
+--getUserIdText = fmap unUid . userId . _authUser
 
-getUserLoginName :: User -> T.Text
-getUserLoginName = userLogin . _authUser

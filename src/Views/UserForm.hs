@@ -15,8 +15,9 @@ data UserVo = UserVo
               , userDisplayName  :: Text
               }
 
--- | FIXME: Need a better design to get message from i18n snaplet.
+------------------------------------------------------------------
 -- 
+
 signinForm :: Monad m => (Text,Text) -> Form Text m LoginUser
 signinForm (a,b) = LoginUser
     <$> "loginName"      .: check a requiredValidator (text Nothing)
@@ -33,12 +34,17 @@ signupForm (a,b) = check "Input password must be same" samePasswordValidator $
 samePasswordValidator :: LoginUser -> Bool
 samePasswordValidator x = password x == repeatPassword x
 
+------------------------------------------------------------------
+--
+
 userDetailForm :: Monad m => User -> Form Text m UserVo
 userDetailForm u = UserVo
     <$> "userEmail"          .: check "email is required." requiredValidator (text $ Just $ _userEmail u)
-    <*> "userDisplayName"    .: (text $ Just $ _displayName u)
+    <*> "userDisplayName"    .: text (Just $ _displayName u)
 
 userForm :: Monad m => Form Text m UserVo
 userForm  = UserVo
     <$> "userEmail"          .: check "email is required." requiredValidator (text Nothing)
     <*> "userDisplayName"    .: text Nothing
+
+------------------------------------------------------------------

@@ -21,7 +21,7 @@
 
 7. [ ] Extra user fileds, e.g. email, homeUrl...
 
-- [ ] authorization.
+- [ ] authorization, user roles??
 - [ ] sub folders for tpl?
 - [ ] Styles
 - [ ] Be able to comment

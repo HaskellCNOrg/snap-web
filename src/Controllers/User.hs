@@ -27,6 +27,7 @@ import           Models.Exception
 import           Views.UserForm
 import           Views.Utils
 import           Views.UserSplices
+import           Views.Types
 import qualified Models.User as USER
 
 
@@ -44,6 +45,9 @@ routes =  [
 
 paramUserId :: BS.ByteString
 paramUserId = "userid"
+
+redirectToUserDetailPage :: AppHandler ()
+redirectToUserDetailPage = redirect "/user"
 
 ------------------------------------------------------------------------------
 
@@ -69,7 +73,6 @@ signup = do
           (view, result) <- runForm "form" $ signupForm errorMsg
           case result of
               Just u -> do
-                        --result' <- try (with appAuth (USER.createNewUser u))
                         result' <- try (USER.createNewUser u)
                         either (toPage . updateViewErrors view . showUE) toHome result'
               Nothing -> toPage view
@@ -112,15 +115,14 @@ signout = with appAuth logout >> redirectToHome
 
 ------------------------------------------------------------------------------
 
--- | Fetch @User@ details. As this handler used with @withAuthUser@, 
---   use `Just` for pattern matching.
+-- | Fetch @User@ details. As this handler used with @withAuthUser@.
 -- 
 viewUserH :: AppHandler ()
-viewUserH = withAuthUser $ USER.findCurrentUser >>= toUserDetailPage
+viewUserH = withAuthUser $ try USER.findCurrentUser >>= toUserDetailPage
     
-
-toUserDetailPage :: USER.User -> AppHandler ()
+toUserDetailPage :: SpliceRenderable a => Either UserException a -> AppHandler ()
 toUserDetailPage user = heistLocal (bindSplices (userDetailSplices user)) $ render "user-detail"
+
 
 ------------------------------------------------------------------------------
 
@@ -128,19 +130,13 @@ toUserDetailPage user = heistLocal (bindSplices (userDetailSplices user)) $ rend
 -- 
 editUserH :: AppHandler ()
 editUserH = withAuthUser $ do
-    user <- USER.findCurrentUser
-    runForm "edit-user-form" (userDetailForm user) >>= (toTopicFormPage . fst)
-
-toTopicFormPage :: View Text -> AppHandler ()
-toTopicFormPage = renderDfPage "user-form"
+    user <- try USER.findCurrentUser
+    either (const $ toUserDetailPage user) runFormToFormPage' user
+    where runFormToFormPage' u = runForm "edit-user-form" (userDetailForm u) >>= (toUserFormPage . fst)
 
 
---toEditTopicPageOr' =<< try (findOneTopic (read $ bsToS $ fromJust tid))
-
---toEditTopicPageOr' :: Either UserException Topic -> AppHandler ()    
---toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
---    where toEditingPage t = runForm "edit-topic-form" (topicEditForm t) >>= (toTopicFormPage . fst)
-
+toUserFormPage :: View Text -> AppHandler ()
+toUserFormPage = renderDfPage "user-form"
 
 
 -- | Persistence change made by user.
@@ -150,12 +146,16 @@ saveUserH = withAuthUser $ do
     (view, result) <- runForm "edit-user-form" userForm
     case result of
       Just usrVo -> doUpdateUser usrVo
-      Nothing  -> toTopicFormPage view  -- FIXME: bug..to form page should runForm first.
-                                        -- however this branch wont be hit bacuse `saveTopicH` 
-                                        -- only accept POST method
+      Nothing    -> editUserH  -- return to detail view page.
 
-    where doUpdateUser vo = userVoToUser' vo >>= USER.saveUser >>= toUserDetailPage
+    where doUpdateUser vo    = userVoToUser' vo >>= (try . USER.saveUser) >>= eitherSuccess'
+          eitherSuccess' res = case res of
+                                 Left _  -> toUserDetailPage res 
+                                 Right _ -> redirectToUserDetailPage
           userVoToUser' :: UserVo -> AppHandler USER.User
           userVoToUser' vo = do
                             (Just authUser) <- with appAuth currentUser
                             return $ USER.User authUser (userEmail vo) (userDisplayName vo)
+
+------------------------------------------------------------------------------
+

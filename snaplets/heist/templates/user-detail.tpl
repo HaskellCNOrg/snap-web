@@ -14,7 +14,7 @@
     <returnToHome />
   </ifUserError> -->
 
-  <ifUser>
+  <ifFound>
 
     <h2>
       <userLogin />
@@ -28,6 +28,6 @@
       <a href="/userput">Edit</a>
     </p>
 
-  </ifUser>
+  </ifFound>
 
 </apply>

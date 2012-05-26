@@ -4,14 +4,11 @@ module Views.ExceptionSplices where
 
 import           Text.Templating.Heist
 
-import           Application
 import           Models.Exception
-
+import           Views.Types
+import Application
 ------------------------------------------------------------------------------
-                    
--- | db.Topic.findAll
--- 
-
-renderUE:: Maybe UserException -> Splice AppHandler
-renderUE Nothing  = return []
-renderUE (Just e) = runChildrenWithText [ ("exceptionValue", showUE e) ]
+          
+renderUE :: Maybe UserException -> Splice AppHandler          
+renderUE Nothing = return []
+renderUE (Just a) = runChildrenWithText [ ("exceptionValue", showUE a) ]

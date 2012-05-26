@@ -102,7 +102,7 @@ accessMode = UnconfirmedWrites
 -- | default UserId is Nothing thus set to same as UserLogin
 -- 
 mongoSave :: MongoBackend -> AuthUser -> IO AuthUser
-mongoSave mong usr = do
+mongoSave mong usr = 
   case userId usr of
       Nothing -> insertUser' usr
       _       -> saveUser' usr
