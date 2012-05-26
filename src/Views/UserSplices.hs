@@ -46,7 +46,7 @@ renderUser user = runChildrenWithText $
                      [ ("userLogin", userLogin $ _authUser user)
                      , ("userLastLoginAt", formatUTCTime' $ userLastLoginAt $ _authUser  user)
                      , ("userCreatedAt", formatUTCTime' $ userCreatedAt $ _authUser  user)
-                     , ("userId", unUid $ fromJust $ userId $ _authUser user)
+                     --, ("userId", unUid $ fromJust $ userId $ _authUser user)
                      , ("userEmail", _userEmail user)
                      , ("userDisplayName", _displayName user) ]
                   where formatUTCTime' Nothing  = ""

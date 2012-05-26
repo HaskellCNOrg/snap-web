@@ -92,8 +92,6 @@ toTopicDetailPage result = heistLocal (bindSplices (topicDetailSplices result)) 
 -- 
 -- TODO:
 --  1. same problem with viewTopicH
---  2. tid must be valid objectId in order to be parsed. otherwise error.
---     reproduce: access to /topicput/testing (read: no parse)
 -- 
 editTopicH :: AppHandler ()
 editTopicH = withAuthUser $ do
@@ -111,7 +109,9 @@ saveTopicH = withAuthUser $ do
                  (view, result) <- runForm "edit-topic-form" topicForm
                  case result of
                    Just topic -> doUpdateTopic' topic
-                   Nothing    -> toTopicFormPage view
+                   Nothing    -> toTopicFormPage view -- FIXME: bug..to form page should runForm first.
+                                                      -- however this branch wont be hit bacuse `saveTopicH` 
+                                                      -- only accept POST method
 
 -- | Do update a existing Topic.
 --   1. Fetch topic for updating, failed otherwise.

@@ -5,9 +5,12 @@ module Models.User
     , User(..)
     , createNewUser
     , loginUser
-    , findCurrentUser ) where
+    , findCurrentUser
+    , saveUser
+    , getUserIdText
+    , getUserLoginName ) where
 
-import           Control.Applicative ((<$>), (<*>))
+import           Control.Applicative ((<$>), (<*>), pure)
 import           Control.Monad
 import           Control.Monad.CatchIO (throw)
 import           Control.Monad.State
@@ -15,7 +18,7 @@ import           Data.Baeson.Types
 import           Data.Bson
 import           Data.Maybe
 import           Snap.Snaplet
-import           Snap.Snaplet.Auth hiding (loginUser)
+import           Snap.Snaplet.Auth hiding (loginUser, saveUser)
 import           Snap.Snaplet.MongoDB
 import           Snap.Snaplet.Auth.Backends.MongoDB as SM
 import qualified Data.Text as T
@@ -25,7 +28,7 @@ import           Models.Exception
 import           Models.Utils
 import           Application
 
--- | FIXME: Rename to LoginUserVo
+-- | A lightweight alternative to @AuthUser@
 -- 
 data LoginUser = LoginUser
     { loginName :: T.Text
@@ -33,20 +36,25 @@ data LoginUser = LoginUser
     , repeatPassword :: T.Text
     } deriving (Show)
 
--- | Extent to AuthUser
+
+-- | Extent to AuthUser in a separated Collection.
+--   Its objectId is just same with objectId of AuthUser.
+-- 
+--   One reason is Snaplet-Auth is likely to do some modify, e.g. when login
+--   which will fresh out our extension.
 -- 
 data User = User 
-    { _authUser :: AuthUser 
+    { _authUser :: AuthUser
     , _userEmail :: T.Text 
     , _displayName :: T.Text 
-    }
+    } deriving (Show)
 
 -- | FIXME: this is duplicated defination with what in mongoDBBackend.
 --          Need to figure out the root cause why mongoBackend failed to 
 --          read a snaplet.cfg file. Hence, could reduce this duplication.
 -- 
 authUserCollection :: DB.Collection
-authUserCollection = u "auth_user"
+authUserCollection = u "users"
 
 ------------------------------------------------------------------------------
 
@@ -56,12 +64,9 @@ authUserCollection = u "auth_user"
 -- 
 createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
-    authUser <- with appAuth $ createNewUser' lu
+    authUser <- with appAuth $ createAuthUser' lu
     -- FIXME: do not hard code...
-    let user' = User authUser  "test@test.com" "test"
-    res <- saveUserExtension user'
-    either throwUE (const $ return user') res
-  where saveUserExtension u = eitherWithDB $ DB.save authUserCollection $ userToDocument u
+    saveUser $ User authUser "test@test.com" "test"
 
 
 -- | Create a user leverage save function from snaplet-auth-mongo-backend,
@@ -70,8 +75,8 @@ createNewUser lu = do
 --   Create user without activation appoach thus login automatically.
 --   Maybe use userLockedOutUntil when like to use mail activation.
 --
-createNewUser' :: LoginUser -> Handler b (AuthManager b) AuthUser
-createNewUser' usr = do
+createAuthUser' :: LoginUser -> Handler b (AuthManager b) AuthUser
+createAuthUser' usr = do
     mp <- gets minPasswdLen
     when (passLength usr < mp) (throw $ PasswordTooShort mp)
     exists <- usernameExists (loginName usr)
@@ -101,11 +106,21 @@ loginUser u = do
 -- 
 findCurrentUser :: AppHandler User
 findCurrentUser = do 
-                    (Just user) <- with appAuth currentUser
-                    res <- findOneUser user
-                    either failureToUE (liftIO . userFromDocumentOrThrow) res
+                    (Just authUser) <- with appAuth currentUser
+                    res <- findOneUser authUser
+                    either failureToUE (liftIO . userFromDocumentOrThrow (userToTopic authUser)) res
                   where findOneUser u = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid u ] authUserCollection)
-                        oid = SM.userIdToObjectId . fromJust . userId 
+                        oid           = SM.userIdToObjectId . fromJust . userId
+
+
+------------------------------------------------------------------------------
+
+-- | Save modification to @User@ Collection. @AuthUser@ is not likely to be update by user.
+-- 
+saveUser :: User -> AppHandler User
+saveUser u = do
+             res <- eitherWithDB $ DB.save authUserCollection $ userToDocument u
+             either failureToUE (const $ return u) res 
 
 ------------------------------------------------------------------------------
 
@@ -113,21 +128,28 @@ findCurrentUser = do
 --   Nothing of id mean new topic thus empty "_id" let mongoDB generate objectId.
 -- 
 userToDocument :: User -> Document
-userToDocument user = SM.usrToMong (_authUser user)
-                      ++ [  "userEmail"   .= _userEmail user
-                          , "displayName"  .= _displayName user
-                          ]
+userToDocument user =  [ "_id"          .= (userId $ _authUser user)
+                        , "userEmail"   .= _userEmail user
+                        , "displayName" .= _displayName user
+                        ]
 
-userToTopic :: Document -> Parser User
-userToTopic d = makeUsr (SM.usrFromMong d)
-                    where makeUsr au = User 
-                                       <$> au
-                                       <*> d .: "userEmail"
-                                       <*> d .: "displayName"
+-- | Kind of ORM.
+-- 
+userToTopic :: AuthUser -> Document -> Parser User
+userToTopic au d = User 
+                   <$> pure au
+                   <*> d .: "userEmail"
+                   <*> d .: "displayName"
 
-userFromDocumentOrThrow :: Document -> IO User
-userFromDocumentOrThrow d = case parseEither userToTopic d of
+userFromDocumentOrThrow :: (Document -> Parser User) -> Document -> IO User
+userFromDocumentOrThrow f d = case parseEither f d of
     Left e  -> throw $ BackendError $ show e
     Right r -> return r
 
 ------------------------------------------------------------------------------
+
+getUserIdText :: User -> Maybe T.Text
+getUserIdText = fmap unUid . userId . _authUser
+
+getUserLoginName :: User -> T.Text
+getUserLoginName = userLogin . _authUser

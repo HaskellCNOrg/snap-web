@@ -5,9 +5,15 @@ import Control.Applicative ((<$>), (<*>))
 import Data.Text (Text)
 import Text.Digestive
 
+
 import Views.Validators
 import Models.User
 
+-- | 
+data UserVo = UserVo
+              { userEmail        :: Text
+              , userDisplayName  :: Text
+              }
 
 -- | FIXME: Need a better design to get message from i18n snaplet.
 -- 
@@ -26,3 +32,13 @@ signupForm (a,b) = check "Input password must be same" samePasswordValidator $
 
 samePasswordValidator :: LoginUser -> Bool
 samePasswordValidator x = password x == repeatPassword x
+
+userDetailForm :: Monad m => User -> Form Text m UserVo
+userDetailForm u = UserVo
+    <$> "userEmail"          .: check "email is required." requiredValidator (text $ Just $ _userEmail u)
+    <*> "userDisplayName"    .: (text $ Just $ _displayName u)
+
+userForm :: Monad m => Form Text m UserVo
+userForm  = UserVo
+    <$> "userEmail"          .: check "email is required." requiredValidator (text Nothing)
+    <*> "userDisplayName"    .: text Nothing

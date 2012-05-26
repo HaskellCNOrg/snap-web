@@ -25,7 +25,7 @@
     <p><userEmail/></p>
     <p><userDisplayName/></p>
     <p>
-      <userId />
+      <a href="/userput">Edit</a>
     </p>
 
   </ifUser>
