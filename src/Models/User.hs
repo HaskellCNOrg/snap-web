@@ -90,8 +90,8 @@ createAuthUser' usr = do
 ------------------------------------------------------------------------------
 
 loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
-loginUser u = do
-              res <- loginByUsername (username' u) (password' u) True
+loginUser lu = do
+              res <- loginByUsername (username' lu) (password' lu) True
               either throwUE return res
               where username' = textToBS . loginName
                     password' = ClearText . textToBS . password
@@ -107,7 +107,7 @@ findCurrentUser = do
                     (Just authUser) <- with appAuth currentUser
                     res <- findOneUser authUser
                     either failureToUE (liftIO . userFromDocumentOrThrow (userToTopic authUser)) res
-                  where findOneUser u = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid u ] authUserCollection)
+                  where findOneUser lu = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid lu ] authUserCollection)
                         oid           = SM.userIdToObjectId . fromJust . userId
 
 
@@ -116,9 +116,9 @@ findCurrentUser = do
 -- | Save modification to @User@ Collection. @AuthUser@ is not likely to be update by user.
 -- 
 saveUser :: User -> AppHandler User
-saveUser u = do
-             res <- eitherWithDB $ DB.save authUserCollection $ userToDocument u
-             either failureToUE (const $ return u) res 
+saveUser lu = do
+             res <- eitherWithDB $ DB.save authUserCollection $ userToDocument lu
+             either failureToUE (const $ return lu) res 
 
 
 ------------------------------------------------------------------------------

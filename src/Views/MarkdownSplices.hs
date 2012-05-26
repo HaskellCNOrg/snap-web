@@ -9,7 +9,6 @@ module Views.MarkdownSplices
 import           Text.Pandoc.Shared (tabFilter)
 import           Control.Monad.Trans
 import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
 import qualified Data.ByteString.Char8 as BS
 import           Text.Templating.Heist
 import           Text.Pandoc
@@ -30,6 +29,7 @@ markdownToHtmlSplice markup =
 ------------------------------------------------------------------------------
     
 -- | Convert tabs to spaces and filter out DOS line endings.    
+tabFilter4 :: String -> String
 tabFilter4 = tabFilter 4    
 
 markdownToHtmlString :: T.Text -> BS.ByteString

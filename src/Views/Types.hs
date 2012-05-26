@@ -9,6 +9,7 @@ import Models.Exception
 
 -- | This class is born because when do MonadIO.try with models functions,
 --   its return type is `Either exception data`. Hence make a generic render.
+--   See also the helper @eitherToSplices@.
 --  
 class SpliceRenderable a where
     toSplice :: a -> Splice AppHandler
@@ -17,11 +18,11 @@ class SpliceRenderable a where
 
 
 eitherToSplices :: SpliceRenderable a => Either UserException a -> [(T.Text, Splice AppHandler)]
-eitherToSplices (Left l) = [ ("ifFound", return [])
-                         , ("ifNotFound", toSplice l) ]
+eitherToSplices (Left l) = [ ("ifFound"   , return [])
+                           , ("ifNotFound", toSplice l) ]
 
-eitherToSplices (Right r) = [ ("ifFound", toSplice r)
-                          , ("ifNotFound", return []) ]
+eitherToSplices (Right r) = [ ("ifFound"   , toSplice r)
+                            , ("ifNotFound", return []) ]
 
 
 --------------------------------------------------------------

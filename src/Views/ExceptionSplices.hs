@@ -9,6 +9,6 @@ import           Views.Types
 import Application
 ------------------------------------------------------------------------------
           
-renderUE :: Maybe UserException -> Splice AppHandler          
-renderUE Nothing = return []
-renderUE (Just a) = runChildrenWithText [ ("exceptionValue", showUE a) ]
+--renderUE :: Maybe UserException -> Splice AppHandler          
+--renderUE Nothing = return []
+--renderUE (Just a) = runChildrenWithText [ ("exceptionValue", showUE a) ]

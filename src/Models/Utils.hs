@@ -13,9 +13,8 @@ module Models.Utils where
 import           Control.Monad.Trans
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
-import qualified Data.Text.Encoding as T
 import qualified Data.Text as T
-import Data.Maybe
+import qualified Data.Text.Encoding as T
 
 ----------------------------------------------------------------
 

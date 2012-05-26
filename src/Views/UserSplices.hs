@@ -2,9 +2,6 @@
 
 module Views.UserSplices where
 
-import           Control.Arrow (second)
-import           Control.Monad.Trans
-import           Data.Maybe (fromJust, isJust)
 import           Snap.Snaplet.Auth
 import           Text.Templating.Heist
 import qualified Data.Text as T
@@ -12,7 +9,6 @@ import qualified Data.Text as T
 import           Application
 import Models.Exception
 import Models.User
-import Views.ExceptionSplices
 import Views.Utils
 import Views.Types
 
@@ -27,8 +23,8 @@ instance SpliceRenderable User where
 --   Display either a user or error msg.    
 -- 
 
-userDetailSplices :: SpliceRenderable a => Either UserException a -> [(T.Text, Splice AppHandler)]
-userDetailSplices ei = eitherToSplices ei
+userDetailSplices :: Either UserException User -> [(T.Text, Splice AppHandler)]
+userDetailSplices = eitherToSplices
 
 
 ------------------------------------------------------------------------------

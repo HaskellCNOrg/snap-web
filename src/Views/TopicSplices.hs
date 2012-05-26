@@ -4,19 +4,24 @@ module Views.TopicSplices
        ( topicSplices 
        , topicDetailSplices ) where
 
-import           Text.Templating.Heist
-import           Control.Monad.Trans
-import qualified Data.Text as T
---import           Data.Time
-import           Data.Maybe (isJust)
 import           Control.Arrow (second)
+import           Control.Monad.Trans
+import           Data.Maybe (isJust)
+import           Text.Templating.Heist
+import qualified Data.Text as T
 
-import           Application
+import Application
 import Models.Exception
 import Models.Topic
-import Views.ExceptionSplices
 import Views.MarkdownSplices
+import Views.Types
 import Views.Utils
+
+
+------------------------------------------------------------------------------
+
+instance SpliceRenderable Topic where
+   toSplice = renderTopic
 
 ------------------------------------------------------------------------------
                     
@@ -39,13 +44,8 @@ allTopicsSplice = do
 --   Display either a topic or error msg.    
 -- 
 topicDetailSplices :: Either UserException Topic -> [(T.Text, Splice AppHandler)]
-topicDetailSplices (Left l) = topicDetailSplices' Nothing (Just l)
-topicDetailSplices (Right r) = topicDetailSplices' (Just r) Nothing
+topicDetailSplices = eitherToSplices
 
-
-topicDetailSplices' :: Maybe Topic -> Maybe UserException -> [(T.Text, Splice AppHandler)]
-topicDetailSplices' t e = [ ("ifTopic", renderTopic t)
-                          , ("ifTopicError", renderUE e)]
 
 ------------------------------------------------------------------------------
 
@@ -57,9 +57,8 @@ renderTopicSimple tag = runChildrenWithText
       , ("topicAuthor", _author tag)
       , ("oid", topicIdToText tag) ]
 
-renderTopic :: Maybe Topic -> Splice AppHandler
-renderTopic Nothing = return []
-renderTopic (Just tag) = runChildrenWith $
+renderTopic :: Topic -> Splice AppHandler
+renderTopic tag = runChildrenWith $
       map (second textSplice) [ ("topicTitle", _title tag)
                               , ("topicAuthor", _author tag)
                               , ("topicCreateAt", formatUTCTime $ _createAt tag)

@@ -120,7 +120,7 @@ signout = with appAuth logout >> redirectToHome
 viewUserH :: AppHandler ()
 viewUserH = withAuthUser $ try USER.findCurrentUser >>= toUserDetailPage
     
-toUserDetailPage :: SpliceRenderable a => Either UserException a -> AppHandler ()
+toUserDetailPage :: Either UserException USER.User -> AppHandler ()
 toUserDetailPage user = heistLocal (bindSplices (userDetailSplices user)) $ render "user-detail"
 
 

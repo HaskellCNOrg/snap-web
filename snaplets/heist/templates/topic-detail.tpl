@@ -1,15 +1,15 @@
 <apply template="layout">
 
-  <ifTopicError>
+  <ifNotFound>
     <div class="alert alert-error"> 
       <ul>
         <li><exceptionValue/></li>
       </ul>
     </div>
     <returnToHome />
-  </ifTopicError>
+  </ifNotFound>
 
-  <ifTopic>
+  <ifFound>
 
   <article>
     <h2>
@@ -32,6 +32,6 @@
   </div>
 
 
-  </ifTopic>
+  </ifFound>
 
 </apply>
