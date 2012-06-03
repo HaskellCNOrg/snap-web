@@ -8,7 +8,6 @@
 1. [X] dig details of snaplet-auth, valitation checking.
     - directly display error msg from snaplet-auth
 2. [X] use mongoDB auth backend rather than JSON
-
     2.1 [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
 
 3. [X] Be able to do post
@@ -18,18 +17,36 @@
 7. [X] Be able to edit post.
     - [X] 7.1 unfiy those 3 utils 
     - [ ] 7.2 display time per client. check example?
+          Seems node-club display time per server.
 
-7. [ ] Extra user fileds, e.g. email, homeUrl...
+7. [X] Extra user fileds, e.g. email, homeUrl.
+       signup / user detail page.
 
 - [ ] authorization, user roles??
-- [ ] sub folders for tpl?
+
 - [ ] Styles
+
 - [ ] Be able to comment
 - [ ] be able to comment to comment
-- [ ] Allow tag post
+
+- [ ] Tag + Category suppert
+    - allow user add tag on the fly
+    - Category is predifined.
 
 - [ ] Message to user when new comments
 - [ ] mail integration (active, reset, etc..)
+- [ ] sub folders for tpl?
+
+### Makefile
+
+- [ ] Compress & combine JS
+- [ ] Generate min.css per .less files
+- [ ] How to update template incorporate those two thing above?
+
+### Snap Technical
+
+- [ ] compress html (remove extra space and comments. )
+      paresHTML (seems parseHTML from xmlhtml reads 'return' and extra space as a node??)
 
 ## couple of notes
   - rm personal section from sidebar to settings.
@@ -56,4 +73,4 @@
 
 ## Dev question
 
-- The `when.. throw.. or continue` is very impretive. how functional?
+- The `when.. throw.. or continue` is very impretive. could be more functional?
