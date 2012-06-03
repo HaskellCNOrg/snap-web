@@ -42,9 +42,10 @@ data LoginUser = LoginUser
 --   which will fresh out our extension.
 -- 
 data User = User 
-    { _authUser :: AuthUser
-    , _userEmail :: T.Text 
-    , _displayName :: T.Text 
+    { _authUser    :: AuthUser
+    , _userEmail   :: T.Text 
+    , _displayName :: T.Text  -- ^ FIXME: Really need display name Maybe removed?
+    , _userSite    :: T.Text  -- ^ User personal site.
     } deriving (Show)
 
 -- | FIXME: this is duplicated defination with what in mongoDBBackend.
@@ -64,7 +65,7 @@ createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
     -- FIXME: do not hard code...
-    saveUser $ User authUser "test@test.com" "test"
+    saveUser $ User authUser "test@test.com" "test" "http://test.com"
 
 
 -- | Create a user leverage save function from snaplet-auth-mongo-backend,
@@ -130,6 +131,7 @@ userToDocument :: User -> Document
 userToDocument user =  [ "_id"          .= userId (_authUser user)
                         , "userEmail"   .= _userEmail user
                         , "displayName" .= _displayName user
+                        , "userSite"    .= _userSite user
                         ]
 
 
@@ -140,6 +142,7 @@ userToTopic au d = User
                    <$> pure au
                    <*> d .: "userEmail"
                    <*> d .: "displayName"
+                   <*> d .: "userSite"
 
 
 userFromDocumentOrThrow :: (Document -> Parser User) -> Document -> IO User

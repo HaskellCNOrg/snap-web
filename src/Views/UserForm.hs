@@ -13,6 +13,7 @@ import Models.User
 data UserVo = UserVo
               { userEmail        :: Text
               , userDisplayName  :: Text
+              , userSite         :: Text 
               }
 
 ------------------------------------------------------------------
@@ -37,14 +38,20 @@ samePasswordValidator x = password x == repeatPassword x
 ------------------------------------------------------------------
 --
 
+-- | Prepare a form for display from a exists @User@.
+-- 
 userDetailForm :: Monad m => User -> Form Text m UserVo
 userDetailForm u = UserVo
-    <$> "userEmail"          .: check "email is required." requiredValidator (text $ Just $ _userEmail u)
-    <*> "userDisplayName"    .: text (Just $ _displayName u)
+    <$> "userEmail"       .: check "email is required." requiredValidator (text $ Just $ _userEmail u)
+    <*> "userDisplayName" .: text (Just $ _displayName u)
+    <*> "userSite"        .: text (Just $ _userSite u)
 
+-- | 
+-- 
 userForm :: Monad m => Form Text m UserVo
 userForm  = UserVo
     <$> "userEmail"          .: check "email is required." requiredValidator (text Nothing)
     <*> "userDisplayName"    .: text Nothing
+    <*> "userSite"    .: text Nothing
 
 ------------------------------------------------------------------

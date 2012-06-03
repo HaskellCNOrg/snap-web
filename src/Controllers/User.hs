@@ -68,8 +68,8 @@ redirectToSignin = redirect "/signin"
 -- 
 signup :: AppHandler ()
 signup = do
-          errorMsg       <- (,) <$> lookupI18NValue "requiredLoginname" 
-                                <*> lookupI18NValue "requiredPassword"
+          errorMsg       <- (,) <$> lookupI18NValue "user-requiredLoginname" 
+                                <*> lookupI18NValue "user-requiredPassword"
           (view, result) <- runForm "form" $ signupForm errorMsg
           case result of
               Just u -> do
@@ -93,8 +93,8 @@ signup = do
 -- 
 signin :: AppHandler ()
 signin = do
-    errorMsg       <- (,) <$> lookupI18NValue "requiredLoginname" 
-                          <*> lookupI18NValue "requiredPassword"
+    errorMsg       <- (,) <$> lookupI18NValue "user-requiredLoginname" 
+                          <*> lookupI18NValue "user-requiredPassword"
     (view, result) <- runForm "form" $ signinForm errorMsg
     case result of
         Just usr -> do
@@ -155,7 +155,7 @@ saveUserH = withAuthUser $ do
           userVoToUser' :: UserVo -> AppHandler USER.User
           userVoToUser' vo = do
                             (Just authUser) <- with appAuth currentUser
-                            return $ USER.User authUser (userEmail vo) (userDisplayName vo)
+                            return $ USER.User authUser (userEmail vo) (userDisplayName vo) (userSite vo)
 
 ------------------------------------------------------------------------------
 

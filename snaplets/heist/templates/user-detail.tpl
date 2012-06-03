@@ -19,11 +19,42 @@
     <h2>
       <userLogin />
     </h2>
-    <p><userLogin/></p>
-    <p><userLastLoginAt/></p>
-    <p><userCreatedAt/></p>
-    <p><userEmail/></p>
-    <p><userDisplayName/></p>
+
+    <form class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label">User Name</label>
+        <div class="controls">
+          <span class="input-xlarge uneditable-input"><userLogin/></span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Display Name</label>
+        <div class="controls">
+          <span class="input-xlarge uneditable-input"><userDisplayName/></span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">User Email</label>
+        <div class="controls">
+          <span class="input-xlarge uneditable-input"><userEmail/></span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">User Site</label>
+        <div class="controls">
+          <span class="input-xlarge uneditable-input"><userSite/></span>
+        </div>
+      </div>
+
+    </form>
+
+    
+    <p>Last login: <userLastLoginAt/></p>
+    <p>User created since: <userCreatedAt/></p>
+
     <p>
       <a href="/userput">Edit</a>
     </p>
