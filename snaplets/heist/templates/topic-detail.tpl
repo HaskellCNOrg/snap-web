@@ -1,15 +1,15 @@
 <apply template="layout">
 
-  <ifNotFound>
-    <div class="alert alert-error"> 
-      <ul>
-        <li><exceptionValue/></li>
-      </ul>
-    </div>
-    <returnToHome />
-  </ifNotFound>
+<ifNotFound>
+  <div class="alert alert-error"> 
+    <ul>
+      <li><exceptionValue/></li>
+    </ul>
+  </div>
+  <returnToHome />
+</ifNotFound>
 
-  <ifFound>
+<ifFound>
 
   <article>
     <h2>
@@ -21,17 +21,26 @@
     <p><topicUpdateAt/></p>
   </article>
 
-  <!-- Show me when auther login -->
+  <!-- FIXME: Show me when has authorization.-->
   <div name="topicToolbar">
       <a href="/topicput/${oid}">Edit</a>
-
-<!--     
-      <a href="#">Share</a>
-<a href="/favorite">Save</a>
-    <a href="/topicPut">Delete</a> -->
   </div>
+  
 
 
-  </ifFound>
+</ifFound>
 
+  <bind tag="bottom-scripts">
+    <apply template="js-markdown" />
+  </bind>
+  
 </apply>
+
+ <!-- FIXME: show me when user login
+  
+  <ifLoggedIn>  
+    <a href="#">Share</a>
+    <a href="/favorite">Save</a>
+  </ifLoggedIn>
+  
+  -->
