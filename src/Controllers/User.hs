@@ -152,10 +152,15 @@ saveUserH = withAuthUser $ do
           eitherSuccess' res = case res of
                                  Left _  -> toUserDetailPage res 
                                  Right _ -> redirectToUserDetailPage
-          userVoToUser' :: UserVo -> AppHandler USER.User
-          userVoToUser' vo = do
-                            (Just authUser) <- with appAuth currentUser
-                            return $ USER.User authUser (userEmail vo) (userDisplayName vo) (userSite vo)
+
+-- | Transform @UserVo@ to @User@.
+--   Update email is not allowed thus just get from authUser
+--   because it is designed that loginName is email address.
+-- 
+userVoToUser' :: UserVo -> AppHandler USER.User
+userVoToUser' vo = do
+                  (Just authUser) <- with appAuth currentUser
+                  return $ USER.User authUser (userLogin authUser) (userDisplayName vo) (userSite vo)
 
 ------------------------------------------------------------------------------
 

@@ -12,13 +12,6 @@
     <loginErrors />
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="userEmail">>Email Name</dfLabel>
-      <div class="controls">
-        <dfInputText class="input-large" ref="userEmail" required />
-      </div>
-    </div>
-
-    <div class="control-group">
       <dfLabel class="control-label" ref="userDisplayName">>displayName</dfLabel>
       <div class="controls">
         <dfInputText class="input-large" ref="userDisplayName" />

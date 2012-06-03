@@ -36,13 +36,13 @@ topicEditForm :: Monad m => Topic -> Form Text m TopicVo
 topicEditForm t = TopicVo
     <$> "title"    .: titleValidation (text $ Just $ _title t)
     <*> "content"  .: contentValidation (text $ Just $ _content t)
-    <*> "tid"      .: checkForRequired "Fatal error happened.(tid is required)" (text $ fmap sToText (_topicId t))
+    <*> "tid"      .: checkRequired "Fatal error happened.(tid is required)" (text $ fmap sToText (_topicId t))
 
 
 -- | FIXME: is it possible doing in Monad?
 -- 
 titleValidation :: Monad m => Form Text m Text -> Form Text m Text
-titleValidation = checkForMinLength 8 . checkForRequired "title is required"
+titleValidation = checkMinLength 8 . checkRequired "title is required"
 
 contentValidation :: Monad m => Form Text m Text -> Form Text m Text
-contentValidation = checkForMinLength 10 . checkForRequired "content is required"
+contentValidation = checkMinLength 10 . checkRequired "content is required"

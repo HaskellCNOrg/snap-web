@@ -26,10 +26,12 @@ import           Models.Exception
 import           Models.Utils
 import           Application
 
--- | A lightweight alternative to @AuthUser@
+type Email = T.Text
+
+-- | A lightweight alternative to @AuthUser@. Use email prefix as login name.
 -- 
 data LoginUser = LoginUser
-    { loginName :: T.Text
+    { loginName :: Email
     , password  :: T.Text
     , repeatPassword :: T.Text
     } deriving (Show)
@@ -43,7 +45,7 @@ data LoginUser = LoginUser
 -- 
 data User = User 
     { _authUser    :: AuthUser
-    , _userEmail   :: T.Text 
+    , _userEmail   :: Email
     , _displayName :: T.Text  -- ^ FIXME: Really need display name Maybe removed?
     , _userSite    :: T.Text  -- ^ User personal site.
     } deriving (Show)
@@ -64,8 +66,8 @@ authUserCollection = u "users"
 createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
-    -- FIXME: do not hard code...
-    saveUser $ User authUser "test@test.com" "test" "http://test.com"
+    saveUser $ User authUser (loginName lu) (extractUserName lu) ""
+    where extractUserName = T.takeWhile (\a -> a /= '@') . loginName
 
 
 -- | Create a user leverage save function from snaplet-auth-mongo-backend,

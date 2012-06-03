@@ -26,11 +26,11 @@ signinForm (a,b) = LoginUser
     <*> "repeatPassword" .: text Nothing
 
 signupForm :: Monad m => (Text,Text) -> Form Text m LoginUser
-signupForm (a,b) = check "Input password must be same" samePasswordValidator $ 
+signupForm (a,b) = check "Two Input password must be same" samePasswordValidator $ 
     LoginUser
-    <$> "loginName"       .: check a requiredValidator (text Nothing)
-    <*> "password"        .: check b requiredValidator (text Nothing)
-    <*> "repeatPassword"  .: text Nothing
+    <$> "loginName"       .: (checkValidEmail . checkRequired a) (text Nothing)
+    <*> "password"        .: checkRequired b (text Nothing)
+    <*> "repeatPassword"  .: checkRequired "Please input the password again" (text Nothing)
 
 samePasswordValidator :: LoginUser -> Bool
 samePasswordValidator x = password x == repeatPassword x
@@ -42,7 +42,7 @@ samePasswordValidator x = password x == repeatPassword x
 -- 
 userDetailForm :: Monad m => User -> Form Text m UserVo
 userDetailForm u = UserVo
-    <$> "userEmail"       .: check "email is required." requiredValidator (text $ Just $ _userEmail u)
+    <$> "userEmail"       .: text (Just $ _userEmail u)
     <*> "userDisplayName" .: text (Just $ _displayName u)
     <*> "userSite"        .: text (Just $ _userSite u)
 
@@ -50,8 +50,8 @@ userDetailForm u = UserVo
 -- 
 userForm :: Monad m => Form Text m UserVo
 userForm  = UserVo
-    <$> "userEmail"          .: check "email is required." requiredValidator (text Nothing)
+    <$> "userEmail"          .: text Nothing    -- update email is disallowed.
     <*> "userDisplayName"    .: text Nothing
-    <*> "userSite"    .: text Nothing
+    <*> "userSite"           .: text Nothing
 
 ------------------------------------------------------------------

@@ -21,10 +21,11 @@
     </h2>
 
     <form class="form-horizontal">
+
       <div class="control-group">
-        <label class="control-label">User Name</label>
+        <label class="control-label">User Email</label>
         <div class="controls">
-          <span class="input-xlarge uneditable-input"><userLogin/></span>
+          <span class="input-xlarge uneditable-input"><userEmail/></span>
         </div>
       </div>
 
@@ -32,13 +33,6 @@
         <label class="control-label">Display Name</label>
         <div class="controls">
           <span class="input-xlarge uneditable-input"><userDisplayName/></span>
-        </div>
-      </div>
-
-      <div class="control-group">
-        <label class="control-label">User Email</label>
-        <div class="controls">
-          <span class="input-xlarge uneditable-input"><userEmail/></span>
         </div>
       </div>
 
