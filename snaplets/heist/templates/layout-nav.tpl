@@ -11,7 +11,7 @@
           </ifLoggedOut> 
 
           <ifLoggedIn>
-          <li><a href="/user"><loggedInUser/></a></li>
+          <li><a href="/user"><currentUser/></a></li>
           <li><a href="/signout">Sign out</a></li>
           </ifLoggedIn>
 

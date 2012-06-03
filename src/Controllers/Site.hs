@@ -24,6 +24,7 @@ import           Snap.Snaplet.Session.Backends.CookieSession
 
 import           Application
 import           Controllers.Routes
+import           Views.SharedSplices
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
@@ -37,12 +38,19 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d (Just "data/auth-sitekey.txt")
     addRoutes routes
     addAuthSplices appAuth
+    addSplices sharedSplices
     return $ App h i s d a
   where
     cookieSessionMgr' = initCookieSessionManager "data/session-sitekey.txt" "myapp-session" (Just 600)
 
 
 ------------------------------------------------------------------------------
+
+
+
+
+
+
 
 --a  <- nestSnaplet "auth" appAuth $ initJsonFileAuthManager authSettings' appSession "data/auth.json"
 --     authSettings'    = defAuthSettings { asSiteKey = "data/auth-sitekey.txt" }

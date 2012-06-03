@@ -43,7 +43,7 @@ samePasswordValidator x = password x == repeatPassword x
 userDetailForm :: Monad m => User -> Form Text m UserVo
 userDetailForm u = UserVo
     <$> "userEmail"       .: text (Just $ _userEmail u)
-    <*> "userDisplayName" .: text (Just $ _displayName u)
+    <*> "userDisplayName" .: text (Just $ _userDisplayName u)
     <*> "userSite"        .: text (Just $ _userSite u)
 
 -- | 

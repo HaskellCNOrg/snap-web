@@ -46,7 +46,7 @@ data LoginUser = LoginUser
 data User = User 
     { _authUser    :: AuthUser
     , _userEmail   :: Email
-    , _displayName :: T.Text  -- ^ FIXME: Really need display name Maybe removed?
+    , _userDisplayName :: T.Text  
     , _userSite    :: T.Text  -- ^ User personal site.
     } deriving (Show)
 
@@ -73,7 +73,7 @@ createNewUser lu = do
 -- | Create a user leverage save function from snaplet-auth-mongo-backend,
 --   without additional columns. This is not suppose to be used by upstream API.
 -- 
---   Create user without activation appoach thus login automatically.
+--   Create user without activation approach thus login automatically.
 --   Maybe use userLockedOutUntil when like to use mail activation.
 --
 createAuthUser' :: LoginUser -> Handler b (AuthManager b) AuthUser
@@ -132,7 +132,7 @@ saveUser lu = do
 userToDocument :: User -> Document
 userToDocument user =  [ "_id"          .= userId (_authUser user)
                         , "userEmail"   .= _userEmail user
-                        , "displayName" .= _displayName user
+                        , "displayName" .= _userDisplayName user
                         , "userSite"    .= _userSite user
                         ]
 
