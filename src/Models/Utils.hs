@@ -15,6 +15,7 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
+import           Data.Bson (ObjectId)
 
 ----------------------------------------------------------------
 
@@ -53,3 +54,6 @@ loggerDebug = liftIO . print
 
 
 ------------------------------------------------------------------------------
+
+textToObjectId :: T.Text -> ObjectId
+textToObjectId = read . textToS

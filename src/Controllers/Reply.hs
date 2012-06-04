@@ -26,33 +26,50 @@ import           Controllers.Topic hiding (routes)
 import           Controllers.Home (redirectToHome)
 import           Controllers.User (withAuthUser)
 import           Models.Exception 
-import           Models.Topic 
+--import           Models.Topic 
 import           Models.Utils
 import           Views.TopicForm
 import           Views.ReplyForm
 import           Views.TopicSplices
 import           Views.Utils
 import qualified Models.Topic as MT
+import qualified Models.Reply as MR
 
 
 ------------------------------------------------------------------------------
 
 routes :: [(BS.ByteString, Handler App App ())]
-routes =  [ ("/reply", Snap.method POST replyToTopic)
+routes =  [ ("/reply", Snap.method POST replyToTopicH)
           ]
 
 
 ------------------------------------------------------------------------------
 
--- | Renders the front page of the sample site.
+-- | Handler for saving reply to a topic.
 -- 
-replyToTopic :: AppHandler ()
-replyToTopic = withAuthUser $ 
+replyToTopicH :: AppHandler ()
+replyToTopicH = withAuthUser $ 
                do (view, result) <- runForm "reply-to-topic-form" replyForm
                   case result of
-                    Just reply -> redirectToHome      -- FIXME: save reply
-                    Nothing    -> do re <- try (findOneTopic' (fieldInputText "replyToTopicId" view))
-                                     renderTopicDetailPage re view
+                    Just reply -> liftIO (replyVoToReply reply) 
+                                  >>= MR.createReplyToTopic 
+                                  >> toTopicDetailAfterReply view (replyToTopicId reply)
+                    Nothing    -> toTopicDetailAfterReply view (fieldInputText "replyToTopicId" view)
 
-findOneTopic' :: T.Text -> AppHandler Topic
-findOneTopic' = findOneTopic . read . textToS
+toTopicDetailAfterReply :: View T.Text -> T.Text ->AppHandler ()
+toTopicDetailAfterReply view tid = do re <- try (findOneTopic' tid)
+                                      renderTopicDetailPage re view
+
+findOneTopic' :: T.Text -> AppHandler MT.Topic
+findOneTopic' = MT.findOneTopic . read . textToS
+
+
+------------------------------------------------------------------------------
+--
+
+replyVoToReply :: ReplyVo -> IO MR.Reply
+replyVoToReply vo = do
+    now <- getCurrentTime
+    return $ MR.Reply Nothing (textToObjectId $ replyToTopicId vo) 
+                      Nothing (replyContent vo)
+                      "dummy author" now
