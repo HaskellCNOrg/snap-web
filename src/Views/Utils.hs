@@ -18,6 +18,7 @@ import           Snap.Snaplet.Heist
 import           System.Locale
 import           Text.Digestive
 import           Text.Digestive.Heist
+import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
@@ -33,9 +34,17 @@ import           Models.Utils
 updateViewErrors :: View T.Text -> T.Text -> View T.Text
 updateViewErrors v e = v { viewErrors = viewErrors v ++ [([], e)]}
 
-
+-- | shortcut for render a page with binding DigestiveSplices
+-- 
 renderDfPage :: BS.ByteString -> View T.Text -> AppHandler ()
 renderDfPage p v = heistLocal (bindDigestiveSplices v) $ render p
+
+renderDfPageSplices :: BS.ByteString 
+                    -> View T.Text 
+                    -> (HeistState AppHandler -> HeistState AppHandler)  -- ^ extra splices usually 
+                    -> AppHandler ()
+renderDfPageSplices p v ss = heistLocal (ss . (bindDigestiveSplices v)) $ render p
+
 
 ----------------------------------------------------------------
 

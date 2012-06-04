@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
 
 module Controllers.Topic 
-       ( routes ) where
+       ( routes
+       , renderTopicDetailPage ) where
 
 import           Control.Monad
 import           Control.Monad.CatchIO (try,throw,Exception(..))
@@ -25,6 +26,7 @@ import           Models.Exception
 import           Models.Topic 
 import           Models.Utils
 import           Views.TopicForm
+import           Views.ReplyForm
 import           Views.TopicSplices
 import           Views.Utils
 import qualified Models.Topic as MT
@@ -83,7 +85,13 @@ viewTopicH = do
             findOneTopic (read . bsToS . fromJust $ tid)) >>= toTopicDetailPage
 
 toTopicDetailPage :: Either UserException Topic -> AppHandler ()    
-toTopicDetailPage result = heistLocal (bindSplices (topicDetailSplices result)) $ render "topic-detail"
+toTopicDetailPage result = do (view, _) <- runReplyForm
+                              renderTopicDetailPage result view
+
+renderTopicDetailPage result view = renderDfPageSplices 
+                                    "topic-detail" 
+                                    view 
+                                    (bindSplices (topicDetailSplices result))
 
 
 ------------------------------------------------------------------------------

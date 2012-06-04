@@ -11,7 +11,7 @@
 
 <ifFound>
 
-  <div name="topicMain">
+  <div class="topicMain">
     <article>
       <h2>
         <topicTitle />
@@ -31,18 +31,26 @@
   </div>
   
   <ifLoggedIn>
-  <div name="commentMain">
-    <dfForm class="form-horizontal" action="/comment">
-    <div class="control-group">
-
-      <div class="controls">
-        <div class="wmd-panel">
-          <div id="wmd-button-bar"></div>
-          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" />
+  <div class="replyMain">
+    <dfForm action="/reply">
+      <dfIfChildErrors>
+        <div class="alert alert-error"> 
+           <dfChildErrorList ref=""></dfChildErrorList>
         </div>
-        <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+      </dfIfChildErrors>
+
+      <div class="wmd-panel">
+        <div id="wmd-button-bar"></div>
+        <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" required />
       </div>
-    </div>
+      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+
+      <dfInputHidden ref="replyToTopicId" value="${oid}"/>
+
+      <i18n name="reply-submit">
+        <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
+      </i18n>
+
     </dfForm>
   </div>
   </ifLoggedIn>

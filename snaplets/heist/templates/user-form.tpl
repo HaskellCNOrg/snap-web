@@ -9,7 +9,6 @@
          <dfChildErrorList ref=""></dfChildErrorList>
       </div>
     </dfIfChildErrors>
-    <loginErrors />
 
     <div class="control-group">
       <dfLabel class="control-label" ref="userDisplayName">>displayName</dfLabel>

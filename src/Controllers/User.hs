@@ -52,6 +52,8 @@ redirectToUserDetailPage = redirect "/user"
 ------------------------------------------------------------------------------
 
 -- | Perform a action `AppHandler ()` within Auth user otherwise redirect to signin.
+--   FIXME: 1. Waring message
+--          2. Maybe redirect back to last page but home page.
 --
 withAuthUser :: AppHandler () -> AppHandler ()
 withAuthUser = requireUser appAuth redirectToSignin

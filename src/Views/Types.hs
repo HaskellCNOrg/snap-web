@@ -16,7 +16,8 @@ class SpliceRenderable a where
 
 --------------------------------------------------------------
 
-
+-- | FIXME: What if at some exception case, should both should content and error??
+-- 
 eitherToSplices :: SpliceRenderable a => Either UserException a -> [(T.Text, Splice AppHandler)]
 eitherToSplices (Left l) = [ ("ifFound"   , return [])
                            , ("ifNotFound", toSplice l) ]

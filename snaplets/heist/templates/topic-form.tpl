@@ -9,7 +9,6 @@
          <dfChildErrorList ref=""></dfChildErrorList>
       </div>
     </dfIfChildErrors>
-    <loginErrors />
 
     <div class="control-group">
       <dfLabel class="control-label" ref="title"><i18n name="topic-title"/></dfLabel>
@@ -24,7 +23,7 @@
       <div class="controls">
         <div class="wmd-panel">
           <div id="wmd-button-bar"></div>
-          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" />
+          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" autofocus />
         </div>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
       </div>
