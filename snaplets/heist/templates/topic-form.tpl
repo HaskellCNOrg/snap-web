@@ -2,7 +2,7 @@
 
 <div class="registration">
 
-<dfForm class="form-horizontal" action="topic">
+<dfForm class="form-horizontal" action="/topicput">
 
     <dfIfChildErrors>
       <div class="alert alert-error"> 

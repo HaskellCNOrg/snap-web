@@ -3,7 +3,7 @@
 <ifLoggedOut>
 
 <div class="registration">
-<dfForm class="form-horizontal" action="signup">
+<dfForm class="form-horizontal" action="/signup">
 
     <dfIfChildErrors>
       <div class="alert alert-error"> 

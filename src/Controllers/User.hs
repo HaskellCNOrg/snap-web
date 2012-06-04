@@ -39,8 +39,8 @@ routes =  [
           , ("/signout", method GET signout)
           ----
           , ("/user",    method GET viewUserH)
-          , ("/userput/", method GET editUserH)
-          , ("/userput/user", method POST saveUserH)
+          , ("/userput", method GET editUserH)
+          , ("/userput", method POST saveUserH)
           ]
 
 paramUserId :: BS.ByteString

@@ -36,7 +36,7 @@ routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topic/:topicid", Snap.method GET viewTopicH)    -- view a topic
           , ("/topicput/:topicid", Snap.method GET editTopicH) -- show detail for editing
-          , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes.
+          , ("/topicput", Snap.method POST saveTopicH)   -- save editing changes. MAYBE: combine with topicput-GET.
           ]
 
 topicIdParam :: BS.ByteString
@@ -90,14 +90,12 @@ toTopicDetailPage result = heistLocal (bindSplices (topicDetailSplices result)) 
                     
 -- | Edit a topic.
 -- 
--- TODO:
---  1. same problem with viewTopicH
 -- 
 editTopicH :: AppHandler ()
 editTopicH = withAuthUser $ do
     tid <- decodedParamMaybe topicIdParam
-    when (isNothing tid) (toTopicDetailPage (Left $ UserException "tid not specifed"))
-    toEditTopicPageOr' =<< try (findOneTopic (read $ bsToS $ fromJust tid))
+    try (do when (isNothing tid) (toTopicDetailPage (Left $ UserException "tid not specifed"))
+            findOneTopic (read $ bsToS $ fromJust tid)) >>= toEditTopicPageOr'
 
 toEditTopicPageOr' :: Either UserException Topic -> AppHandler ()    
 toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
