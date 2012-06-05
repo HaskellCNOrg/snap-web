@@ -43,7 +43,7 @@ renderDfPageSplices :: BS.ByteString
                     -> View T.Text 
                     -> (HeistState AppHandler -> HeistState AppHandler)  -- ^ extra splices usually 
                     -> AppHandler ()
-renderDfPageSplices p v ss = heistLocal (ss . (bindDigestiveSplices v)) $ render p
+renderDfPageSplices p v ss = heistLocal (ss . bindDigestiveSplices v) $ render p
 
 
 ----------------------------------------------------------------

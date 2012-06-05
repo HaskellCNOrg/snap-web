@@ -9,7 +9,6 @@ import           Control.Monad.Trans
 import           Data.Maybe (isJust)
 import           Text.Templating.Heist
 import qualified Data.Text as T
-import           Data.Bson (ObjectId)
 
 import Application
 import Models.Exception
@@ -77,7 +76,7 @@ renderTopic tag = do
 
 
 allReplyPerTopicSplice :: [Reply] -> Splice AppHandler -- [(T.Text, Splice AppHandler)]
-allReplyPerTopicSplice rs = mapSplices ss' rs
+allReplyPerTopicSplice = mapSplices ss'
     where ss' r = do
                   usr <- lift$ findOneUser (_replyAuthor r)
                   runChildrenWithText 

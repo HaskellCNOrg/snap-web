@@ -11,7 +11,7 @@ hlint:
 	hlint src/ --report
 
 ###########################
-## Enable Development mode
+## DEVELOPMENT
 ## 
 ###########################
 conf-dev:
@@ -25,11 +25,13 @@ bp: build-dev preview
 rp: clean build-dev preview
 
 ###########################
-## production build
-## Maybe TODO:
-##       0. Maybe enhance Heist in order to compress HTML
+## PRODUCTION
+## Maybe TODO: (third party or all in Haskell?)
+##       0. Maybe enhance Heist in order to compress HTML. it is due to parseHTML in xmlhtml.
 ##       1. create new dir _sites
-##       2. cp files and compress JS/CSS, third party or Haskell?
+##       2. combine & compress JS; replace related links in templates.
+##       3. generate main.css via lessc; replace related links in templates.
+##
 ###########################
 
 build:

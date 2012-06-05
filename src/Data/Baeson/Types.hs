@@ -55,7 +55,7 @@ import qualified Data.ByteString.Lazy as BSL
 import qualified Data.CompactString.UTF8 as CS
 
 import qualified Data.Bson as BSON(Value(..), Document, look, Field(..),
-                                   Binary(..))
+                                   Binary(..), ObjectId(..))
 
 data Result a = Error String
               | Success a
@@ -440,3 +440,14 @@ document = BSON.Doc
 
 mkDotName :: [T.Text] -> CS.CompactString
 mkDotName = textToCompactString . T.intercalate "."
+
+------------------------------------------------------ ObjectId Impl
+
+instance FromBSON BSON.ObjectId where
+  fromBSON (BSON.ObjId x) = pure x
+  {-# INLINE fromBSON #-}
+
+instance ToBSON BSON.ObjectId where
+  toBSON = BSON.ObjId
+  {-# INLINE toBSON #-}
+

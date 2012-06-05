@@ -22,16 +22,16 @@
 7. [X] Extra user fileds, e.g. email, homeUrl.
        signup / user detail page.
 
-- [ ] authorization, user roles??
-
-- [ ] Styles
-
-- [ ] Be able to comment
+- [X] Be able to comment
+- [ ] FIX: topic author column shall be ObjectId but Text
 - [ ] be able to comment to comment
 
-- [ ] Tag + Category suppert
-    - allow user add tag on the fly
-    - Category is predifined.
+- [ ] authorization, user roles??
+- [ ] Styles
+- [ ] pagination
+- Tag + Category suppert
+    - [ ] allow user add tag on the fly when post topic
+    - [ ] Category is predifined.
 
 - [ ] Message to user when new comments
 - [ ] mail integration (active, reset, etc..)
@@ -74,3 +74,5 @@
 ## Dev question
 
 - The `when.. throw.. or continue` is very impretive. could be more functional?
+- DB fatal error when type is `ObjectId` but is text in DB actually.
+  (type error is basiacly because how ObjectId implements FromBSON and ToBSON)

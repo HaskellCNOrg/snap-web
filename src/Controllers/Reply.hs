@@ -3,33 +3,22 @@
 module Controllers.Reply 
        ( routes ) where
 
-import           Control.Monad
-import           Control.Monad.CatchIO (try,throw,Exception(..))
 import           Control.Monad.Trans
-import           Data.Maybe (fromJust, isNothing)
+import           Control.Monad.CatchIO (try)
 import           Data.Time
 import           Snap.Core
-import qualified Snap.Core as Snap
 import           Snap.Snaplet
-import           Snap.Core
-import           Snap.Snaplet
-import           Snap.Snaplet.Auth
-import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
-import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
+import qualified Snap.Core as Snap
 
 import           Application
 import           Controllers.Topic hiding (routes)
 import           Controllers.User (withAuthUser)
-import           Models.Exception 
 import           Models.Utils
-import           Views.TopicForm
 import           Views.ReplyForm
-import           Views.TopicSplices
-import           Views.Utils
 import qualified Models.Topic as MT
 import qualified Models.Reply as MR
 import qualified Models.User as MU
@@ -70,7 +59,7 @@ findOneTopic' = MT.findOneTopic . read . textToS
 replyVoToReply :: ReplyVo -> AppHandler MR.Reply
 replyVoToReply vo = do
     now <- liftIO getCurrentTime
-    (Just userId) <- MU.findCurrentUserId
+    (Just uid') <- MU.findCurrentUserId
     return $ MR.Reply Nothing (textToObjectId $ replyToTopicId vo) 
                       Nothing (replyContent vo)
-                      userId now
+                      uid' now

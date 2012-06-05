@@ -17,7 +17,6 @@ import           Data.Time (UTCTime)
 
 import           Application
 import           Models.Exception
-import           Models.Types
 
 --import           Control.Monad.Trans
 
@@ -92,7 +91,7 @@ sortByUpdateAtDesc = [ "updateAt" =: -1 ]
 topicToDocument :: Topic -> Document
 topicToDocument topic = case _topicId topic of 
                           Nothing -> docs
-                          Just x  -> ("_id" .= _topicId topic) : docs
+                          Just x  -> ("_id" .= x) : docs
                         where docs = 
                                 [  "title"   .= _title topic
                                 , "content"  .= _content topic

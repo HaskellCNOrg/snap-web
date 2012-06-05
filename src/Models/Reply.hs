@@ -8,7 +8,6 @@ import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
 import           Database.MongoDB
-import qualified Data.Bson as BSON
 import qualified Database.MongoDB as DB
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
@@ -17,7 +16,8 @@ import           Data.Time (UTCTime)
 
 import           Application
 import           Models.Exception
-import           Models.Types
+--import           Models.Types
+
 
 --import           Control.Monad.Trans
 

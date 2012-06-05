@@ -6,15 +6,14 @@ module Controllers.Topic
        , redirectTopicDetailPage ) where
 
 import           Control.Monad
-import           Control.Monad.CatchIO (try,throw,Exception(..))
 import           Control.Monad.Trans
+import           Control.Monad.CatchIO (throw, try)
 import           Data.Maybe (fromJust, isNothing)
 import           Data.Time
 import           Snap.Core
 import qualified Snap.Core as Snap
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
-import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
 import           Text.Templating.Heist
@@ -91,6 +90,7 @@ toTopicDetailPage :: Either UserException Topic -> AppHandler ()
 toTopicDetailPage result = do (view, _) <- runReplyForm
                               renderTopicDetailPage result view
 
+renderTopicDetailPage :: Either UserException Topic -> View T.Text -> AppHandler ()
 renderTopicDetailPage result view = renderDfPageSplices 
                                     "topic-detail" 
                                     view 

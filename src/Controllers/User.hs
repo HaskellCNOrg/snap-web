@@ -7,7 +7,6 @@ module Controllers.User
        , withAuthUser ) where
 
 ------------------------------------------------------------------------------
-import           Control.Monad.Trans
 import           Control.Applicative ((<$>), (<*>))
 import           Control.Monad.CatchIO (try)
 import           Data.Text (Text)
@@ -27,7 +26,6 @@ import           Models.Exception
 import           Views.UserForm
 import           Views.Utils
 import           Views.UserSplices
-import           Views.Types
 import qualified Models.User as USER
 
 
@@ -42,9 +40,6 @@ routes =  [
           , ("/userput", method GET editUserH)
           , ("/userput", method POST saveUserH)
           ]
-
-paramUserId :: BS.ByteString
-paramUserId = "userid"
 
 redirectToUserDetailPage :: AppHandler ()
 redirectToUserDetailPage = redirect "/user"
@@ -145,7 +140,7 @@ toUserFormPage = renderDfPage "user-form"
 -- 
 saveUserH :: AppHandler ()
 saveUserH = withAuthUser $ do
-    (view, result) <- runForm "edit-user-form" userForm
+    (_, result) <- runForm "edit-user-form" userForm
     case result of
       Just usrVo -> doUpdateUser usrVo
       Nothing    -> editUserH  -- return to detail view page.

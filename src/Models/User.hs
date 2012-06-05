@@ -70,7 +70,7 @@ createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
     saveUser $ User (Just authUser) (loginName lu) (extractUserName lu) ""
-    where extractUserName = T.takeWhile (\a -> a /= '@') . loginName
+    where extractUserName = T.takeWhile (/= '@') . loginName
 
 
 -- | Create a user leverage save function from snaplet-auth-mongo-backend,

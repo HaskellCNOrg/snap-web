@@ -2,15 +2,14 @@
 
 module Views.ReplyForm where
 
-import Text.Digestive.Snap
 import Control.Applicative ((<$>), (<*>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Snap
 import Text.Digestive
+import Text.Digestive.Snap
 
 import Views.Validators
-import Models.Utils
 
 
 -- | 
