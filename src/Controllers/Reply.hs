@@ -53,7 +53,7 @@ replyToTopicH = withAuthUser $
                   case result of
                     Just reply -> liftIO (replyVoToReply reply) 
                                   >>= MR.createReplyToTopic 
-                                  >> toTopicDetailAfterReply view (replyToTopicId reply)
+                                  >> toTopicDetailAfterReply view (replyToTopicId reply)  -- FIXME: shall be redirect otherwise URL doest change.
                     Nothing    -> toTopicDetailAfterReply view (fieldInputText "replyToTopicId" view)
 
 toTopicDetailAfterReply :: View T.Text -> T.Text ->AppHandler ()

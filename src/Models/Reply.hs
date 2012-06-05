@@ -46,6 +46,19 @@ createReplyToTopic reply = do
     either failureToUE (const $ return ()) res
 
 
+-----------------------------------------------------------------------
+
+-- | Save a reply which is to reply.
+--  
+findReplyPerTopic :: ObjectId -> AppHandler [Reply]
+findReplyPerTopic tid = do
+    let queryReply = select [ "topic_id" =: tid ] replyCollection
+    res <- eitherWithDB $ rest =<< find (queryReply { sort = sortByCreateAtDesc })
+    liftIO $ mapM replyFromDocumentOrThrow $ either (const []) id res
+
+sortByCreateAtDesc :: Order
+sortByCreateAtDesc = [ "create_at" =: -1 ]
+
 ------------------------------------------------------------------------------
 
 -- | Transform @Reply@ to mongoDB document.
@@ -56,7 +69,7 @@ replyToDocument reply = case _replyId reply of
                           Nothing -> docs
                           Just x  -> ("_id" .= _replyId reply) : docs
                         where docs = 
-                                [  "topic_id"  .= _replyToTopicId reply
+                                [ "topic_id"  .= _replyToTopicId reply
                                 , "reply_id"   .= _replyToReplyId reply
                                 , "content"    .= _replyContent reply
                                 , "author_id"  .= _replyAuthor reply
@@ -65,18 +78,18 @@ replyToDocument reply = case _replyId reply of
 
 -- | Transform mongo Document to be a reply parser.
 -- 
---documentToreply :: Document -> Parser reply
---documentToreply d = reply
---                    <$> d .: "_id"
---                    <*> d .: "title"
---                    <*> d .: "content"
---                    <*> d .: "author"
---                    <*> d .: "createAt" 
---                    <*> d .: "updateAt"
+documentToreply :: Document -> Parser Reply
+documentToreply d = Reply
+                    <$> d .: "_id"
+                    <*> d .: "topic_id"
+                    <*> d .: "reply_id"
+                    <*> d .: "content"
+                    <*> d .: "author_id" 
+                    <*> d .: "create_at"
 
 ---- | parse the reply document
 ---- 
---replyFromDocumentOrThrow :: Document -> IO reply
---replyFromDocumentOrThrow d = case parseEither documentToreply d of
---    Left e  -> throw $ BackendError $ show e
---    Right r -> return r
+replyFromDocumentOrThrow :: Document -> IO Reply
+replyFromDocumentOrThrow d = case parseEither documentToreply d of
+    Left e  -> throw $ BackendError $ show e
+    Right r -> return r

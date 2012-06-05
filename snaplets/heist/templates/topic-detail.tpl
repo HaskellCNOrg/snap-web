@@ -12,7 +12,8 @@
 <ifFound>
 
   <div class="topicMain">
-    <article>
+
+    <article class="topic">
       <h2>
         <topicTitle />
       </h2>
@@ -21,6 +22,16 @@
       <p><topicCreateAt/></p>
       <p><topicUpdateAt/></p>
     </article>
+
+    <div class="replyPerTopic">
+      <replyPerTopic>
+        <section class="repyly">
+          <p><replyContent/></p>
+          <p><replyAuthor/></p>
+          <p><replyCreateAt/></p>
+        </section>
+      </replyPerTopic>
+    </div>
 
     <!-- FIXME: Show me when has authorization.-->
     <ifLoggedIn>
@@ -31,7 +42,7 @@
   </div>
   
   <ifLoggedIn>
-  <div class="replyMain">
+  <div class="replyEditor">
     <dfForm action="/reply">
       <dfIfChildErrors>
         <div class="alert alert-error"> 
