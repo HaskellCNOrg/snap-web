@@ -23,10 +23,8 @@ import qualified Data.Text as T
 
 import           Application
 import           Controllers.Topic hiding (routes)
-import           Controllers.Home (redirectToHome)
 import           Controllers.User (withAuthUser)
 import           Models.Exception 
---import           Models.Topic 
 import           Models.Utils
 import           Views.TopicForm
 import           Views.ReplyForm
@@ -34,6 +32,7 @@ import           Views.TopicSplices
 import           Views.Utils
 import qualified Models.Topic as MT
 import qualified Models.Reply as MR
+import qualified Models.User as MU
 
 
 ------------------------------------------------------------------------------
@@ -51,9 +50,10 @@ replyToTopicH :: AppHandler ()
 replyToTopicH = withAuthUser $ 
                do (view, result) <- runForm "reply-to-topic-form" replyForm
                   case result of
-                    Just reply -> liftIO (replyVoToReply reply) 
+                    Just reply -> replyVoToReply reply
                                   >>= MR.createReplyToTopic 
-                                  >> toTopicDetailAfterReply view (replyToTopicId reply)  -- FIXME: shall be redirect otherwise URL doest change.
+                                  >> redirectTopicDetailPage ( textToS $ replyToTopicId reply)  
+                                     -- shall be redirect otherwise URL doest change.
                     Nothing    -> toTopicDetailAfterReply view (fieldInputText "replyToTopicId" view)
 
 toTopicDetailAfterReply :: View T.Text -> T.Text ->AppHandler ()
@@ -67,9 +67,10 @@ findOneTopic' = MT.findOneTopic . read . textToS
 ------------------------------------------------------------------------------
 --
 
-replyVoToReply :: ReplyVo -> IO MR.Reply
+replyVoToReply :: ReplyVo -> AppHandler MR.Reply
 replyVoToReply vo = do
-    now <- getCurrentTime
+    now <- liftIO getCurrentTime
+    (Just userId) <- MU.findCurrentUserId
     return $ MR.Reply Nothing (textToObjectId $ replyToTopicId vo) 
                       Nothing (replyContent vo)
-                      "dummy author" now
+                      userId now

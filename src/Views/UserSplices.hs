@@ -33,9 +33,9 @@ userDetailSplices = eitherToSplices
 -- 
 renderUser :: User -> Splice AppHandler
 renderUser user = runChildrenWithText
-                     [ ("userLogin",       userLogin $ _authUser user)
-                     , ("userLastLoginAt", formatUTCTime' $ userLastLoginAt $ _authUser user)
-                     , ("userCreatedAt",   formatUTCTime' $ userCreatedAt $ _authUser user)
+                     [ ("userLogin",       maybe "" userLogin $ _authUser user)
+                     , ("userLastLoginAt", maybe "" (formatUTCTime' . userLastLoginAt) $ _authUser user)
+                     , ("userCreatedAt",   maybe "" (formatUTCTime' . userCreatedAt) $ _authUser user)
                      , ("userEmail",       _userEmail user)
                      , ("userDisplayName", _userDisplayName user)
                      , ("userSite", _userSite user) ]

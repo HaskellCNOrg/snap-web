@@ -2,7 +2,8 @@
 
 module Controllers.Topic 
        ( routes
-       , renderTopicDetailPage ) where
+       , renderTopicDetailPage
+       , redirectTopicDetailPage ) where
 
 import           Control.Monad
 import           Control.Monad.CatchIO (try,throw,Exception(..))
@@ -46,6 +47,12 @@ topicIdParam = "topicid"
 
 ------------------------------------------------------------------------------
 
+
+redirectTopicDetailPage :: String -> AppHandler ()
+redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
+
+------------------------------------------------------------------------------
+
 -- | Renders the front page of the sample site.
 -- 
 createTopicH :: AppHandler ()
@@ -66,13 +73,9 @@ doCreateTopic' tv = do
                     Right t -> redirectTopicDetailPage (topicIdToString t)
 
 
-
-                   
 toTopicFormPage :: View T.Text -> AppHandler ()
 toTopicFormPage = renderDfPage "topic-form"
 
-redirectTopicDetailPage :: String -> AppHandler ()
-redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
 
 ------------------------------------------------------------------------------
                     

@@ -28,7 +28,7 @@ data Reply = Reply
     , _replyToTopicId :: ObjectId        -- ^ The Topic that reply to
     , _replyToReplyId :: Maybe ObjectId  -- ^ maybe reply to a reply
     , _replyContent   :: T.Text
-    , _replyAuthor    :: T.Text
+    , _replyAuthor    :: ObjectId
     , _replyCreateAt  :: UTCTime
     -- MAYBE: column for soft deletion.
     } deriving (Show)

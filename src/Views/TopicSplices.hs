@@ -15,6 +15,7 @@ import Application
 import Models.Exception
 import Models.Topic
 import Models.Reply
+import Models.User
 import Views.MarkdownSplices
 import Views.Types
 import Views.Utils
@@ -77,7 +78,10 @@ renderTopic tag = do
 
 allReplyPerTopicSplice :: [Reply] -> Splice AppHandler -- [(T.Text, Splice AppHandler)]
 allReplyPerTopicSplice rs = mapSplices ss' rs
-    where ss' r = runChildrenWithText 
-                    [ ("replyAuthor", _replyAuthor r)
+    where ss' r = do
+                  usr <- lift$ findOneUser (_replyAuthor r)
+                  runChildrenWithText 
+                    [ ("replyAuthor",   _userDisplayName usr)
                     , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)
                     , ("replyContent", _replyContent r) ]
+          

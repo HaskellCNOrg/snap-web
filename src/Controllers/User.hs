@@ -162,7 +162,7 @@ saveUserH = withAuthUser $ do
 userVoToUser' :: UserVo -> AppHandler USER.User
 userVoToUser' vo = do
                   (Just authUser) <- with appAuth currentUser
-                  return $ USER.User authUser (userLogin authUser) (userDisplayName vo) (userSite vo)
+                  return $ USER.User (Just authUser) (userLogin authUser) (userDisplayName vo) (userSite vo)
 
 ------------------------------------------------------------------------------
 

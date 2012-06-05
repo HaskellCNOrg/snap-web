@@ -6,6 +6,9 @@ module Models.User
     , createNewUser
     , loginUser
     , findCurrentUser
+    , findCurrentUserId
+    , findCurrentAuthUser
+    , findOneUser
     , saveUser ) where
 
 import           Control.Applicative ((<$>), (<*>), pure)
@@ -44,7 +47,7 @@ data LoginUser = LoginUser
 --   which will fresh out our extension.
 -- 
 data User = User 
-    { _authUser    :: AuthUser
+    { _authUser    :: Maybe AuthUser  -- ^ Maybe type because dont need te fetch sometime.
     , _userEmail   :: Email
     , _userDisplayName :: T.Text  
     , _userSite    :: T.Text  -- ^ User personal site.
@@ -66,7 +69,7 @@ authUserCollection = u "users"
 createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
-    saveUser $ User authUser (loginName lu) (extractUserName lu) ""
+    saveUser $ User (Just authUser) (loginName lu) (extractUserName lu) ""
     where extractUserName = T.takeWhile (\a -> a /= '@') . loginName
 
 
@@ -102,17 +105,33 @@ loginUser lu = do
 
 ------------------------------------------------------------------------------
 
--- | NOTES: Assume this handler will be used after login. a.k.a will be used in @withAuthUser@.
+-- | NOTES: Assume those handlers will be used after login. a.k.a will be used in @withAuthUser@.
 --   Maybe improve in future.
 -- 
 findCurrentUser :: AppHandler User
 findCurrentUser = do 
-                    (Just authUser) <- with appAuth currentUser
-                    res <- findOneUser authUser
-                    either failureToUE (liftIO . userFromDocumentOrThrow (userToTopic authUser)) res
-                  where findOneUser lu = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid lu ] authUserCollection)
-                        oid           = SM.userIdToObjectId . fromJust . userId
+                    authUser <- findCurrentAuthUser
+                    res <- findUser' authUser
+                    either failureToUE (userFromDoc authUser) res
+                  where findUser' = withFindUser' . oid
+                        oid       = SM.userIdToObjectId . fromJust . userId
+                        userFromDoc au = liftIO . userFromDocumentOrThrow (userToTopic $ Just au)
 
+findCurrentAuthUser :: AppHandler AuthUser
+findCurrentAuthUser = liftM fromJust (with appAuth currentUser)
+
+findCurrentUserId :: AppHandler (Maybe ObjectId)
+findCurrentUserId = liftM (join . fmap getUserId) (with appAuth currentUser)
+
+
+-- | Find One User
+-- 
+findOneUser :: ObjectId -> AppHandler User
+findOneUser oid = do
+    res <- withFindUser' oid
+    either failureToUE (liftIO . userFromDocumentOrThrow (userToTopic Nothing)) res
+
+withFindUser' oid = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid ] authUserCollection)
 
 ------------------------------------------------------------------------------
 
@@ -127,10 +146,10 @@ saveUser lu = do
 ------------------------------------------------------------------------------
 
 -- | Transform @User@ to mongoDB document.
---   Nothing of id mean new topic thus empty "_id" let mongoDB generate objectId.
+--   Assume "_id" already exists because AuthUser should be created before.
 -- 
 userToDocument :: User -> Document
-userToDocument user =  [ "_id"          .= userId (_authUser user)
+userToDocument user =  [ "_id"          .= userId (fromJust $ _authUser user)
                         , "userEmail"   .= _userEmail user
                         , "displayName" .= _userDisplayName user
                         , "userSite"    .= _userSite user
@@ -139,7 +158,7 @@ userToDocument user =  [ "_id"          .= userId (_authUser user)
 
 -- | Kind of ORM.
 -- 
-userToTopic :: AuthUser -> Document -> Parser User
+userToTopic :: Maybe AuthUser -> Document -> Parser User
 userToTopic au d = User 
                    <$> pure au
                    <*> d .: "userEmail"
@@ -155,6 +174,8 @@ userFromDocumentOrThrow f d = case parseEither f d of
 
 ------------------------------------------------------------------------------
 
---getUserIdText :: User -> Maybe T.Text
---getUserIdText = fmap unUid . userId . _authUser
+getUserId :: AuthUser -> Maybe ObjectId
+getUserId = fmap SM.userIdToObjectId . userId
 
+--getUserDisplayName :: ObjectId -> AppHandler T.Text
+--getUserDisplayName = liftM _userDisplayName . findOneUser
