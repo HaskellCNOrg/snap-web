@@ -34,11 +34,16 @@ import qualified Models.Topic as MT
 
 ------------------------------------------------------------------------------
 
+-- | READ: the similarity is a little bit trick because of
+--         1. want to separate create and save handler
+--         2. action name (topic-form.tpl) is relative path'topic'
+--            therefore it could be /topic or /topicput/topic base last URL.
+-- 
 routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topic/:topicid", Snap.method GET viewTopicH)    -- view a topic
           , ("/topicput/:topicid", Snap.method GET editTopicH) -- show detail for editing
-          , ("/topicput", Snap.method POST saveTopicH)   -- save editing changes. MAYBE: combine with topicput-GET.
+          , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes. MAYBE: combine with topicput-GET.
           ]
 
 topicIdParam :: BS.ByteString

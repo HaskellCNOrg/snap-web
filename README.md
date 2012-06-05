@@ -23,9 +23,12 @@
        signup / user detail page.
 
 - [X] Be able to comment
-- [ ] FIX: topic author column shall be ObjectId but Text
+- [X] FIX: topic author column shall be ObjectId but Text
 - [ ] be able to comment to comment
+- [ ] Markdown does support Chinese!!???
 
+
+- [ ] Highlight error on input box
 - [ ] authorization, user roles??
 - [ ] Styles
 - [ ] pagination

@@ -42,7 +42,7 @@ topicEditForm t = TopicVo
 -- | FIXME: is it possible doing in Monad?
 -- 
 titleValidation :: Monad m => Form Text m Text -> Form Text m Text
-titleValidation = checkMinLength 8 . checkRequired "title is required"
+titleValidation = checkMinLength 5 . checkRequired "title is required"
 
 contentValidation :: Monad m => Form Text m Text -> Form Text m Text
 contentValidation = checkMinLength 10 . checkRequired "content is required"
