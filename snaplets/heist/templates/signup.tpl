@@ -15,7 +15,7 @@
     <div class="control-group">
       <dfLabel class="control-label" ref="loginName"><i18n name="user-email"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-large" ref="loginName" required />
+        <dfInputText class="input-large" ref="loginName" type="email" required autofocus />
       </div>
     </div>
 
