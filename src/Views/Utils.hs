@@ -27,6 +27,7 @@ import qualified Data.Text.Encoding as T
 
 import           Application
 import           Models.Utils
+import           Views.DigestiveFunctorSplicesExt
 
 ----------------------------------------------------------------
 -- Utils for Digestive Functor form
@@ -37,7 +38,9 @@ updateViewErrors v e = v { viewErrors = viewErrors v ++ [([], e)]}
 -- | shortcut for render a page with binding DigestiveSplices
 -- 
 renderDfPage :: BS.ByteString -> View T.Text -> AppHandler ()
-renderDfPage p v = heistLocal (bindDigestiveSplices v) $ render p
+renderDfPage p v = renderDfPageSplices p v (bindSplice "dfChildErrorListRef" $ dfChildErrorListRef v)
+    --heistLocal ( . bindDigestiveSplices v) $ 
+                   --render p
 
 renderDfPageSplices :: BS.ByteString 
                     -> View T.Text 
