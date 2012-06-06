@@ -15,6 +15,7 @@ import           Text.Pandoc
 import           Text.Templating.Heist.Splices.Markdown
 import qualified Text.XmlHtml as X
 import           Control.Monad.CatchIO
+import qualified Codec.Binary.UTF8.String as UTF8
 
 
 ----------------------------------------------------------------------
@@ -36,8 +37,8 @@ markdownToHtmlString :: T.Text -> BS.ByteString
 markdownToHtmlString = BS.pack . writeDoc . readDoc . tabFilter4 . T.unpack
 
 readDoc :: String -> Pandoc
-readDoc = readMarkdown defaultParserState
+readDoc = readMarkdown defaultParserState 
 
 writeDoc :: Pandoc -> String
-writeDoc = writeHtmlString defaultWriterOptions
+writeDoc = UTF8.encodeString . writeHtmlString defaultWriterOptions
 

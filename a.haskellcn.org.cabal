@@ -47,7 +47,9 @@ Executable ahaskellcnorg
     containers                   >= 0.4   && < 0.5,
     compact-string-fix           >= 0.3   && < 0.4,
     old-locale                   >= 1.0   && < 1.1,
-    pandoc                       >= 1.9   && < 2.0
+    pandoc                       >= 1.9   && < 2.0,
+    utf8-string                  >= 0.3.7 && < 0.4
+
 
 
   if flag(development)
