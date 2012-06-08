@@ -5,40 +5,44 @@
 
 ## Impl TODOS
 
-1. [X] dig details of snaplet-auth, valitation checking.
+(@) [X] dig details of snaplet-auth, valitation checking.
     - directly display error msg from snaplet-auth
-2. [X] use mongoDB auth backend rather than JSON
-    2.1 [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
+(@) [X] use mongoDB auth backend rather than JSON
+    - [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
 
-3. [X] Be able to do post
-4. [X] list posts in home page
-5. [X] Be able to view Post detail page.
-6. [X] Integrate with Markdown
-7. [X] Be able to edit post.
-    - [X] 7.1 unfiy those 3 utils 
-    - [ ] 7.2 display time per client. check example?
+(@) [X] Be able to do post
+(@) [X] list posts in home page
+(@) [X] Be able to view Post detail page.
+(@) [X] Integrate with Markdown
+(@) [X] Be able to edit post.
+    - [X] unfiy those 3 utils 
+    - [ ] display time per client. check example?
           Seems node-club display time per server.
-8. [X] Extra user fileds, e.g. email, homeUrl.
-       signup / user detail page.
-9. [X] Be able to comment
-10. [X] FIX: Reply author column shall be ObjectId but Text
-11. [X] Markdown does support Chinese!!???
+(@) [X] Extra user fileds, e.g. email, homeUrl.
+        signup / user detail page.
+(@) [X] Be able to comment
+(@) [X] FIX: Reply author column shall be ObjectId but Text
+(@) [X] Markdown does support Chinese!!???
 
-- [ ] be able to comment to comment
+(@) [ ] be able to comment to comment
+    - [ ] group comments
 
-- [X] Highlight error on input box
+- [/] Highlight error on input box
       a fix at private branch.
       
-- [ ] authorization, user roles??
-- [ ] Styles
-- [ ] pagination
-- Tag + Category suppert
-    - [ ] allow user add tag on the fly when post topic
-    - [ ] Category is predifined.
-
+- [ ] Tag allow user add tag on the fly when post topic
 - [ ] FIX: topic author column shall be ObjectId but Text
+
+- [ ] pagination
 - [ ] Message to user when new comments
+- [ ] Styles
 - [ ] mail integration (active, reset, etc..)
+
+- [ ] authorization, user roles??
+    - [ ] just config to file like node_club
+    - [ ] database integration.
+
+- [ ] Category is predifined.
 - [ ] sub folders for tpl?
 
 ### Makefile
@@ -49,31 +53,23 @@
 
 ### Snap Technical
 
-- [ ] compress html (remove extra space and comments. )
-      paresHTML (seems parseHTML from xmlhtml reads 'return' and extra space as a node??)
+(@) compress html
+    - paresHTML (seems parseHTML from xmlhtml reads 'return' and extra space as a node??)
+    - to make thing simply, just remove extra space/line break and comments.
 
 ## couple of notes
-  - rm personal section from sidebar to settings.
-    (page probably need to be re-design)
-  - show "star person" at sidebar top
-  - rm "score board" from sidebar.
-  - redesign write post / comment panel
-    + preview on the fly?
-    + display tag right under input box.
-  - customize bootstrap css which is un-necessary large.
-  - rm '个性签名' at setting
-  - (optional) allow user add tag?
-  - (optional) show person score like stackoverflow
-  - (optional) mv tags to sidebar.
-  - (optional) do not display click count / last update.
-  - good examples
-    + stackoverflow
-    + tumblr.com
-
-## Know bugs
-  -  annoy message ("follow myself") when follow people.
-  - not display correctly when admin modified post of someone else.
-     (It shows modify my author rather than admin)
+- [X] rm personal section from sidebar to settings.
+      (page probably need to be re-design)
+- [X] show "star person" at sidebar top
+- [X] rm "score board" from sidebar.
+- redesign write post / comment panel
+    - [X] preview on the fly?
+    - [ ] display tag right under input box.
+- [ ] customize bootstrap css which is un-necessary large.
+- [ ] allow user add tag?
+- [ ] show person score like stackoverflow
+- [ ] mv tags to sidebar.
+- [ ] do not display click count.
 
 ## Dev question
 
