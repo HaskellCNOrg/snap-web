@@ -39,12 +39,13 @@ updateViewErrors v e = v { viewErrors = viewErrors v ++ [([], e)]}
 renderDfPage :: BS.ByteString -> View T.Text -> AppHandler ()
 renderDfPage p v = heistLocal (bindDigestiveSplices v) $ render p
 
+-- | 
+-- 
 renderDfPageSplices :: BS.ByteString 
                     -> View T.Text 
                     -> (HeistState AppHandler -> HeistState AppHandler)  -- ^ extra splices usually 
                     -> AppHandler ()
 renderDfPageSplices p v ss = heistLocal (ss . bindDigestiveSplices v) $ render p
-
 
 ----------------------------------------------------------------
 
@@ -60,8 +61,11 @@ decodedParamMaybe p = forceNonEmpty <$> getParam p
 
 -- | force Just "" to be Nothing during decode.
 -- 
-decodedParamText :: MonadSnap m => BS.ByteString -> m (Maybe T.Text)
-decodedParamText p = fmap T.decodeUtf8 <$> forceNonEmpty <$>getParam p
+decodedParamText :: MonadSnap m => BS.ByteString -> m T.Text
+decodedParamText = fmap T.decodeUtf8 . decodedParam
+
+decodedParamTextMaybe :: MonadSnap m => BS.ByteString -> m (Maybe T.Text)
+decodedParamTextMaybe p = fmap T.decodeUtf8 <$> forceNonEmpty <$> getParam p
 
 ------------------------------------------------------------------------------
 

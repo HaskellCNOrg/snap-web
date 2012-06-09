@@ -74,7 +74,7 @@ doCreateTopic' tv = do
                   case topic of 
                     Left e  -> writeText $ showUE e 
                                -- FIXME:  return to detail edit page with errors.
-                    Right t -> redirectTopicDetailPage (topicIdToString t)
+                    Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
 
 toTopicFormPage :: View T.Text -> AppHandler ()
@@ -141,7 +141,7 @@ doUpdateTopic' tv = do
                                    case result of 
                                          Left e  -> writeText $ showUE e 
                                                      -- FIXME:  return to detail edit page with errors.
-                                         Right t -> redirectTopicDetailPage (topicIdToString t)
+                                         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
 ------------------------------------------------------------------------------
 

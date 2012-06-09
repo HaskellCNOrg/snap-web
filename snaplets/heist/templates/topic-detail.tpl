@@ -25,51 +25,45 @@
 
     <div class="replyPerTopic">
       <replyPerTopic>
-        <section class="repyly">
+        <section class="reply">
           <p><replyContent/></p>
           <p><replyAuthor/></p>
           <p><replyCreateAt/></p>
+
+          <p class="replyOfReply"></p>
+
+          <ifLoggedIn>
+            <!-- JS impl in @initReplyToReplyBtn@ -->
+            <p><a href="#" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}">Add Comment</a></p>
+          </ifLoggedIn>
+
         </section>
       </replyPerTopic>
     </div>
 
     <!-- FIXME: Show me when has authorization.-->
     <ifLoggedIn>
-    <div name="topicToolbar">
-        <a href="/topicput/${oid}">Edit</a>
-    </div>
+      <div name="topicToolbar">
+          <a href="/topicput/${topicId}">Edit</a>
+      </div>
     </ifLoggedIn>
   </div>
   
   <ifLoggedIn>
-  <div class="replyEditor">
-    <dfForm action="/reply">
-      <dfIfChildErrors>
-        <div class="alert alert-error"> 
-           <dfChildErrorList ref=""></dfChildErrorList>
-        </div>
-      </dfIfChildErrors>
-
-      <div class="wmd-panel">
-        <div id="wmd-button-bar"></div>
-        <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" required />
-      </div>
-      <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-
-      <dfInputHidden ref="replyToTopicId" value="${oid}"/>
-
-      <i18n name="reply-submit">
-        <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
-      </i18n>
-
-    </dfForm>
-  </div>
+    <div class="replyEditor">
+       <apply template="reply-to-form" />
+    </div>
   </ifLoggedIn>
 
 </ifFound>
 
   <bind tag="bottom-scripts">
     <apply template="js-markdown" />
+    <script type="text/javascript">
+      $(function () {
+        $.hcn.initReplyToReplyBtn();
+      })
+    </script>
   </bind>
   
 </apply>

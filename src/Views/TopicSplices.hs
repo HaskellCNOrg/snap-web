@@ -58,19 +58,19 @@ renderTopicSimple :: Topic -> Splice AppHandler
 renderTopicSimple tag = runChildrenWithText 
       [ ("topicTitle", _title tag)
       , ("topicAuthor", _author tag)
-      , ("oid", topicIdToText tag) ]
+      , ("oid", getTopicId tag) ]
 
 -- | @Deprecated with @renderTopicWithReply@
 -- 
 renderTopic :: Topic -> Splice AppHandler
 renderTopic tag = do
-    rs <- lift $ findReplyPerTopic (textToObjectId $ topicIdToText tag)
+    rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId tag)
     runChildrenWith $
       map (second textSplice) [ ("topicTitle", _title tag)
                               , ("topicAuthor", _author tag)
                               , ("topicCreateAt", formatUTCTime $ _createAt tag)
                               , ("topicUpdateAt", formatUTCTime $ _updateAt tag)
-                              , ("oid", topicIdToText tag) ]
+                              , ("topicId", getTopicId tag) ]
       ++ [ ("topicContent", markdownToHtmlSplice $ _content tag)
          , ("replyPerTopic", allReplyPerTopicSplice rs) ]
 
@@ -81,6 +81,7 @@ allReplyPerTopicSplice = mapSplices ss'
                   usr <- lift$ findOneUser (_replyAuthor r)
                   runChildrenWithText 
                     [ ("replyAuthor",   _userDisplayName usr)
+                    , ("replyId", getReplyId r)
                     , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)
                     , ("replyContent", _replyContent r) ]
           

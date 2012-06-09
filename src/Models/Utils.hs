@@ -49,11 +49,13 @@ lbsToText = T.decodeUtf8 . lbsToStrickBS
 textToBS :: T.Text -> BS.ByteString
 textToBS = T.encodeUtf8
 
-loggerDebug :: (Show a, MonadIO m) => a -> m ()
-loggerDebug = liftIO . print 
-
+bsToText :: BS.ByteString -> T.Text
+bsToText = T.decodeUtf8
 
 ------------------------------------------------------------------------------
 
 textToObjectId :: T.Text -> ObjectId
 textToObjectId = read . textToS
+
+objectIdToText :: Maybe ObjectId -> T.Text
+objectIdToText = maybe "" sToText 

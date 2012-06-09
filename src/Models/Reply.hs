@@ -16,7 +16,7 @@ import           Data.Time (UTCTime)
 
 import           Application
 import           Models.Exception
---import           Models.Types
+import           Models.Utils
 
 
 --import           Control.Monad.Trans
@@ -48,7 +48,7 @@ createReplyToTopic reply = do
 
 -----------------------------------------------------------------------
 
--- | Save a reply which is to reply.
+-- | Find all Replies under a topic.
 --  
 findReplyPerTopic :: ObjectId -> AppHandler [Reply]
 findReplyPerTopic tid = do
@@ -57,7 +57,7 @@ findReplyPerTopic tid = do
     liftIO $ mapM replyFromDocumentOrThrow $ either (const []) id res
 
 sortByCreateAtDesc :: Order
-sortByCreateAtDesc = [ "create_at" =: -1 ]
+sortByCreateAtDesc = [ "create_at" =: 1 ]
 
 ------------------------------------------------------------------------------
 
@@ -93,3 +93,8 @@ replyFromDocumentOrThrow :: Document -> IO Reply
 replyFromDocumentOrThrow d = case parseEither documentToreply d of
     Left e  -> throw $ BackendError $ show e
     Right r -> return r
+
+------------------------------------------------------------------------------
+
+getReplyId :: Reply -> T.Text
+getReplyId = objectIdToText . _replyId

@@ -17,6 +17,7 @@ import           Data.Time (UTCTime)
 
 import           Application
 import           Models.Exception
+import           Models.Utils
 
 --import           Control.Monad.Trans
 
@@ -119,10 +120,8 @@ topicFromDocumentOrThrow d = case parseEither documentToTopic d of
     Right r -> return r
   
 
-topicIdToString :: Topic -> String
-topicIdToString t = maybe "" show (_topicId t)
+getTopicId :: Topic -> T.Text
+getTopicId = objectIdToText . _topicId
 
-topicIdToText :: Topic -> T.Text
-topicIdToText = T.pack . topicIdToString
 
 ------------------------------------------------------------------------------
