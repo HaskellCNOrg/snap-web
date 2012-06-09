@@ -15,7 +15,8 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
-import           Data.Bson (ObjectId)
+import           Data.Bson (ObjectId, Value(..))
+import qualified Data.Bson as BSON
 
 ----------------------------------------------------------------
 
@@ -59,3 +60,8 @@ textToObjectId = read . textToS
 
 objectIdToText :: Maybe ObjectId -> T.Text
 objectIdToText = maybe "" sToText 
+
+------------------------------------------------------------------------------
+
+objectIdFromValue :: Value -> Maybe ObjectId
+objectIdFromValue = BSON.cast'

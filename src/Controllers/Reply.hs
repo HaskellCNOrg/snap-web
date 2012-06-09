@@ -8,6 +8,7 @@ import           Control.Monad.CatchIO (try)
 import           Data.Time
 import           Snap.Core
 import           Snap.Snaplet
+import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Templating.Heist
 import           Text.Digestive.Snap
@@ -20,6 +21,7 @@ import           Controllers.Topic hiding (routes)
 import           Controllers.User (withAuthUser)
 import           Models.Utils
 import           Views.ReplyForm
+import           Views.TopicSplices
 import           Views.Utils
 import qualified Models.Topic as MT
 import qualified Models.Reply as MR
@@ -46,6 +48,10 @@ replyIdP = "replyid"
 
 tplReplyToReplyForm :: BS.ByteString
 tplReplyToReplyForm = "reply-to-reply-form"
+
+tplReplyToReplyDetail :: BS.ByteString
+tplReplyToReplyDetail = "reply-to-reply-detail"
+
 
 ------------------------------------------------------------------------------
 
@@ -82,9 +88,9 @@ replyToReplyH = withAuthUser $ do
     (view, result) <- runReplyToRelpyForm
     liftIO $ print view
     case result of
-      Just req -> replyVoToReply req
-                  >>= MR.createReplyToTopic 
-                  >>  writeText (replyContent req)   -- FIXME: detail tpl for a reply.
+      Just req -> do 
+                  reply <- MR.createReplyToTopic =<< replyVoToReply req
+                  heistLocal (bindSplice "areply" $ replySplice reply) $ render tplReplyToReplyDetail
       Nothing  -> renderDfPageSplices tplReplyToReplyForm view $
                                       bindSplices [ ("topicid", textSplice tid)
                                                   , ("replyid", textSplice rid) ]
@@ -93,6 +99,7 @@ replyToReplyH = withAuthUser $ do
 ------------------------------------------------------------------------------
 
 -- deleteReply
+-- 
 replyDeleteH :: AppHandler ()
 replyDeleteH = withAuthUser $ do
     tid <- decodedParam topicIdP

@@ -40,11 +40,11 @@ replyCollection = u "replies"
 
 -- | Save a reply which is to reply.
 --  
-createReplyToTopic :: Reply -> AppHandler ()
+createReplyToTopic :: Reply -> AppHandler Reply
 createReplyToTopic reply = do
     res <- eitherWithDB $ DB.insert replyCollection $ replyToDocument reply
-    either failureToUE (const $ return ()) res
-
+    either failureToUE (return . updateOid) res
+    where updateOid v = reply { _replyId = objectIdFromValue v }
 
 -----------------------------------------------------------------------
 

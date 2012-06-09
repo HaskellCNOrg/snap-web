@@ -35,10 +35,11 @@
           <ifLoggedIn>
             <!-- JS impl in @initReplyToReplyBtn@ -->
             <p><a href="#" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}">Add Comment</a></p>
+            <a href="/topic/${topicId}/${replyId}/delete/">Delete</a>
           </ifLoggedIn>
-
+          
         </section>
-        <a href="/topic/${topicId}/${replyId}/delete/">Delete</a>
+
       </replyPerTopic>
     </div>
 

@@ -2,7 +2,8 @@
 
 module Views.TopicSplices
        ( topicSplices 
-       , topicDetailSplices ) where
+       , topicDetailSplices
+       , replySplice ) where
 
 import           Control.Arrow (second)
 import           Control.Monad.Trans
@@ -76,12 +77,16 @@ renderTopic tag = do
 
 
 allReplyPerTopicSplice :: [Reply] -> Splice AppHandler -- [(T.Text, Splice AppHandler)]
-allReplyPerTopicSplice = mapSplices ss'
-    where ss' r = do
+allReplyPerTopicSplice = mapSplices replySplice
+
+replySplice :: Reply -> Splice AppHandler
+replySplice r = do
                   usr <- lift$ findOneUser (_replyAuthor r)
                   runChildrenWithText 
                     [ ("replyAuthor",   _userDisplayName usr)
                     , ("replyId", getReplyId r)
+                    , ("replyToTopicId", sToText $ _replyToTopicId r)
+                    , ("replyToReplyId", objectIdToText $ _replyToReplyId r)
                     , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)
                     , ("replyContent", _replyContent r) ]
           
