@@ -16,11 +16,10 @@ $.hcn.initReplyToReplyBtn = function () {
         if (form.length > 0) {
             form.find('textarea').focus();
         } else {
-            $.get("/replytoreply", 
-                { "topicId": target.attr("data-topic"), "replyId": target.attr("data-reply") },
-                function (res) {
-                    replySection.append(res);
-                }
+            $.get(["/topic", target.attr("data-topic"), target.attr("data-reply"), "reply"].join("/"), 
+                  function (res) {
+                      replySection.append(res);
+                  }
             );
         }
     });
@@ -33,7 +32,7 @@ $.hcn.initReplyToReplyBtn = function () {
         event.preventDefault();
         var t = $(event.currentTarget),
             parent = t.parent();
-            
+
         $.post(t[0].action, t.serialize(), function (res) {
           t.remove();
           parent.append(res);

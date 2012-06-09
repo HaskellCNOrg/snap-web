@@ -1,5 +1,5 @@
 
-<dfForm id="add-comment-form-${replyId}" action="/replytoreply">
+<dfForm id="add-comment-form-${replyid}" action="/topic/${topicid}/${replyid}/reply">
    
      <dfIfChildErrors>
         <div class="alert alert-error"> 
@@ -7,10 +7,10 @@
         </div>
       </dfIfChildErrors>
 
-  <dfInputTextArea ref="replyToReplyContent" />
+  <dfInputTextArea ref="replyContent" />
 
-  <dfInputHidden ref="replyToReplyReplyId" value="${replyId}"/>
-  <dfInputHidden ref="replyToReplyTopicId" value="${topicId}"/>
+  <dfInputHidden ref="replyToTopicId" value="${topicid}"/>
+  <dfInputHidden ref="replyToReplyId" value="${replyid}"/>
 
   <i18n name="reply-to-reply-submit">
     <dfInputSubmit value="${i18nValue}"></dfInputSubmit>

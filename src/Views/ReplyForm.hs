@@ -16,13 +16,8 @@ import Views.Validators
 
 data ReplyVo = ReplyVo 
                { replyToTopicId :: T.Text
+               , replyToReplyId :: T.Text  -- Maybe Empty
                , replyContent :: T.Text
-               } deriving (Show)
-
-data ReplyToReplyVo = ReplyToReplyVo 
-               { replyToReplyTopicId :: T.Text
-               , replyToReplyReplyId :: T.Text
-               , replyToReplyContent :: T.Text
                } deriving (Show)
 
 ------------------------------------------------------------ 
@@ -35,20 +30,21 @@ runReplyForm = runForm "reply-to-topic-form" replyForm
 replyForm :: Monad m => Form Text m ReplyVo
 replyForm = ReplyVo
     <$> "replyToTopicId"  .: checkRequired "replyToTopicId is required" (text Nothing)
-    <*> "replyContent"  .: contentValidation (text Nothing)
+    <*> "replyToReplyId"  .: text Nothing
+    <*> "replyContent"    .: contentValidation (text Nothing)
 
 ------------------------------------------------------------ 
 
-runReplyToRelpyForm :: MonadSnap m => m (View Text, Maybe ReplyToReplyVo)
+runReplyToRelpyForm :: MonadSnap m => m (View Text, Maybe ReplyVo)
 runReplyToRelpyForm = runForm "reply-to-reply-form" replyToRelpyForm
 
 -- |
 --  
-replyToRelpyForm :: Monad m => Form Text m ReplyToReplyVo
-replyToRelpyForm = ReplyToReplyVo
-    <$> "replyToReplyTopicId"  .: checkRequired "replyToReplyTopicId is required" (text Nothing)
-    <*> "replyToReplyReplyId"  .: checkRequired "replyToReplyReplyId is required" (text Nothing)
-    <*> "replyToReplyContent"  .: contentValidation (text Nothing)
+replyToRelpyForm :: Monad m => Form Text m ReplyVo
+replyToRelpyForm = ReplyVo
+    <$> "replyToTopicId"  .: checkRequired "replyToReplyTopicId is required" (text Nothing)
+    <*> "replyToReplyId"  .: checkRequired "replyToReplyReplyId is required" (text Nothing)
+    <*> "replyContent"  .: contentValidation (text Nothing)
 
 
 ------------------------------------------------------------ 

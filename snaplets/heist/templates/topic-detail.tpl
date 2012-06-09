@@ -38,6 +38,7 @@
           </ifLoggedIn>
 
         </section>
+        <a href="/topic/${topicId}/${replyId}/delete/">Delete</a>
       </replyPerTopic>
     </div>
 

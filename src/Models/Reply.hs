@@ -59,6 +59,17 @@ findReplyPerTopic tid = do
 sortByCreateAtDesc :: Order
 sortByCreateAtDesc = [ "create_at" =: 1 ]
 
+
+-----------------------------------------------------------------------
+
+-- | Delete a reply
+--  
+deleteReply :: ObjectId -> AppHandler ()
+deleteReply rid = do
+    res <- eitherWithDB $ DB.deleteOne (select [ "_id" =: rid ] replyCollection)
+    either failureToUE (const $ return ()) res
+
+
 ------------------------------------------------------------------------------
 
 -- | Transform @Reply@ to mongoDB document.
