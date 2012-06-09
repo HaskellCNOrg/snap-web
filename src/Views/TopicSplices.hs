@@ -2,8 +2,7 @@
 
 module Views.TopicSplices
        ( topicSplices 
-       , topicDetailSplices
-       , replySplice ) where
+       , topicDetailSplices ) where
 
 import           Control.Arrow (second)
 import           Control.Monad.Trans
@@ -17,6 +16,7 @@ import Models.Topic
 import Models.Reply
 import Models.User
 import Views.MarkdownSplices
+import Views.ReplySplices
 import Views.Types
 import Views.Utils
 import Models.Utils
@@ -75,18 +75,3 @@ renderTopic tag = do
       ++ [ ("topicContent", markdownToHtmlSplice $ _content tag)
          , ("replyPerTopic", allReplyPerTopicSplice rs) ]
 
-
-allReplyPerTopicSplice :: [Reply] -> Splice AppHandler -- [(T.Text, Splice AppHandler)]
-allReplyPerTopicSplice = mapSplices replySplice
-
-replySplice :: Reply -> Splice AppHandler
-replySplice r = do
-                  usr <- lift$ findOneUser (_replyAuthor r)
-                  runChildrenWithText 
-                    [ ("replyAuthor",   _userDisplayName usr)
-                    , ("replyId", getReplyId r)
-                    , ("replyToTopicId", sToText $ _replyToTopicId r)
-                    , ("replyToReplyId", objectIdToText $ _replyToReplyId r)
-                    , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)
-                    , ("replyContent", _replyContent r) ]
-          

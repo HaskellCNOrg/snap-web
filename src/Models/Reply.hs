@@ -2,21 +2,22 @@
 
 module Models.Reply where
 
+
+import           Application
 import           Control.Applicative ((<$>), (<*>))
 import           Control.Monad.CatchIO (throw)
 import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
+import           Data.Maybe (isNothing, isJust)
+import           Data.Time (UTCTime)
 import           Database.MongoDB
-import qualified Database.MongoDB as DB
+import           Models.Exception
+import           Models.Utils
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
-import           Data.Time (UTCTime)
-
-import           Application
-import           Models.Exception
-import           Models.Utils
+import qualified Database.MongoDB as DB
 
 
 --import           Control.Monad.Trans
@@ -57,7 +58,7 @@ findReplyPerTopic tid = do
     liftIO $ mapM replyFromDocumentOrThrow $ either (const []) id res
 
 sortByCreateAtDesc :: Order
-sortByCreateAtDesc = [ "create_at" =: 1 ]
+sortByCreateAtDesc = [ "create_at" =: 1, "reply_id" =: 1 ]
 
 
 -----------------------------------------------------------------------
@@ -109,3 +110,14 @@ replyFromDocumentOrThrow d = case parseEither documentToreply d of
 
 getReplyId :: Reply -> T.Text
 getReplyId = objectIdToText . _replyId
+
+-- | All Replies but not ReplyToReply
+-- 
+firstLevelReply :: [Reply] -> [Reply]
+firstLevelReply = filter (isNothing . _replyToReplyId)
+
+-- | not . firstLevelReply
+-- 
+nonFirstLevelReply :: [Reply] -> [Reply]
+nonFirstLevelReply = filter (isJust . _replyToReplyId)
+

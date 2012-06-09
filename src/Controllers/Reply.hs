@@ -20,7 +20,7 @@ import           Controllers.Topic hiding (routes)
 import           Controllers.User (withAuthUser)
 import           Models.Utils
 import           Views.ReplyForm
-import           Views.TopicSplices
+import           Views.ReplySplices
 import           Views.Utils
 import qualified Models.Reply as MR
 import qualified Models.Topic as MT
@@ -87,7 +87,7 @@ replyToReplyH = withAuthUser $ do
     case result of
       Just req -> do 
                   reply <- MR.createReplyToTopic =<< replyVoToReply req
-                  heistLocal (bindSplice "areply" $ replySplice reply) $ render tplReplyToReplyDetail
+                  heistLocal (bindSplice "replyToReply" $ replySplice reply) $ render tplReplyToReplyDetail
       Nothing  -> renderDfPageSplices tplReplyToReplyForm view $
                                       bindSplices [ ("topicid", textSplice tid)
                                                   , ("replyid", textSplice rid) ]

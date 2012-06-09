@@ -25,23 +25,30 @@ body {
     margin: 10px 0;
 
     .reply {
-      border-top: 1px solid #000;
-      padding: 15px 0;
-      margin: 5px 0;
+       border-top: 1px solid #000;
+       padding: 15px 0;
+       margin: 5px 0;
+
+       .replyOfReply {
+          margin: 5px 0 0 15px;
+
+          section {
+            border-top: 1px dotted #000;
+          }
+          form {
+            textarea {
+              width: 500px;
+              height: 80px;
+            }
+          }
+       }
+
+       a {
+         cursor: pointer;
+       }
     }
 
-    .replyOfReply {
-      margin: 5px 0 0 15px;
-      section {
-        border-top: 1px dotted #000;
-      }
-      form {
-        textarea {
-          width: 500px;
-          height: 80px;
-        }
-      }
-    }
+    
     
 }
 

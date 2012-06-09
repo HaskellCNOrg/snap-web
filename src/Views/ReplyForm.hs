@@ -2,7 +2,6 @@
 
 module Views.ReplyForm where
 
---import Control.Applicative ((<$>), (<*>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Snap

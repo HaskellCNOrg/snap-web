@@ -19,6 +19,7 @@ $.hcn.initReplyToReplyBtn = function () {
             $.get(["/topic", target.attr("data-topic"), target.attr("data-reply"), "reply"].join("/"), 
                   function (res) {
                       replySection.append(res);
+                      replySection.find('form textarea').focus();
                   }
             );
         }

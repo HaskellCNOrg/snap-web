@@ -29,20 +29,23 @@
           <a href="/topicput/${topicId}">Edit</a>
       </div>
     </ifLoggedIn>
-    
+
     <div class="replyPerTopic">
+      <h3><i18n name="topic-answers" /></h3>
       <replyPerTopic>
         <section class="reply">
           <p><replyContent/></p>
           <p><replyAuthor/></p>
           <p><replyCreateAt/></p>
 
-          <p class="replyOfReply"></p>
+          <div class="replyOfReply">
+            <apply template="reply-to-reply-detail" />
+          </div>
 
           <ifLoggedIn>
             <!-- JS impl in @initReplyToReplyBtn@ -->
-            <p><a href="#" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}">Add Comment</a></p>
-            <a href="/topic/${topicId}/${replyId}/delete/">Delete</a>
+            <p><a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}">Add Comment</a></p>
+            <!-- <a href="/topic/${topicId}/${replyId}/delete/">Delete</a> -->
           </ifLoggedIn>
           
         </section>

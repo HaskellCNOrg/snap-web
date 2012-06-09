@@ -1,11 +1,11 @@
 
-<areply>
-<section>
-    <replyContent/> 
-    <replyAuthor />
+<replyToReply>
+    <section>
+        <replyContent/> 
+        <replyAuthor />
 
-    <ifLoggedIn>
-        <a href="/topic/${replyToTopicId}/${replyId}/delete/">Delete</a>
-    </ifLoggedIn>
-</section>
-</areply>
+        <ifLoggedIn>
+            <a href="/topic/${replyToTopicId}/${replyId}/delete/">Delete</a>
+        </ifLoggedIn>
+    </section>
+</replyToReply>
