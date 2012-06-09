@@ -3,15 +3,14 @@
 module Controllers.Reply 
        ( routes ) where
 
-import           Control.Monad.Trans
 import           Control.Monad.CatchIO (try)
+import           Control.Monad.Trans
 import           Data.Time
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Templating.Heist
-import           Text.Digestive.Snap
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
 import qualified Snap.Core as Snap
@@ -23,8 +22,8 @@ import           Models.Utils
 import           Views.ReplyForm
 import           Views.TopicSplices
 import           Views.Utils
-import qualified Models.Topic as MT
 import qualified Models.Reply as MR
+import qualified Models.Topic as MT
 import qualified Models.User as MU
 
 
@@ -60,7 +59,6 @@ tplReplyToReplyDetail = "reply-to-reply-detail"
 replyToTopicH :: AppHandler ()
 replyToTopicH = withAuthUser $ 
                do (view, result) <- runReplyForm
-                  liftIO $ print view
                   case result of
                     Just reply -> replyVoToReply reply
                                   >>= MR.createReplyToTopic 
@@ -86,7 +84,6 @@ replyToReplyH = withAuthUser $ do
     tid <- decodedParamText topicIdP
     rid <- decodedParamText replyIdP
     (view, result) <- runReplyToRelpyForm
-    liftIO $ print view
     case result of
       Just req -> do 
                   reply <- MR.createReplyToTopic =<< replyVoToReply req

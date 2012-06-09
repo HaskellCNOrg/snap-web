@@ -24,7 +24,7 @@
 (@) [X] FIX: Reply author column shall be ObjectId but Text
 (@) [X] Markdown does support Chinese!!???
 
-(@) [ ] be able to comment to comment
+(@) [X] be able to comment to comment
     - [ ] group comments
 
 - [/] Highlight error on input box
@@ -44,6 +44,7 @@
 
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?
+- [ ] JS markdown parse is diff with pandoc.
 
 ### Makefile
 
@@ -74,5 +75,13 @@
 ## Dev question
 
 - The `when.. throw.. or continue` is very impretive. could be more functional?
+
 - DB fatal error when type is `ObjectId` but is text in DB actually.
   (type error is basiacly because how ObjectId implements FromBSON and ToBSON)
+
+- error "No handler accepted" when a template not found.
+  basically it is because `render` return `empty` when no template found.
+    - simple write msg to output when error will cause error because Heist handler all request (withHeist "")
+
+- https://github.com/dbp/heist-async
+

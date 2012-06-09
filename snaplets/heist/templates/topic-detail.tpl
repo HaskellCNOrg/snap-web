@@ -23,6 +23,13 @@
       <p><topicUpdateAt/></p>
     </article>
 
+    <!-- FIXME: Show me when has authorization.-->
+    <ifLoggedIn>
+      <div name="topicToolbar">
+          <a href="/topicput/${topicId}">Edit</a>
+      </div>
+    </ifLoggedIn>
+    
     <div class="replyPerTopic">
       <replyPerTopic>
         <section class="reply">
@@ -43,12 +50,6 @@
       </replyPerTopic>
     </div>
 
-    <!-- FIXME: Show me when has authorization.-->
-    <ifLoggedIn>
-      <div name="topicToolbar">
-          <a href="/topicput/${topicId}">Edit</a>
-      </div>
-    </ifLoggedIn>
   </div>
   
   <ifLoggedIn>

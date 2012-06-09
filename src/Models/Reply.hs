@@ -78,7 +78,7 @@ deleteReply rid = do
 replyToDocument :: Reply -> Document
 replyToDocument reply = case _replyId reply of 
                           Nothing -> docs
-                          Just x  -> ("_id" .= _replyId reply) : docs
+                          Just _  -> ("_id" .= _replyId reply) : docs
                         where docs = 
                                 [ "topic_id"  .= _replyToTopicId reply
                                 , "reply_id"   .= _replyToReplyId reply
