@@ -1,27 +1,19 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
 
-module Views.ReplySplices
-       ( allReplyPerTopicSplice 
-       , replySplice ) where
+module Views.ReplySplices where
 
 import           Control.Arrow (second)
 import           Control.Monad.Trans
-import           Data.Maybe (fromJust)
 import           Data.Function (on)
 import           Text.Templating.Heist
 import           Data.List
-import qualified Data.ByteString as BS
 import qualified Data.Map as MP
 import qualified Data.Text as T
 
 
 import Application
-import Models.Exception
-import Models.Topic
 import Models.Reply
 import Models.User
-import Views.MarkdownSplices
-import Views.Types
 import Views.Utils
 import Models.Utils
 
@@ -29,7 +21,6 @@ import Models.Utils
 -- 
 type ReplyWithReply = (Reply, [Reply])
 
-type ReplyMap = MP.Map T.Text [Reply]
 
 ------------------------------------------------------------------------------
 

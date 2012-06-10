@@ -32,7 +32,7 @@ data Reply = Reply
     , _replyAuthor    :: ObjectId
     , _replyCreateAt  :: UTCTime
     -- MAYBE: column for soft deletion.
-    } deriving (Show)
+    } deriving (Show, Eq)
 
 replyCollection :: Collection
 replyCollection = u "replies"
