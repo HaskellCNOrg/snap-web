@@ -1,4 +1,4 @@
-<dfForm action="/reply">
+<dfForm action="/topic/${topicId}/reply">
       <dfIfChildErrors>
         <div class="alert alert-error"> 
            <dfChildErrorList />

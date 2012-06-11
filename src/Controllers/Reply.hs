@@ -30,7 +30,7 @@ import qualified Models.User as MU
 ------------------------------------------------------------------------------
 
 routes :: [(BS.ByteString, Handler App App ())]
-routes =  [ ("/reply", Snap.method POST replyToTopicH)
+routes =  [ ("/topic/:topicid/reply", replyToTopicH)
           , ("/topic/:topicid/:replyid/reply", replyToReplyH)
           , ("/topic/:topicid/:replyid/delete", replyDeleteH)
           ]
@@ -57,19 +57,25 @@ tplReplyToReplyDetail = "reply-to-reply-detail"
 -- | Handler for saving reply to a topic.
 -- 
 replyToTopicH :: AppHandler ()
-replyToTopicH = withAuthUser $ 
-               do (view, result) <- runReplyForm
+replyToTopicH = withAuthUser $ do
+                  (view, result) <- runReplyForm
                   case result of
                     Just reply -> replyVoToReply reply
                                   >>= MR.createReplyToTopic 
                                   >> redirectTopicDetailPage (textToS $ replyToTopicId reply)  
                                      -- shall be redirect otherwise URL doest change.
-                    Nothing    -> toTopicDetailAfterReply view (fieldInputText "replyToTopicId" view)
-                                   -- FIXME:  URL doest change.
+                    Nothing    -> toTopicDetailAfterReply view
 
-toTopicDetailAfterReply :: View T.Text -> T.Text ->AppHandler ()
-toTopicDetailAfterReply view tid = do re <- try (findOneTopic' tid)
-                                      renderTopicDetailPage re view
+-- | Two cases go into this branch
+--   1. reply form has errors or 
+--   2. GET request via browser, thus shall be same as /topic/:topicid
+-- 
+toTopicDetailAfterReply :: View T.Text
+                        -> AppHandler ()
+toTopicDetailAfterReply view = do 
+    tid <- decodedParamText topicIdP  -- see the route pattern
+    re  <- try (findOneTopic' tid)
+    renderTopicDetailPage re view
 
 findOneTopic' :: T.Text -> AppHandler MT.Topic
 findOneTopic' = MT.findOneTopic . read . textToS
@@ -81,8 +87,8 @@ findOneTopic' = MT.findOneTopic . read . textToS
 -- 
 replyToReplyH :: AppHandler ()
 replyToReplyH = withAuthUser $ do 
-    tid <- decodedParamText topicIdP
-    rid <- decodedParamText replyIdP
+    tid            <- decodedParamText topicIdP
+    rid            <- decodedParamText replyIdP
     (view, result) <- runReplyToRelpyForm
     case result of
       Just req -> do 
@@ -95,14 +101,14 @@ replyToReplyH = withAuthUser $ do
 
 ------------------------------------------------------------------------------
 
--- deleteReply
+-- | Handler for delete a reply
 -- 
 replyDeleteH :: AppHandler ()
 replyDeleteH = withAuthUser $ do
-    tid <- decodedParam topicIdP
+    tid      <- decodedParam topicIdP
     maybeRid <- decodedParamTextMaybe replyIdP
     case maybeRid of
-      Nothing -> redirectTopicDetailPage (bsToS tid)
+      Nothing   -> redirectTopicDetailPage (bsToS tid)
       Just rid  -> MR.deleteReply (textToObjectId rid)
                    >> redirectTopicDetailPage (bsToS tid)
 
@@ -111,7 +117,7 @@ replyDeleteH = withAuthUser $ do
 
 replyVoToReply :: ReplyVo -> AppHandler MR.Reply
 replyVoToReply vo = do
-    now <- liftIO getCurrentTime
+    now         <- liftIO getCurrentTime
     (Just uid') <- MU.findCurrentUserId
     return $ MR.Reply Nothing 
                       (textToObjectId $ replyToTopicId vo) 
