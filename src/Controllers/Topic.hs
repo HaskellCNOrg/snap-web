@@ -30,6 +30,7 @@ import           Views.ReplyForm
 import           Views.TopicSplices
 import           Views.Utils
 import qualified Models.Topic as MT
+import qualified Models.User as MU
 
 
 ------------------------------------------------------------------------------
@@ -66,11 +67,13 @@ createTopicH = withAuthUser $ do
                                Just topic -> doCreateTopic' topic
                                Nothing    -> toTopicFormPage view
  
--- | Save a new topic
+-- | Performance saving a new topic.
+--   This is not public and assume done within login session.
+-- 
 doCreateTopic' :: TopicVo -> AppHandler ()
 doCreateTopic' tv = do 
-                  loginName <- fmap (userLogin . fromJust) $ with appAuth currentUser
-                  topic     <- try $ MT.createNewTopic =<< liftIO (topicVoToNewTopic tv loginName)
+                  (Just uid') <- MU.findCurrentUserId
+                  topic     <- try $ MT.createNewTopic =<< liftIO (topicVoToNewTopic tv uid')
                   case topic of 
                     Left e  -> writeText $ showUE e 
                                -- FIXME:  return to detail edit page with errors.
@@ -135,7 +138,8 @@ doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
                   findTopic <- try (findOneTopic (read $ textToS $ topicId tv ))
                   case findTopic of
-                      Left  l -> writeText $ showUE l -- FIXME:  return to detail edit page with errors.
+                      Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
+                                                      --         2. put findOneTopic and saveTopic in one try??
                       Right r -> do
                                    result <- try $ MT.saveTopic =<< liftIO (topicVoToTopic tv r)
                                    case result of 
@@ -147,7 +151,7 @@ doUpdateTopic' tv = do
 
 -- | Generate a new @Topic@ from @TopicVo@.
 -- 
-topicVoToNewTopic :: TopicVo -> T.Text -> IO MT.Topic
+topicVoToNewTopic :: TopicVo -> MU.UserObjId -> IO MT.Topic
 topicVoToNewTopic tv author = do
     now <- getCurrentTime
     return  Topic 
@@ -160,6 +164,7 @@ topicVoToNewTopic tv author = do
              }
 
 -- | Populate change to a existing @Topic@ from topicVo
+--   FIXME: may update by other users, e.g. Administrator user.
 -- 
 topicVoToTopic :: TopicVo -> MT.Topic -> IO MT.Topic
 topicVoToTopic tv topic = do

@@ -3,6 +3,7 @@
 module Models.User 
     ( LoginUser(..)
     , User(..)
+    , UserObjId
     , createNewUser
     , loginUser
     , findCurrentUser
@@ -30,6 +31,7 @@ import           Models.Utils
 import           Application
 
 type Email = T.Text
+type UserObjId = ObjectId
 
 -- | A lightweight alternative to @AuthUser@. Use email prefix as login name.
 -- 
