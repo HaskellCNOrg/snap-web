@@ -8,7 +8,6 @@ import qualified Data.Text as T
 import Text.Digestive
 import Text.Digestive.FormExt
 
-import Views.Validators
 import Models.Topic
 import Models.Utils
 
