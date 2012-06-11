@@ -27,12 +27,12 @@
 (@) [X] Markdown does support Chinese!!???
 
 (@) [X] be able to comment to comment
-    - [ ] group comments
+    - [X] group comments
 
 - [/] Highlight error on input box.
       a fix at private branch.
       
-- [ ] FIX: topic author column shall be ObjectId but Text
+- [X] FIX: topic author column shall be ObjectId but Text
 - [ ] Tag allow user add tag on the fly when post topic
 
 - [ ] Message to user when new comments
@@ -43,12 +43,15 @@
 - [ ] pagination
 - [ ] Styles
 - [ ] mail integration via email-postmark (active, reset, etc..)
-
+- [ ] redirect with 303 rather than 302
 
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?
 - [ ] JS markdown parse is diff with pandoc.
 - [ ] Page shortcuts. JIRA!
+
+- [ ] whether POST action successfully or not, it is likely to finish it with a redirection,
+      which means TWO requests to user, isn't it overload??
 
 ### Makefile
 

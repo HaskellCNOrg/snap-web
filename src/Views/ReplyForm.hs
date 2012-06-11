@@ -7,9 +7,7 @@ import qualified Data.Text as T
 import Snap
 import Text.Digestive
 import Text.Digestive.Snap
-
-import Views.Validators
-
+import Text.Digestive.FormExt
 
 ------------------------------------------------------------ 
 

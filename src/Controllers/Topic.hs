@@ -47,14 +47,23 @@ routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes. MAYBE: combine with topicput-GET.
           ]
 
+------------------------------------------------------------------------------
+
 topicIdParam :: BS.ByteString
 topicIdParam = "topicid"
+
+redirectTopicDetailPage :: String -> AppHandler ()
+redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
 
 ------------------------------------------------------------------------------
 
 
-redirectTopicDetailPage :: String -> AppHandler ()
-redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
+tplTopicForm :: BS.ByteString
+tplTopicForm = "topic-form"
+
+tplTopicDetail :: BS.ByteString
+tplTopicDetail = "topic-detail"
+
 
 ------------------------------------------------------------------------------
 
@@ -63,6 +72,7 @@ redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
 createTopicH :: AppHandler ()
 createTopicH = withAuthUser $ do
                              (view, result) <- runForm "create-topic-form" topicForm
+                             liftIO $ print result
                              case result of
                                Just topic -> doCreateTopic' topic
                                Nothing    -> toTopicFormPage view
@@ -81,7 +91,7 @@ doCreateTopic' tv = do
 
 
 toTopicFormPage :: View T.Text -> AppHandler ()
-toTopicFormPage = renderDfPage "topic-form"
+toTopicFormPage = renderDfPage tplTopicForm
 
 
 ------------------------------------------------------------------------------
@@ -100,7 +110,7 @@ toTopicDetailPage result = do (view, _) <- runReplyForm
 
 renderTopicDetailPage :: Either UserException Topic -> View T.Text -> AppHandler ()
 renderTopicDetailPage result view = renderDfPageSplices 
-                                    "topic-detail" 
+                                    tplTopicDetail
                                     view 
                                     (bindSplices (topicDetailSplices result))
 
