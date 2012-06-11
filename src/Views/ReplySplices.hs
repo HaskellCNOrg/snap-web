@@ -31,8 +31,8 @@ allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
 
 replySpliceWithChildren :: ReplyWithReply -> Splice AppHandler
 replySpliceWithChildren (r, rs) = do
-    usr <- findReplyAuthor r
-    runChildrenWith $ ("replyToReply", mapSplices replySplice rs) : map (second textSplice) (replySpliceImpl r usr)
+    usrName <- findReplyAuthorName r
+    runChildrenWith $ ("replyToReply", mapSplices replySplice rs) : map (second textSplice) (replySpliceImpl r usrName)
 
 
 ------------------------------------------------------------------------------
@@ -41,12 +41,14 @@ replySpliceWithChildren (r, rs) = do
 -- | Just a Reply without any children
 -- 
 replySplice :: Reply -> Splice AppHandler
-replySplice r = findReplyAuthor r >>= runChildrenWithText . replySpliceImpl r
+replySplice r = findReplyAuthorName r >>= runChildrenWithText . replySpliceImpl r
 
 
-replySpliceImpl :: Reply -> User -> [(T.Text, T.Text)]
-replySpliceImpl r usr =  
-                    [ ("replyAuthor",  _userDisplayName usr)
+replySpliceImpl :: Reply 
+                -> T.Text   -- ^ UserName
+                -> [(T.Text, T.Text)]
+replySpliceImpl r usrName =  
+                    [ ("replyAuthor",  usrName)
                     , ("replyId", getReplyId r)
                     , ("replyToTopicId", sToText $ _replyToTopicId r)
                     , ("replyToReplyId", objectIdToText $ _replyToReplyId r)
@@ -77,5 +79,6 @@ splitReplies rs =
 
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 -- 
-findReplyAuthor :: Reply -> HeistT AppHandler User
-findReplyAuthor = lift . findOneUser . _replyAuthor
+findReplyAuthorName :: Reply -> HeistT AppHandler T.Text
+findReplyAuthorName reply = lift (findUser' reply) >>= return . _userDisplayName
+                        where findUser' = findOneUser . _replyAuthor
