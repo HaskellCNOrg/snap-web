@@ -4,6 +4,7 @@ module Views.ReplySplices where
 
 import           Control.Arrow (second)
 import           Control.Monad.Trans
+import           Control.Monad (liftM)
 import           Data.Function (on)
 import           Text.Templating.Heist
 import           Data.List
@@ -80,5 +81,5 @@ splitReplies rs =
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 -- 
 findReplyAuthorName :: Reply -> HeistT AppHandler T.Text
-findReplyAuthorName reply = lift (findUser' reply) >>= return . _userDisplayName
+findReplyAuthorName reply = liftM _userDisplayName (lift (findUser' reply))
                         where findUser' = findOneUser . _replyAuthor

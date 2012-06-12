@@ -11,7 +11,8 @@ import           Application
 import           Models.User
 
 sharedSplices :: [(T.Text, SnapletSplice App App)]
-sharedSplices = [ ("currentUser", currentUserSplice) 
+sharedSplices = [ ("currentUser", currentUserSplice)
+                , ("isCurrentUserAdmin", isCurrentUserAdminSplice)
                 ]
 
 
@@ -22,3 +23,9 @@ sharedSplices = [ ("currentUser", currentUserSplice)
 currentUserSplice :: SnapletSplice App App
 currentUserSplice = liftHandler findCurrentUser >>= liftHeist . textSplice . _userDisplayName
 
+-- | Whether current user has admin role.
+-- 
+isCurrentUserAdminSplice :: SnapletSplice App App
+isCurrentUserAdminSplice = do
+    tf <- liftHandler isCurrentUserAdmin
+    if tf then liftHeist runChildren else return []

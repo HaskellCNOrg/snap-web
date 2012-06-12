@@ -29,9 +29,10 @@
 - [/] Highlight error on input box.
       a fix at private branch.
       
-- [ ] authorization, user roles??
-    - [ ] just config to file like node_club
+(@) [X] authorization, user roles??
+    - [X] just config to file
     - [ ] database integration.
+
 - [ ] Styles
 - [ ] pagination
 - [ ] mail integration via email-postmark (active, reset, etc..)
@@ -124,6 +125,7 @@ tags    :: [T.Text]
 ~~~~~
 //MONGODB
 { x : { $in : [ a, b ] } }
+$set
 ~~~~~
 
         

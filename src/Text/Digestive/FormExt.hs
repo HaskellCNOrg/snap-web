@@ -12,15 +12,6 @@ import Data.Maybe (isJust)
 import Data.Text (Text)
 import qualified Data.Text as T
 import Text.Digestive
---import Text.Digestive.Form (Form)
-
----------------------------------------------------- 
-
-
--- | Allow multiple input of a field, e.g. Tags.
--- 
-textList ::  Monad m => (Text -> [Text]) -> Form v m Text -> Form v m [Text]
-textList f = (<$>) f
 
 
 ---------------------------------------------------- Validator

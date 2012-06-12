@@ -6,6 +6,7 @@ module Views.TopicSplices
 
 import           Control.Arrow (second)
 import           Control.Monad.Trans
+import           Control.Monad
 import           Data.Maybe (isJust)
 import           Text.Templating.Heist
 import qualified Data.Text as T
@@ -81,5 +82,5 @@ renderTopic tag = do
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 -- 
 findTopicAuthorName :: Topic -> HeistT AppHandler T.Text
-findTopicAuthorName topic = lift (findUser' topic) >>= return . _userDisplayName
+findTopicAuthorName topic = liftM _userDisplayName (lift (findUser' topic))
                             where findUser' = findOneUser . _author

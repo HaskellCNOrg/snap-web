@@ -10,7 +10,9 @@ module Models.User
     , findCurrentUserId
     , findCurrentAuthUser
     , findOneUser
-    , saveUser ) where
+    , saveUser
+    , adminRoles
+    , isCurrentUserAdmin ) where
 
 import           Control.Applicative ((<$>), (<*>), pure)
 import           Control.Monad
@@ -21,10 +23,12 @@ import           Data.Bson
 import           Data.Maybe
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth hiding (loginUser, saveUser)
-import           Snap.Snaplet.MongoDB
 import           Snap.Snaplet.Auth.Backends.MongoDB as SM
+import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
 import qualified Database.MongoDB as DB
+import Snap.Snaplet.Environments
+
 
 import           Models.Exception
 import           Models.Utils
@@ -143,6 +147,27 @@ saveUser :: User -> AppHandler User
 saveUser lu = do
              res <- eitherWithDB $ DB.save authUserCollection $ userToDocument lu
              either failureToUE (const $ return lu) res 
+
+
+------------------------------------------------------------------------------
+
+-- | Get admin roles from config file.
+-- 
+adminRoles :: AppHandler (Maybe Role)
+adminRoles = do
+    role <- lookupConfig "auth.admin-roles"
+    case role of
+      Nothing -> return Nothing
+      Just bs -> return $ Just (Role bs)
+
+
+isCurrentUserAdmin :: AppHandler Bool
+isCurrentUserAdmin = do
+    role <- adminRoles
+    authUser <- findCurrentAuthUser
+    case role of
+      Nothing -> return False
+      Just r  -> return $ r `elem` userRoles authUser
 
 
 ------------------------------------------------------------------------------

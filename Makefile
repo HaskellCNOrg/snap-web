@@ -26,8 +26,11 @@ test:
 	cabal build
 	cabal test
 
-bp: build-dev preview
-rp: clean build-dev preview
+p:
+	$(PROG_PREV) -p 9900 @dev
+
+bp: build-dev p
+rp: clean build-dev p
 
 ###########################
 ## PRODUCTION
@@ -45,12 +48,8 @@ build: hlint
 
 rebuild: clean build
 
-####################### preview
-
 preview:
-	$(PROG_PREV) -p 9900
-
-p: preview
+	$(PROG_PREV) -p 9900 @prod
 
 ####################### Doc
 
