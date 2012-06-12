@@ -41,16 +41,17 @@ import Database.MongoDB ( Database, Pipe
 settingsFromConfig :: Initializer b (AuthManager b) AuthSettings
 settingsFromConfig = do
     config <- getSnapletUserConfig
-    minPasswordLen' <- liftIO $ C.lookup config "minPasswordLen"
+    minPasswordLen' <- liftIO $ C.lookup config "db.minPasswordLen"
     let pw = maybe id (\x s -> s { asMinPasswdLen = x }) minPasswordLen'
-    rememberCookie' <- liftIO $ C.lookup config "rememberCookie"
+    rememberCookie' <- liftIO $ C.lookup config "db.rememberCookie"
     let rc = maybe id (\x s -> s { asRememberCookieName = x }) rememberCookie'
-    rememberPeriod' <- liftIO $ C.lookup config "rememberPeriod"
+    rememberPeriod' <- liftIO $ C.lookup config "db.rememberPeriod"
     let rp = maybe id (\x s -> s { asRememberPeriod = Just x }) rememberPeriod'
-    lockout' <- liftIO $ C.lookup config "lockout"
+    lockout' <- liftIO $ C.lookup config "db.lockout"
     let lo = maybe id (\x s -> s { asLockout = Just (second fromInteger x) })
                    lockout'
-    siteKey' <- liftIO (C.lookup config "siteKey")
+    siteKey' <- liftIO (C.lookup config "db.siteKey")
+
     -- very wired that not able to lookup anything from config even exists.
 
     let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey'
@@ -66,7 +67,7 @@ initMongoAuth :: Lens b (Snaplet SessionManager)
                  -> SnapletInit b (AuthManager b)
 initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
     config <- getSnapletUserConfig
-    authTable <- liftIO $ C.lookupDefault "auth_user" config "authCollection"
+    authTable <- liftIO $ C.lookupDefault "auth_user" config "db.authCollection"
     authSettings <- settingsFromConfig
     key <- liftIO $ getKey (fromMaybe (asSiteKey authSettings) sk)
     let

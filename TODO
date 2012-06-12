@@ -43,8 +43,8 @@
 - [ ] User be able to save a topi as favoriate.
 
 
-- [ ] Message to user when new comments
 - [ ] i18n for Digestive-Form validation message.
+- [ ] Message to user when new comments
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?
 - [ ] JS markdown parse is diff with pandoc.
