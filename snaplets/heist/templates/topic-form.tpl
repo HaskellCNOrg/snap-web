@@ -29,13 +29,6 @@
       </div>
     </div>
 
-    <div class="control-group">
-      <dfLabel class="control-label" ref="tags"><i18n name="topic-tag"/></dfLabel>
-      <div class="controls">
-          <dfInputText class="input-large input-tag" ref="tags" placeholder="At least one tag. Tags separated by space." />
-      </div>
-    </div>
-
     <dfInputHidden ref="tid" />
 
     <div class="form-actions">
