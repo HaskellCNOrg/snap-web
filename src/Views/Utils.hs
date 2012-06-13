@@ -22,6 +22,7 @@ import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
+import Data.Text.Read
 
 ----------------------------------------------------------------
 
@@ -65,7 +66,15 @@ decodedParamText :: MonadSnap m => BS.ByteString -> m T.Text
 decodedParamText = fmap T.decodeUtf8 . decodedParam
 
 decodedParamTextMaybe :: MonadSnap m => BS.ByteString -> m (Maybe T.Text)
-decodedParamTextMaybe p = fmap T.decodeUtf8 <$> forceNonEmpty <$> getParam p
+decodedParamTextMaybe p = (fmap T.decodeUtf8 . forceNonEmpty)
+                          <$> getParam p
+
+-- | Parse a number
+--
+decodedParamNum :: (MonadSnap m, Integral a) => BS.ByteString -> m (Maybe a)
+decodedParamNum p = (eitherToMaybe . decimal)
+                    <$> decodedParamText p
+                    where eitherToMaybe = either (const Nothing) (Just . fst)
 
 ------------------------------------------------------------------------------
 
