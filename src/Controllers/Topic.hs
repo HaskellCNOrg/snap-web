@@ -22,6 +22,7 @@ import qualified Data.Text as T
 
 import           Application
 import           Controllers.User hiding (routes)
+import           Controllers.Home (redirect303)
 import           Models.Exception 
 import           Models.Topic 
 import           Models.Utils
@@ -53,7 +54,7 @@ topicIdParam :: BS.ByteString
 topicIdParam = "topicid"
 
 redirectTopicDetailPage :: String -> AppHandler ()
-redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
+redirectTopicDetailPage tid = redirect303 $ "/topic/" `BS.append` sToBS tid
 
 ------------------------------------------------------------------------------
 

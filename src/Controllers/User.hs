@@ -42,7 +42,7 @@ routes =  [
           ]
 
 redirectToUserDetailPage :: AppHandler ()
-redirectToUserDetailPage = redirect "/user"
+redirectToUserDetailPage = redirect303 "/user"
 
 ------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ withAuthUser = requireUser appAuth redirectToSignin
 -- | Redirect to signin page.
 -- 
 redirectToSignin :: AppHandler ()
-redirectToSignin = redirect "/signin"
+redirectToSignin = redirect303 "/signin"
 
 ------------------------------------------------------------------------------
     

@@ -24,4 +24,6 @@ index :: Handler App App ()
 index = ifTop $ heistLocal (bindSplices topicSplices) $ render "index"
 
 redirectToHome :: Handler App App ()
-redirectToHome = redirect "/"
+redirectToHome = redirect303 "/"
+
+redirect303 url = redirect' url 303
