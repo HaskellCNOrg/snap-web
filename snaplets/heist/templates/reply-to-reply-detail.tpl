@@ -5,7 +5,9 @@
         <replyAuthor />
 
         <ifLoggedIn>
-            <a href="/topic/${replyToTopicId}/${replyId}/delete/">Delete</a>
+            <replyEditable>
+                <a href="/topic/${replyToTopicId}/${replyId}/delete/">Delete</a>
+            </replyEditable>
         </ifLoggedIn>
     </section>
 </replyToReply>

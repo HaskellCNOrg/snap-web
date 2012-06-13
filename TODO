@@ -34,17 +34,19 @@
     - [ ] database integration.
 
 - [ ] Styles
-- [ ] pagination
-- [ ] mail integration via email-postmark (active, reset, etc..)
+- [ ] topic pagination
 - [ ] redirect with 303 rather than 302
 
 
+- [ ] mail integration via email-postmark (active, reset, etc..)
 - [ ] Tag allow user add tag on the fly when post topic
     - ? Instead of relationship collection, how about just a array field of Topic collection.
 - [ ] User be able to save a topi as favoriate.
-
-
 - [ ] i18n for Digestive-Form validation message.
+- [ ] Data Migration.
+
+
+- [ ] comments pagination
 - [ ] Message to user when new comments
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?

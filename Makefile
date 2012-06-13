@@ -9,7 +9,7 @@ clean:
 	rm -rf $(DIST)
 
 hlint:
-	hlint src/ test/ --report
+	hlint src/ tests/ --report
 
 ###########################
 ## DEVELOPMENT

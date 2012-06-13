@@ -18,6 +18,7 @@ import Models.Reply
 import Models.User
 import Views.MarkdownSplices
 import Views.ReplySplices
+import Views.UserSplices
 import Views.Types
 import Views.Utils
 import Models.Utils
@@ -69,18 +70,23 @@ renderTopicSimple tag = do
 renderTopic :: Topic -> Splice AppHandler
 renderTopic tag = do
     rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId tag)
-    usrName <- findTopicAuthorName tag
+    user <- findTopicAuthor tag
     runChildrenWith $
       map (second textSplice) [ ("topicTitle", _title tag)
-                              , ("topicAuthor", usrName)
+                              , ("topicAuthor", _userDisplayName user)
                               , ("topicCreateAt", formatUTCTime $ _createAt tag)
                               , ("topicUpdateAt", formatUTCTime $ _updateAt tag)
                               , ("topicId", getTopicId tag) ]
       ++ [ ("topicContent", markdownToHtmlSplice $ _content tag)
-         , ("replyPerTopic", allReplyPerTopicSplice rs) ]
+         , ("replyPerTopic", allReplyPerTopicSplice rs)
+         , ("topicEditable", hasEditPermissionSplice user) ]
 
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 -- 
 findTopicAuthorName :: Topic -> HeistT AppHandler T.Text
-findTopicAuthorName topic = liftM _userDisplayName (lift (findUser' topic))
-                            where findUser' = findOneUser . _author
+findTopicAuthorName topic = liftM _userDisplayName (findTopicAuthor topic)
+
+findTopicAuthor :: Topic -> HeistT AppHandler User
+findTopicAuthor topic = lift (findUser' topic)
+                        where findUser' = findOneUser . _author
+

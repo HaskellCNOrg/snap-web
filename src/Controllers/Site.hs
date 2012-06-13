@@ -12,6 +12,7 @@ module Controllers.Site
 ------------------------------------------------------------------------------
 
 import           Control.Monad.Trans
+import           Control.Applicative ((<$>))
 import           Database.MongoDB (host)
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
@@ -36,6 +37,7 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     ul     <- lookupConfig "snaplet.message-locale"
     sk     <- lookupConfigDefault "snaplet.session-key" "data/session-sitekey.txt"
     dbkey  <- lookupConfigDefault "auth.siteKey" "data/auth-sitekey.txt" 
+    ar     <- Role <$> lookupConfigDefault "auth.admin-role" "administrator"
 
     dbhost <- lookupEnvDefault "host" ""
     dbc    <- lookupConfigDefault "collection" "haskellcn-mongodb"  
@@ -49,7 +51,7 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     addRoutes routes
     addAuthSplices appAuth
     addSplices sharedSplices
-    return $ App h i s d a
+    return $ App h i s d a ar
   where
     cookieSessionMgr' sk = initCookieSessionManager sk "myapp-session" (Just 600)
 

@@ -25,11 +25,11 @@
 
     <!-- FIXME: Show me when has authorization.-->
     <ifLoggedIn>
-      <isCurrentUserAdmin>
+      <topicEditable>
         <div name="topicToolbar">
             <a href="/topicput/${topicId}">Edit</a>
         </div>
-      </isCurrentUserAdmin>
+      </topicEditable>
     </ifLoggedIn>
 
     <div class="replyPerTopic">
