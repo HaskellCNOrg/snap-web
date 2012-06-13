@@ -2,7 +2,7 @@
 
 $.hcn = $.hcn || {};
 
-$.hcn.initReplyToReplyBtn = function () {
+$.hcn.initReplyToReply = function () {
 
     /**
      * Click Handler for "Reply to Relpy".

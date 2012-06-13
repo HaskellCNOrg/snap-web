@@ -69,7 +69,7 @@
     <apply template="js-markdown" />
     <script type="text/javascript">
       $(function () {
-        $.hcn.initReplyToReplyBtn();
+        $.hcn.initReplyToReply();
       })
     </script>
   </bind>

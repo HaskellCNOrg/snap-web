@@ -6,7 +6,7 @@
 
         <ifLoggedIn>
             <replyEditable>
-                <a href="/topic/${replyToTopicId}/${replyId}/delete/">Delete</a>
+                <a href="/topic/${replyToTopicId}/${replyId}/delete/" id="delete-ror-${replyId}">Delete</a>
             </replyEditable>
         </ifLoggedIn>
     </section>
