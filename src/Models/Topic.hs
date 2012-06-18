@@ -30,7 +30,7 @@ data Topic = Topic
     , _author  :: ObjectId
     , _createAt :: UTCTime
     , _updateAt :: UTCTime
-    } deriving (Show)
+    } deriving (Show, Eq)
 
 {-
 	last_reply: { type: ObjectId },

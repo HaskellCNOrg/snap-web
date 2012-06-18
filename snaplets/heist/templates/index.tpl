@@ -6,16 +6,22 @@
         <a class="btn btn-primary" href="/topic">New Topic</a>
       </ifLoggedIn>
 
-      <h2>Topics List</h2>
       <!-- if count of topics > 0 -->
-      <p>
-       <allTopics>
-         <ul>
-           <li><a href="/topic/${oid}"><topicTitle/></a>, <topicAuthor/></li>
-         </ul>
-       </allTopics>
-       <pagination />
-      </p>
+      <section>
+        <header>
+          <h2>Topics List</h2>
+        </header>
+        <homeTopics>
+          <ul>
+            <allTopics>
+              <li><a href="/topic/${oid}"><topicTitle/></a>, <topicAuthor/></li>
+            </allTopics>
+          </ul>
+          <div class="pagination">
+            <pagination />
+          </div>
+        </homeTopics>
+      </section>
 
   </div>
   

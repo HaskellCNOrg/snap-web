@@ -19,8 +19,9 @@ import Views.Utils
 -- 
 index :: Handler App App ()
 index = ifTop $ do
-    decodedParamNum "pagenum" >>= (liftIO . print)
-    heistLocal (bindSplices topicSplices) $ render "index"
+    page <- decodedParamNum "pagenum" 
+    liftIO  $ print page
+    heistLocal (bindSplices $ topicSplices page) $ render "index"
 
 redirectToHome :: Handler App App ()
 redirectToHome = redirect303 "/"

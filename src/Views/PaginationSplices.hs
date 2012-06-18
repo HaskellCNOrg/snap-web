@@ -10,51 +10,86 @@ import qualified Text.XmlHtml as X
 import           Application
 import           Models.Utils
 
-data Integral a => Pagination a = Pagination 
-                    { totalSize :: a
-                    , currentPage :: a
-                    , pagination :: [a]
-                    }
 
-type PageNum = Double
-
-pageSize :: PageNum
-pageSize = 3
-
-pageSplices :: [(T.Text, Splice AppHandler)]
-pageSplices = [ ("pagination", paginationSplice 2)
-                ]
+pageSize :: Double
+pageSize = 2
 
 
 ----------------------------------------------------------------------------
 
 -- | Splice for display pagination elements.
 -- 
-paginationSplice :: Integral a => a -> Splice AppHandler
-paginationSplice a = return [paginationNode 1 4]
+paginationSplice :: Integral a 
+                    => a                 -- ^ Current Page
+                    -> Double            -- ^ Total size
+                    -> Splice AppHandler
+paginationSplice cp total = return $ [paginationNode cp (genPaginationList total)]
 
--- | Generate HTML nodes for pagination.
+-- | Generate HTML nodes for topic pagination.
+--   Elements created here because of not sure how to set up "active" class.
 -- 
-paginationNode :: PageNum        -- ^ Page Number
-               -> PageNum        -- ^ Total Size
-               -> X.Node         -- ^ HTML Nodes
-paginationNode _ 0 = X.Comment "insufficient data for pagination"
-paginationNode 0 t = paginationNode 1 t
-paginationNode p t = X.Element "ul" [] lis
-                     where lis = map f $ map sToText (genPaginationList p t)
-                           f n = X.Element "li" [] [ a n ]
-                           a n = X.Element "a" [] [(X.TextNode n)]
+paginationNode :: Integral a 
+               => a             -- ^ Current Page
+               -> [a]           -- ^ Page Number List
+               -> X.Node        -- ^ HTML Nodes for page numbers
+paginationNode _ [] = X.Comment "insufficient data for pagination"
+paginationNode i xs = 
+    let cp = sToText $ withFixCurrentPage2 i xs
+        doNode = X.Element "ul" [] lis
+        lis = map (f . sToText) xs
+        f n 
+          | cp == n   = X.Element "li" [("class","active")] [a n]
+          | otherwise = X.Element "li" [] [a n]
+        a n 
+          | cp == n   = X.Element "a" [] [X.TextNode n]
+          | otherwise = X.Element "a" [("href", topicPageLink n)] [(X.TextNode n)]
+    in doNode
 
+
+topicPageLink :: T.Text -> T.Text
+topicPageLink = T.append topicHref
+
+topicHref :: T.Text
+topicHref = "/?pagenum="
+
+-- | Generate Page Number List base on total size and predefined page size.
+-- 
 genPaginationList :: (Integral b)
-                     => PageNum        -- ^ Page Number
-                     -> PageNum        -- ^ Total Size
-                     -> [b]            -- ^ Pagination
-genPaginationList _ 0 = []
-genPaginationList 0 y = genPaginationList 1 y
-genPaginationList x y = [1..n]
-                        where n = ceiling $ y / pageSize
-                     
-forceNonEmpty :: Integral a => Maybe a -> a
-forceNonEmpty Nothing = 1
-forceNonEmpty (Just 0) = 1
-forceNonEmpty (Just a) = a
+                     => Double       -- ^ Total Size
+                     -> [b]          -- ^ Page Number List
+genPaginationList 0 = []
+genPaginationList y = [1..n]
+                      where n = pageCount y
+
+pageCount :: Integral b => Double -> b
+pageCount y = ceiling $ y / pageSize
+
+-- | slice for page.
+--   Fetch items for particular page.
+sliceForPage :: (Eq b, Integral a)
+                => a
+                -> [b]
+                -> [b]
+sliceForPage _ []  = []
+sliceForPage cp xs = doSlice (withFixCurrentPage cp xs)
+                     where doSlice p = take takes $ drop (drops p) xs
+                           takes     = fromIntegral (truncate pageSize)
+                           drops p   = fromIntegral ((truncate pageSize) * (p - 1))
+
+
+---------------------------------------------------------------
+
+
+-- | Do pagination with fixing invalide page number.
+-- 
+withFixCurrentPage :: Integral a
+                      => a         -- ^ page number
+                      -> [b]       -- ^ collection
+                      -> a         -- ^ corrected page number
+withFixCurrentPage cp xs = let size = pageCount . fromIntegral $ length xs
+                           in if cp > size then size else cp
+
+withFixCurrentPage2 :: Integral a => a -> [b] -> a
+withFixCurrentPage2 cp xs = let size = fromIntegral $ length xs
+                            in if cp > size then size else cp
+

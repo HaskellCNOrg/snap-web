@@ -37,14 +37,23 @@ instance SpliceRenderable Topic where
 
 -- FIXME: what if no topics at all??
 -- 
-topicSplices :: [(T.Text, Splice AppHandler)]
-topicSplices = [ ("allTopics", allTopicsSplice)
-               , ("pagination", paginationSplice 2) ]
+topicSplices :: Integral a 
+                => Maybe a 
+                -> [(T.Text, Splice AppHandler)]
+topicSplices page = [ ("homeTopics", allTopicsSplice page) ]
 
-allTopicsSplice :: Splice AppHandler
-allTopicsSplice = do
-    t <- lift findAllTopic  
-    mapSplices renderTopicSimple $ filter (isJust . _topicId) t
+allTopicsSplice :: Integral a
+                   => Maybe a
+                   -> Splice AppHandler
+allTopicsSplice page = do
+    t <- lift (fmap (filter (isJust . _topicId)) findAllTopic)
+    runChildrenWith
+      [ ("allTopics", mapSplices renderTopicSimple $ sliceForPage currentPage' t)
+      , ("pagination", paginationSplice currentPage' (total' t))]
+    where total' = fromIntegral . length
+          currentPage' :: Integral a => a
+          currentPage' = maybe 1 fromIntegral page
+          
 
 ------------------------------------------------------------------------------
 

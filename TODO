@@ -35,7 +35,7 @@
 
 - [ ] Styles
 - [ ] topic pagination
-- [ ] redirect with 303 rather than 302
+- [X] redirect with 303 rather than 302
 
 
 - [ ] mail integration via email-postmark (active, reset, etc..)
