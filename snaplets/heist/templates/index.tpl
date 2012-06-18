@@ -14,6 +14,7 @@
            <li><a href="/topic/${oid}"><topicTitle/></a>, <topicAuthor/></li>
          </ul>
        </allTopics>
+       <pagination />
       </p>
 
   </div>

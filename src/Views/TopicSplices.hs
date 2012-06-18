@@ -19,6 +19,7 @@ import Models.User
 import Views.MarkdownSplices
 import Views.ReplySplices
 import Views.UserSplices
+import Views.PaginationSplices
 import Views.Types
 import Views.Utils
 import Models.Utils
@@ -37,7 +38,8 @@ instance SpliceRenderable Topic where
 -- FIXME: what if no topics at all??
 -- 
 topicSplices :: [(T.Text, Splice AppHandler)]
-topicSplices = [("allTopics", allTopicsSplice)]
+topicSplices = [ ("allTopics", allTopicsSplice)
+               , ("pagination", paginationSplice 2) ]
 
 allTopicsSplice :: Splice AppHandler
 allTopicsSplice = do
