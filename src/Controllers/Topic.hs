@@ -73,7 +73,7 @@ tplTopicDetail = "topic-detail"
 createTopicH :: AppHandler ()
 createTopicH = withAuthUser $ do
                              (view, result) <- runForm "create-topic-form" topicForm
-                             liftIO $ print result
+--                             liftIO $ print result
                              case result of
                                Just topic -> doCreateTopic' topic
                                Nothing    -> toTopicFormPage view

@@ -47,9 +47,10 @@ allTopicsSplice :: Integral a
                    -> Splice AppHandler
 allTopicsSplice page = do
     t <- lift (fmap (filter (isJust . _topicId)) findAllTopic)
+    (xs, splice) <- lift $ paginationHandler 2 currentPage' t
     runChildrenWith
-      [ ("allTopics", mapSplices renderTopicSimple $ sliceForPage currentPage' t)
-      , ("pagination", paginationSplice currentPage' (total' t))]
+      [ ("allTopics", mapSplices renderTopicSimple xs)
+      , ("pagination", splice)]
     where total' = fromIntegral . length
           currentPage' :: Integral a => a
           currentPage' = maybe 1 fromIntegral page

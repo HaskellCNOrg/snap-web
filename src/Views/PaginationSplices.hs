@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Views.PaginationSplices where
 
@@ -6,14 +6,32 @@ import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
 import qualified Data.Text as T
 import qualified Text.XmlHtml as X
+import           Snap.Snaplet.Environments
 
 import           Application
 import           Models.Utils
 
 
-pageSize :: Double
-pageSize = 2
-
+-- | Select items for particular page base on Page Size, Current Page
+-- 
+paginationHandler :: (Eq b, Integral a)
+                     => Double   -- ^ Page Size
+                     -> a        -- ^ Current Page
+                     -> [b]      -- ^ Total items
+                     -> AppHandler ([b], Splice AppHandler) -- ^ items for current page and page splice
+paginationHandler s cp xs = do
+  pageSize <- getPageSize
+  let total          = length xs
+      sDouble        = fromIntegral pageSize
+      pageCount'     = ceiling $ fromIntegral total / sDouble
+      cp'            = fixCurrentPage cp pageCount'
+      pageNumberList = [1..pageCount']
+      pageItems      = sliceForPage cp' pageSize xs
+      pageSplice     = paginationSplice cp' pageNumberList
+  return (pageItems, pageSplice)
+      
+getPageSize :: AppHandler Int
+getPageSize = lookupEnvDefault "pagesize" 20
 
 ----------------------------------------------------------------------------
 
@@ -21,9 +39,9 @@ pageSize = 2
 -- 
 paginationSplice :: Integral a 
                     => a                 -- ^ Current Page
-                    -> Double            -- ^ Total size
+                    -> [a]               -- ^ Total size
                     -> Splice AppHandler
-paginationSplice cp total = return $ [paginationNode cp (genPaginationList total)]
+paginationSplice cp xs = return [paginationNode cp xs]
 
 -- | Generate HTML nodes for topic pagination.
 --   Elements created here because of not sure how to set up "active" class.
@@ -34,7 +52,7 @@ paginationNode :: Integral a
                -> X.Node        -- ^ HTML Nodes for page numbers
 paginationNode _ [] = X.Comment "insufficient data for pagination"
 paginationNode i xs = 
-    let cp = sToText $ withFixCurrentPage2 i xs
+    let cp = sToText i
         doNode = X.Element "ul" [] lis
         lis = map (f . sToText) xs
         f n 
@@ -42,7 +60,7 @@ paginationNode i xs =
           | otherwise = X.Element "li" [] [a n]
         a n 
           | cp == n   = X.Element "a" [] [X.TextNode n]
-          | otherwise = X.Element "a" [("href", topicPageLink n)] [(X.TextNode n)]
+          | otherwise = X.Element "a" [("href", topicPageLink n)] [X.TextNode n]
     in doNode
 
 
@@ -52,44 +70,30 @@ topicPageLink = T.append topicHref
 topicHref :: T.Text
 topicHref = "/?pagenum="
 
--- | Generate Page Number List base on total size and predefined page size.
--- 
-genPaginationList :: (Integral b)
-                     => Double       -- ^ Total Size
-                     -> [b]          -- ^ Page Number List
-genPaginationList 0 = []
-genPaginationList y = [1..n]
-                      where n = pageCount y
 
-pageCount :: Integral b => Double -> b
-pageCount y = ceiling $ y / pageSize
+---------------------------------------------------------------
 
 -- | slice for page.
---   Fetch items for particular page.
+--   Fetching items from whole collection for particular page.
 sliceForPage :: (Eq b, Integral a)
-                => a
-                -> [b]
-                -> [b]
-sliceForPage _ []  = []
-sliceForPage cp xs = doSlice (withFixCurrentPage cp xs)
-                     where doSlice p = take takes $ drop (drops p) xs
-                           takes     = fromIntegral (truncate pageSize)
-                           drops p   = fromIntegral ((truncate pageSize) * (p - 1))
+                => a              -- ^ current page
+                -> Int            -- ^ page size
+                -> [b]            -- ^ all items
+                -> [b]            -- ^ selected items for current page.
+sliceForPage _ _ []  = []
+sliceForPage 0 s xs  = sliceForPage 1 s xs
+sliceForPage cp size xs = take size $ drop (drops cp) xs
+                     where drops = (* size) . flip (-) 1 . fromIntegral
 
 
 ---------------------------------------------------------------
 
 
--- | Do pagination with fixing invalide page number.
+-- | Fixing invalide page number.
+--   e.g. total page number is 2 but given current page 3, show the last page (2 here) instead.
 -- 
-withFixCurrentPage :: Integral a
-                      => a         -- ^ page number
-                      -> [b]       -- ^ collection
-                      -> a         -- ^ corrected page number
-withFixCurrentPage cp xs = let size = pageCount . fromIntegral $ length xs
-                           in if cp > size then size else cp
-
-withFixCurrentPage2 :: Integral a => a -> [b] -> a
-withFixCurrentPage2 cp xs = let size = fromIntegral $ length xs
-                            in if cp > size then size else cp
-
+fixCurrentPage :: Integral a 
+                  => a  -- ^ Current Page
+                  -> a  -- ^ How many page numbers in total
+                  -> a  -- ^ A valid page number
+fixCurrentPage cp total = if cp > total then total else cp

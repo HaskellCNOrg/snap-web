@@ -20,7 +20,6 @@ import Views.Utils
 index :: Handler App App ()
 index = ifTop $ do
     page <- decodedParamNum "pagenum" 
-    liftIO  $ print page
     heistLocal (bindSplices $ topicSplices page) $ render "index"
 
 redirectToHome :: Handler App App ()
