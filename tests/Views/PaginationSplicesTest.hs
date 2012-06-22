@@ -34,7 +34,7 @@ verifyEmptyUL = f (nodeDataGen 0 [])
 verifyULNode x y = f (nodeDataGen x y)
                where f (node, name, lis) = isNodeUL name
                                           && not (null lis)
-                                          && (length lis) == (length y)
+                                          && length lis == length y
 isNodeUL name  = isJust name && "ul" == fromJust name
 
 nodeDataGen x y  = let node  = paginationNode x y

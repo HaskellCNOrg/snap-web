@@ -1,18 +1,34 @@
+{-# LANGUAGE CPP             #-}
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
 
 module Views.SharedSplices where
 
+import           Data.Maybe (fromMaybe)
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
 import qualified Data.Text as T
-
+import qualified Text.XmlHtml as X
 
 import           Application
 import           Models.User
 
+
+----------------------------------------------------------------------------
+
+currentEnv :: T.Text
+#ifdef DEVELOPMENT
+currentEnv = "devel"
+#else
+currentEnv = "prod"
+#endif
+
+----------------------------------------------------------------------------
+
+
 sharedSplices :: [(T.Text, SnapletSplice App App)]
 sharedSplices = [ ("currentUser", currentUserSplice)
                 , ("isCurrentUserAdmin", isCurrentUserAdminSplice)
+                , ("showOnEnv", liftHeist showOnEnvSplice)
                 ]
 
 
@@ -29,3 +45,12 @@ isCurrentUserAdminSplice :: SnapletSplice App App
 isCurrentUserAdminSplice = do
     tf <- liftHandler isCurrentUserAdmin
     if tf then liftHeist runChildren else return []
+
+-- | Show children per Production or Development
+-- 
+showOnEnvSplice :: Splice AppHandler
+showOnEnvSplice = do
+    node <- getParamNode
+    if getOnAttr node == currentEnv then return $ X.elementChildren node else return []
+    where getOnAttr n = fromMaybe "" (X.getAttribute "on" n)
+
