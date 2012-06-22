@@ -34,7 +34,8 @@
     - [ ] database integration.
 
 - [ ] Styles
-- [ ] topic pagination
+- [X] topic pagination
+- [X] configable for page size
 - [X] redirect with 303 rather than 302
 
 
