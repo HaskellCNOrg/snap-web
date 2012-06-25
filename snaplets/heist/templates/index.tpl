@@ -3,13 +3,13 @@
     <div id="content">
 
       <ifLoggedIn>
-        <a class="btn btn-large btn-primary pull-right" href="/topic">New Topic</a>
+        <a class="btn btn-large btn-primary pull-right" href="/topic"><i18n name="topic-new" /></a>
       </ifLoggedIn>
 
       <!-- if count of topics > 0 -->
       <section class="topicList">
         <header>
-          <h2>Topics List</h2>
+          <h2><i18n name="topic-list-header" /></h2>
         </header>
         <homeTopics>
           <ul>

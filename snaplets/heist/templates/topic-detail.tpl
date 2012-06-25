@@ -27,7 +27,7 @@
     <ifLoggedIn>
       <topicEditable>
         <div name="topicToolbar">
-            <a href="/topicput/${topicId}">Edit</a>
+            <a href="/topicput/${topicId}"><i18n name="site-edit" /></a>
         </div>
       </topicEditable>
     </ifLoggedIn>
@@ -46,7 +46,9 @@
 
           <ifLoggedIn>
             <!-- JS impl in @initReplyToReplyBtn@ -->
-            <p><a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}">Add Comment</a></p>
+            <p>
+              <a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="topic-add-reply" /></a>
+            </p>
             <!-- <a href="/topic/${topicId}/${replyId}/delete/">Delete</a> -->
           </ifLoggedIn>
           
