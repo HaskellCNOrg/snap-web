@@ -17,10 +17,11 @@
       <h2>
         <topicTitle />
       </h2>
-      <p><topicAuthor/></p>
       <p><topicContent/></p>
-      <p><topicCreateAt/></p>
-      <p><topicUpdateAt/></p>
+
+      <p class="author">Add by <topicAuthor/> at <topicCreateAt/></p>
+
+      <!-- <p><topicUpdateAt/></p> -->
     </article>
 
     <!-- FIXME: Show me when has authorization.-->
@@ -37,8 +38,7 @@
       <replyPerTopic>
         <section class="reply">
           <p><replyContent/></p>
-          <p><replyAuthor/></p>
-          <p><replyCreateAt/></p>
+          <p class="author">Add by <replyAuthor/> at <replyCreateAt/></p>
 
           <div class="replyOfReply">
             <apply template="reply-to-reply-detail" />

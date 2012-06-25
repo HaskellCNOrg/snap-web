@@ -41,7 +41,10 @@ replyToRelpyForm :: Monad m => Form Text m ReplyVo
 replyToRelpyForm = ReplyVo
     <$> "replyToTopicId"  .: checkRequired "replyToReplyTopicId is required" (text Nothing)
     <*> "replyToReplyId"  .: checkRequired "replyToReplyReplyId is required" (text Nothing)
-    <*> "replyContent"  .: contentValidation (text Nothing)
+    <*> "replyContent"  .: replyOfReplyContentMaxLength (contentValidation (text Nothing))
+
+replyOfReplyContentMaxLength :: Monad m => Form Text m Text -> Form Text m Text
+replyOfReplyContentMaxLength = checkMaxLength 160
 
 
 ------------------------------------------------------------ 

@@ -71,34 +71,38 @@ topicDetailSplices = eitherToSplices
 -- 
 renderTopicSimple :: Topic -> Splice AppHandler
 renderTopicSimple tag = do
-    usrName <- findTopicAuthorName tag
-    runChildrenWithText 
-        [ ("topicTitle", _title tag)
-        , ("topicAuthor", usrName)
-        , ("oid", getTopicId tag) ]
+    usr <- findTopicAuthor tag
+    runChildrenWithText (topicToSpliceContent tag usr)
 
--- | @Deprecated with @renderTopicWithReply@
+-- | Render a Topic with its replies.
 -- 
 renderTopic :: Topic -> Splice AppHandler
 renderTopic tag = do
     rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId tag)
     user <- findTopicAuthor tag
     runChildrenWith $
-      map (second textSplice) [ ("topicTitle", _title tag)
-                              , ("topicAuthor", _userDisplayName user)
-                              , ("topicCreateAt", formatUTCTime $ _createAt tag)
-                              , ("topicUpdateAt", formatUTCTime $ _updateAt tag)
-                              , ("topicId", getTopicId tag) ]
+      map (second textSplice) (topicToSpliceContent tag user)
       ++ [ ("topicContent", markdownToHtmlSplice $ _content tag)
          , ("replyPerTopic", allReplyPerTopicSplice rs)
          , ("topicEditable", hasEditPermissionSplice user) ]
 
+------------------------------------------------------------------------------
+    
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 -- 
-findTopicAuthorName :: Topic -> HeistT AppHandler T.Text
-findTopicAuthorName topic = liftM _userDisplayName (findTopicAuthor topic)
-
 findTopicAuthor :: Topic -> HeistT AppHandler User
 findTopicAuthor topic = lift (findUser' topic)
                         where findUser' = findOneUser . _author
 
+-- findTopicAuthorName :: Topic -> HeistT AppHandler T.Text
+-- findTopicAuthorName topic = liftM _userDisplayName (findTopicAuthor topic)
+
+
+-- | Topic to Splice "VO"
+-- 
+topicToSpliceContent :: Topic -> User -> [(T.Text, T.Text)]
+topicToSpliceContent topic user = [ ("topicTitle", _title topic)
+                              , ("topicAuthor", _userDisplayName user)
+                              , ("topicCreateAt", formatUTCTime $ _createAt topic)
+                              , ("topicUpdateAt", formatUTCTime $ _updateAt topic)
+                              , ("topicId", getTopicId topic) ]

@@ -14,7 +14,7 @@
         <homeTopics>
           <ul>
             <allTopics>
-              <li><a href="/topic/${oid}"><topicTitle/></a>, <topicAuthor/></li>
+              <li><a href="/topic/${topicId}"><topicTitle/></a> <p class="author">Submited by <topicAuthor/> at <topicCreateAt /></p></li>
             </allTopics>
           </ul>
           <div class="pagination">

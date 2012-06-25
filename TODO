@@ -38,6 +38,7 @@
 - [X] configable for page size
 - [X] redirect with 303 rather than 302
 
+- [ ] Link User Detail for any user. (Currently only for login user)
 
 - [ ] mail integration via email-postmark (active, reset, etc..)
 - [ ] Tag allow user add tag on the fly when post topic

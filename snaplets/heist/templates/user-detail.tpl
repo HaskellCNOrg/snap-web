@@ -18,6 +18,9 @@
 
     <form class="form-horizontal">
 
+      <fieldset>
+        <legend><i18n name="user-detail-header" /></legend>
+
       <div class="control-group">
         <label class="control-label"><i18n name="user-email" /></label>
         <div class="controls">
@@ -38,6 +41,8 @@
           <span class="input-xlarge uneditable-input"><userSite/></span>
         </div>
       </div>
+
+      </fieldset>
 
     </form>
 

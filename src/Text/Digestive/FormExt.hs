@@ -46,7 +46,14 @@ checkValidEmail = check "Please input valid email address." emailValidator
 -- | Check for min length reqirued.
 -- 
 checkMinLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
-checkMinLength l = check ("Content is simple. min length " `T.append` intToText) minLength
+checkMinLength l = check ("Content is too simple. min length " `T.append` intToText) minLength
                       where minLength = (>= l) . T.length  
                             intToText = T.pack (show l)
 
+
+-- | Check for max length reqirued.
+-- 
+checkMaxLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
+checkMaxLength l = check ("Content exceeds max length " `T.append` intToText) maxLength
+                      where maxLength = (<= l) . T.length  
+                            intToText = T.pack (show l)
