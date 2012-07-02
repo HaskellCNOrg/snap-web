@@ -35,11 +35,6 @@ rp: clean build-dev p
 
 ###########################
 ## PRODUCTION
-## Maybe TODO: (third party or all in Haskell?)
-##       0. Maybe enhance Heist in order to compress HTML. it is due to parseHTML in xmlhtml.
-##       1. create new dir _sites
-##       2. combine & compress JS; replace related links in templates.
-##       3. generate main.css via lessc; replace related links in templates.
 ##
 ###########################
 
@@ -55,6 +50,12 @@ preview:
 markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js
 markdownMergeJS=markdown.js
 
+##
+##       1. create new dir _sites
+##       2. compress HTML
+##       3. combine & compress JS; replace related links in templates.
+##       4. generate main.css via lessc; replace related links in templates.
+## 
 create-site: 
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log

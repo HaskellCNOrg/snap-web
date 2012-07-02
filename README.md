@@ -26,13 +26,27 @@
 2. Install a.haskell.cn
 
     git clone git://github.com/HaskellCNOrg/a.haskellcn.git
+    cp data/env.cfg.default data/env.cfg
+    cd a.haskellcn
+    make bp
 
-3. Env Config (which has config that not going to be shared)
-   
-    cp data/env.cfg.default data/env.cfg   
-    
-4. (Optional) Other customization files
+3. Open browser to <http://localhost:9000>
 
+## Production Deployment
+
+0. Assume have done all steps in Installation section
+
+1. cd a.haskellcn
+
+2. make create-site 
+
+*All required files will be copy into _site folder, read Make task for detail*
+
+## Notes
+
+1. Customization files
+
+- `data/env.cfg`, which has config that not going to be shared
 - `data/main.cfg`
 - `data/message-*.cfg`
 
