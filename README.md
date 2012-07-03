@@ -50,6 +50,8 @@
 - `data/main.cfg`
 - `data/message-*.cfg`
 
+2. Is it better to specify version of dependency rather than range?
+
 ## License
 
 Check the LICENSE file
