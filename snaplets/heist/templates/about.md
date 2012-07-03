@@ -1,4 +1,4 @@
-*Community of Haskellers.*
+*Fans of Haskell*
 
 - [主站]
 - [微博]

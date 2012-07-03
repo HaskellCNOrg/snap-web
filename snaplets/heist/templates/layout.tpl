@@ -21,6 +21,8 @@
     <!-- =========================================== -->
     </showOnEnv>
 
+    <apply template="google-a" />
+
   </head>
   
   <body>
@@ -31,7 +33,7 @@
           <apply template="layout-footer" />
       </div>
 
-      <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
       <script type="text/javascript" src="/js/main.js"></script>
       <bottom-scripts />
 

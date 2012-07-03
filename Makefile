@@ -46,8 +46,6 @@ rebuild: clean build
 preview:
 	$(PROG_PREV) -p 9900 @prod
 
-markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js
-markdownMergeJS=markdown.js
 
 ##
 ##       1. create new dir _sites
@@ -55,6 +53,10 @@ markdownMergeJS=markdown.js
 ##       3. combine & compress JS; replace related links in templates.
 ##       4. generate main.css via lessc; replace related links in templates.
 ## 
+
+markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js
+markdownMergeJS=markdown.js
+
 create-site: 
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
