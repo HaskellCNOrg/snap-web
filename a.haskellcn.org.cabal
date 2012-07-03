@@ -48,7 +48,7 @@ Executable ahaskellcnorg
     text                         >= 0.11  && < 0.12,
     time                         >= 1.1   && < 1.5,
     -- unordered-containers may better to be >= 0.2 cause met problem at refresh build
-    unordered-containers         >= 0.1.4 && < 0.2,
+    unordered-containers         >= 0.2 && < 0.3,
     utf8-string                  >= 0.3.7 && < 0.4,
     xmlhtml                      >= 0.1   && < 0.2
 
