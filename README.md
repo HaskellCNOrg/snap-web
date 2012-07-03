@@ -8,29 +8,39 @@
  - Add/Update New Posts
  - Add Comment to either a Topic or Comment
  - Pagination for Posts
+ - i18n support
 
 ## Installation
 
-*Assume OS is \*inux with make otherwise figure out yourself by reading Makefile*
+**Assume OS is \*inux with make otherwise figure out yourself by reading Makefile**
 
 0. Install MongoDB
 
 1. Install Snaplet-Environments
 
-*Need to be in this way because the one in Hackage is not compatibale with snap-0.8*
+**Need to be in this way because the one in Hackage is not compatibale with snap-0.8**
 
     git clone git://github.com/HaskellCNOrg/Snaplet-Environments.git
     cd Snaplet-Environments
     make install
+    
+2. digestive-functors-heist
 
-2. Install a.haskell.cn
+**need fix at 4b9d8212e768dc3dbb1f8b8e3cec5da9a789ea81 in order to allow Markdown work. Therefore need build local otherwise need install 0.0.4 which has not been tested in this App yet..**
+
+    cabal install digestive-functors-0.3.0.1 digestive-functors-snap-0.3.2.0
+    git clone https://github.com/jaspervdj/digestive-functors
+    cd digestive-functors/digestive-functors-heist
+    cabal configure && cabal build && cabal install
+   
+3. Install a.haskell.cn
 
     git clone git://github.com/HaskellCNOrg/a.haskellcn.git
     cp data/env.cfg.default data/env.cfg
     cd a.haskellcn
     make bp
 
-3. Open browser to <http://localhost:9000>
+4. Open browser to <http://localhost:9000>
 
 ## Production Deployment
 
@@ -40,7 +50,7 @@
 
 2. make create-site 
 
-*All required files will be copy into _site folder, read Make task for detail*
+*All required files will be copy into _site folder, read make task for detail*
 
 ## Notes
 
