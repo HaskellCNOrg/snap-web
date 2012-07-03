@@ -1,4 +1,3 @@
-
 PROG_PREV = ./dist/build/ahaskellcnorg/ahaskellcnorg
 EXTRA_TEST_LIB = ./dist/build/ahaskellcnorg/ahaskellcnorg-tmp
 DIST=dist
@@ -38,7 +37,7 @@ rp: clean build-dev p
 ##
 ###########################
 
-build: hlint
+build: 
 	cabal configure
 	cabal build
 
