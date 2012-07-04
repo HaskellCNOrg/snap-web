@@ -37,7 +37,6 @@ replySpliceWithChildren (r, rs) = do
     runChildrenWith $ ("replyToReply", mapSplices replySplice rs)
                       : map (second textSplice) (replySpliceImpl r usrName)
 
---                      ,  ]
 
 ------------------------------------------------------------------------------
 
