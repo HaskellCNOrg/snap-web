@@ -1,3 +1,5 @@
+online demo: <http://demo.haskellcn.org>
+
 ## Travis CI
 
 - [![Master](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
