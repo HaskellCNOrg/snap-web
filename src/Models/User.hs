@@ -190,7 +190,7 @@ getUserId = fmap SM.userIdToObjectId . userId
 userEq :: User -> User -> Bool
 userEq = (==) `on` _userEmail
 
------------------------------------------------------------------------------- ROLE & PREMISSIONS
+----------------------------------------------------------- ROLE & PREMISSIONS
 
 -- | Get admin roles from config file.
 -- 

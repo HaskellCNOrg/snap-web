@@ -32,22 +32,21 @@
 (@) [X] authorization, user roles??
     - [X] just config to file
     - [ ] database integration.
-
-- [ ] Styles
 - [X] topic pagination
 - [X] configable for page size
 - [X] redirect with 303 rather than 302
-
-- [ ] Link User Detail for any user. (Currently only for login user)
+- [X] Link User Detail for any user. (Currently only for login user)
+    - [ ] Bug: infor from AuthUser has not been retrieved.
 
 - [ ] mail integration via email-postmark (active, reset, etc..)
 - [ ] Tag allow user add tag on the fly when post topic
     - ? Instead of relationship collection, how about just a array field of Topic collection.
-- [ ] User be able to save a topi as favoriate.
+- [ ] User be able to save a topic as favoriate.
 - [ ] i18n for Digestive-Form validation message.
 - [ ] Data Migration.
+- [ ] Why not use "drop down window" for signin and signup ?
 
-
+- [ ] Maybe redesign, more HTML5, SASS
 - [ ] comments pagination
 - [ ] Message to user when new comments
 - [ ] Category is predifined.
@@ -60,9 +59,9 @@
 
 ### Makefile
 
-- [ ] Compress & combine JS
-- [ ] Generate min.css per .less files
-- [ ] How to update template incorporate those two thing above?
+- [X] Compress & combine JS
+- [X] Generate min.css per .less files
+- [X] How to update template incorporate those two thing above?
 
 ### Know issues
 
@@ -96,11 +95,11 @@
 - redesign write post / comment panel
     - [X] preview on the fly?
     - [ ] display tag right under input box.
-- [ ] customize bootstrap css which is un-necessary large.
+- [X] customize bootstrap css which is un-necessary large.
 - [ ] allow user add tag?
 - [ ] show person score like stackoverflow
-- [ ] mv tags to sidebar.
-- [ ] do not display click count.
+- [?] mv tags to sidebar.
+- [?] do not display click count.
 
 
 
