@@ -103,6 +103,7 @@ findTopicAuthor topic = lift (findUser' topic)
 topicToSpliceContent :: Topic -> User -> [(T.Text, T.Text)]
 topicToSpliceContent topic user = [ ("topicTitle", _title topic)
                               , ("topicAuthor", _userDisplayName user)
+                              , ("topicAuthorId", sToText $ _author topic)
                               , ("topicCreateAt", formatUTCTime $ _createAt topic)
                               , ("topicUpdateAt", formatUTCTime $ _updateAt topic)
                               , ("topicId", getTopicId topic) ]

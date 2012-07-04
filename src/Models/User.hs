@@ -34,7 +34,10 @@ import           Models.Exception
 import           Models.Utils
 import           Application
 
+-- | User Email plays another role as a unique loginName.
+-- 
 type Email = T.Text
+
 type UserObjId = ObjectId
 
 -- | A lightweight alternative to @AuthUser@. Use email prefix as login name.

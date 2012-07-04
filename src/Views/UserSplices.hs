@@ -2,6 +2,7 @@
 
 module Views.UserSplices where
 
+import           Control.Arrow (second)
 import           Control.Monad
 import           Control.Monad.Trans
 import           Control.Applicative ((<$>), (<*>))
@@ -35,13 +36,15 @@ userDetailSplices = eitherToSplices
 -- | Single user to Splice.
 -- 
 renderUser :: User -> Splice AppHandler
-renderUser user = runChildrenWithText
+renderUser user = runChildrenWith $
+                     ("userEditable", hasEditPermissionSplice user) : 
+                     map (second textSplice)
                      [ ("userLogin",       maybe "" userLogin $ _authUser user)
                      , ("userLastLoginAt", maybe "" (formatUTCTime' . userLastLoginAt) $ _authUser user)
                      , ("userCreatedAt",   maybe "" (formatUTCTime' . userCreatedAt) $ _authUser user)
                      , ("userEmail",       _userEmail user)
                      , ("userDisplayName", _userDisplayName user)
-                     , ("userSite", _userSite user) ]
+                     , ("userSite", _userSite user)]
                   where formatUTCTime' Nothing  = ""
                         formatUTCTime'  (Just x) = formatUTCTime x 
 

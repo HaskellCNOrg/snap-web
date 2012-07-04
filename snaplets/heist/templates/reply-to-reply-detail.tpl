@@ -1,7 +1,7 @@
 
 <replyToReply>
     <section>
-        <span><replyContent/></span> - <span class="author"><replyAuthor /> <replyCreateAt/></span>
+        <span><replyContent/></span> - <span class="author"><a href="/user/${replyAuthorId}"><replyAuthor /></a> <replyCreateAt/></span>
 
         <ifLoggedIn>
             <replyEditable>

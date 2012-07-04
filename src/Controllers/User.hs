@@ -24,6 +24,7 @@ import           Application
 import           Controllers.Home
 import           Models.Exception
 import           Views.UserForm
+import           Models.Utils
 import           Views.Utils
 import           Views.UserSplices
 import qualified Models.User as USER
@@ -36,10 +37,14 @@ routes =  [
           , ("/signin",  signin)
           , ("/signout", method GET signout)
           ----
-          , ("/user",    method GET viewUserH)
+          , ("/user",      method GET viewUserH)
+          , ("/user/:uid", method GET viewUserH)
           , ("/userput", method GET editUserH)
           , ("/userput", method POST saveUserH)
           ]
+
+uidP :: BS.ByteString
+uidP = "uid"
 
 redirectToUserDetailPage :: AppHandler ()
 redirectToUserDetailPage = redirect303 "/user"
@@ -116,7 +121,9 @@ signout = with appAuth logout >> redirectToHome
 -- | Fetch @User@ details. As this handler used with @withAuthUser@.
 -- 
 viewUserH :: AppHandler ()
-viewUserH = withAuthUser $ try USER.findCurrentUser >>= toUserDetailPage
+viewUserH = withAuthUser $ decodedParamTextMaybe uidP >>= try . findUserOrCurrent >>= toUserDetailPage
+            where findUserOrCurrent = maybe USER.findCurrentUser (USER.findOneUser . textToObjectId)
+                              
     
 toUserDetailPage :: Either UserException USER.User -> AppHandler ()
 toUserDetailPage user = heistLocal (bindSplices (userDetailSplices user)) $ render "user-detail"
