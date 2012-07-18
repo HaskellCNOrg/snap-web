@@ -94,9 +94,9 @@ createAuthUser' usr = do
     exists <- usernameExists (loginName usr)
     when exists (throw UserAlreadyExists)
     authUsr <- createUser (loginName usr) (password' usr)
-    forceLogin authUsr >>= either throwUE return
-  where passLength    = T.length . password
-        password'     = textToBS . password
+    loginUser usr
+  where passLength = T.length . password
+        password'  = textToBS . password
 
 -- http://hpaste.org/69009, failure piece of code about `withBackend`.
 

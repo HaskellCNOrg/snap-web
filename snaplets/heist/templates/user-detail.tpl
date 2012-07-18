@@ -47,7 +47,7 @@
     </form>
 
     
-    <p><i18n name="user-last-login" />: <userLastLoginAt/></p>
+    <userLastLoginAt><p><i18n name="user-last-login" />: <lastLoginTime/></p></userLastLoginAt>
     <p><i18n name="user-created-since" />: <userCreatedAt/></p>
 
     <userEditable>
