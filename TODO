@@ -1,4 +1,3 @@
-
 ## Implementation
 
 ### TODOS
@@ -37,8 +36,9 @@
 - [X] topic pagination
 - [X] configable for page size
 - [X] redirect with 303 rather than 302
+- [X] Link User Detail for any user. (Currently only for login user)
+- [ ] Update Links of UserPage/Login/Logout/NewTopic as icons to nav bar.
 
-- [ ] Link User Detail for any user. (Currently only for login user)
 
 - [ ] mail integration via email-postmark (active, reset, etc..)
 - [ ] Tag allow user add tag on the fly when post topic
