@@ -31,7 +31,7 @@ paginationHandler s cp xs = do
   return (pageItems, pageSplice)
       
 getPageSize :: AppHandler Int
-getPageSize = lookupEnvDefault "pagesize" 20
+getPageSize = lookupConfigDefault "pagesize" 20
 
 ----------------------------------------------------------------------------
 

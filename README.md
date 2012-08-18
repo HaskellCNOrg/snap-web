@@ -25,7 +25,6 @@ online demo: <http://demo.haskellcn.org>
 ```
 git clone git://github.com/HaskellCNOrg/a.haskellcn.git
 cd a.haskellcn
-cp data/env.cfg.default data/env.cfg
 make init bp
 ```
 
@@ -38,6 +37,8 @@ make init bp
 1. cd a.haskellcn
 
 2. make create-site 
+
+3. (Important) update _site/prod.cfg per your env.
 
 *All required files will be copy into _site folder, read make task for detail*
 
