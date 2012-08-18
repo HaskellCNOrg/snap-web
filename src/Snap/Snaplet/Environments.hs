@@ -63,7 +63,7 @@ lookupEnvDefault name def = liftM (fromMaybe def) (lookupEnv name)
 getNameForCurEnv :: (Monad (m b v), MonadSnaplet m, MonadIO (m b v)) => Name -> Config -> m b v Name
 getNameForCurEnv name cfg = do
   env <- getCurrentEnv cfg
-  return $ T.pack $ "environments." ++ env ++ "." ++ (T.unpack name)
+  return $ T.pack $ "environments." ++ env ++ "." ++ T.unpack name
 
 
 getCurrentEnv :: (Monad (m b v), MonadSnaplet m, MonadIO (m b v)) => Config -> m b v String

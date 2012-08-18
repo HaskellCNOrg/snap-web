@@ -41,7 +41,7 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
 
     dbhost <- lookupEnvDefault "host" "127.0.0.1"
     --    dbc    <- lookupEnvDefault "collection" "haskellcn-mongodb"
-    dbc    <- return "haskellcn-mongodb"
+    let dbc = "haskellcn-mongodb"
 
     h  <- nestSnaplet "heist" heist $ heistInit "templates"
     i  <- nestSnaplet "i18n" i18n $ initI18NSnaplet ul

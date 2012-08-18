@@ -12,7 +12,7 @@ clean:
 	rm -rf $(DIST)
 
 hlint:
-	hlint src/ tests/ --report
+	hlint src/ tests/ --report=$(DIST)/hlint.html
 
 ###########################
 ## DEVELOPMENT

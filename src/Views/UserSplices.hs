@@ -57,7 +57,7 @@ formatUTCTimeMaybe (Just x) = formatUTCTime x
 userLastLoginAtSplice :: Maybe AuthUser   -- ^ Author of some.
                         -> Splice AppHandler
 userLastLoginAtSplice Nothing = return []
-userLastLoginAtSplice (Just authusr) = do
+userLastLoginAtSplice (Just authusr) =
     case userLastLoginAt authusr of
       Nothing -> return []
       Just time -> runChildrenWithText [ ("lastLoginTime", formatUTCTime time) ]
