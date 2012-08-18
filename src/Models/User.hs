@@ -27,7 +27,7 @@ import           Snap.Snaplet.Auth.Backends.MongoDB as SM
 import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
 import qualified Database.MongoDB as DB
-import Snap.Snaplet.Environments
+--import Snap.Snaplet.Environments
 import Data.Function
 
 import           Models.Exception

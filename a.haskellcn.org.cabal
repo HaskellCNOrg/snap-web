@@ -1,5 +1,5 @@
 Name:                ahaskellcnorg
-Version:             0.1
+Version:             0.2
 Synopsis:            haskellcn-community
 Description:         A light weight forum
 License:             AllRightsReserved
@@ -31,31 +31,32 @@ Executable ahaskellcnorg
     containers                   >= 0.4   && < 0.5,
     data-lens                    >= 2.0.1 && < 2.1,
     data-lens-template           >= 2.1   && < 2.2,
-    snaplet-environments         == 0.2,
-    digestive-functors           >= 0.3   && < 0.4,
-    digestive-functors-heist     >= 0.3   && < 0.4,
-    digestive-functors-snap      >= 0.3   && < 0.4,
+    digestive-functors           == 0.5.*,
+    digestive-functors-heist     >= 0.5   && < 0.6,
+    digestive-functors-snap      >= 0.5   && < 0.6,
     heist                        >= 0.8   && < 0.9,
-    MonadCatchIO-transformers    >= 0.2.1 && < 0.3,
+    MonadCatchIO-transformers    >= 0.2   && < 0.4,
     mongoDB                      >= 1.2   && < 2.0,
     mtl                          >= 2     && < 3,
     old-locale                   >= 1.0   && < 1.1,
     pandoc                       >= 1.9   && < 2.0,
     resource-pool                >= 0.2   && < 0.3,
-    snap        == 0.8.*,
-    snap-core   == 0.8.*,
-    snap-server == 0.8.*,
-    snaplet-i18n                 >= 0.0.2 && < 0.1,
+    snap                         == 0.9.*,
+    snap-core                    == 0.9.*,
+    snap-server                  == 0.9.*,
+    snap-loader-static           == 0.9.*,
+    snaplet-i18n                 == 0.0.3,
     snaplet-mongodb-minimalistic >= 0.0.6 && < 0.0.7,
     text                         >= 0.11  && < 0.12,
     time                         >= 1.1   && < 1.5,
-    -- unordered-containers may better to be >= 0.2 cause met problem at refresh build
     unordered-containers         >= 0.2 && < 0.3,
     utf8-string                  >= 0.3.7 && < 0.4,
-    xmlhtml                      >= 0.1   && < 0.2
+    xmlhtml                      == 0.2.0
 
 
   if flag(development)
+    build-depends:
+      snap-loader-dynamic == 0.9.*
     cpp-options: -DDEVELOPMENT
     ghc-options: -threaded -w
   else
@@ -66,6 +67,7 @@ Executable ahaskellcnorg
     else
       ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
                    -fno-warn-orphans
+
 
 
 Test-suite hcn-tests

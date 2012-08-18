@@ -40,7 +40,8 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     ar     <- Role <$> lookupConfigDefault "auth.admin-role" "administrator"
 
     dbhost <- lookupEnvDefault "host" ""
-    dbc    <- lookupEnvDefault "collection" "haskellcn-mongodb"  
+--    dbc    <- lookupEnvDefault "collection" "haskellcn-mongodb"
+    dbc    <- return "haskellcn-mongodb"
 
     h  <- nestSnaplet "heist" heist $ heistInit "templates"
     i  <- nestSnaplet "i18n" i18n $ initI18NSnaplet ul

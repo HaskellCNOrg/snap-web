@@ -7,3 +7,4 @@ data/*.txt
 data/auth.json
 data/env.cfg
 report.html
+cabal-dev

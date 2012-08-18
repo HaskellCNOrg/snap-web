@@ -56,6 +56,7 @@
 - [ ] Snaplet-Admin
 - [ ] whether POST action successfully or not, it is likely to finish it with a redirection,
       which means TWO requests to user, isn't it overload??
+- [ ] ? Get ride of pandoc since use it very little
 
 ### Makefile
 
@@ -68,6 +69,19 @@
 1. When not login, access handlers that run with `withAuthUser` in ajax way.
    Reproduce: allow any user post comment to a comment.
 
+## couple of notes
+- [X] rm personal section from sidebar to settings.
+      (page probably need to be re-design)
+- [X] show "star person" at sidebar top
+- [X] rm "score board" from sidebar.
+- redesign write post / comment panel
+    - [X] preview on the fly?
+    - [ ] display tag right under input box.
+- [X] customize bootstrap css which is un-necessary large.
+- [ ] allow user add tag?
+- [ ] show person score like stackoverflow
+- [?] mv tags to sidebar.
+- [X] do not display click count.
 
 ## Dev question
 
@@ -86,21 +100,7 @@
 
 - https://github.com/dbp/heist-async
 
-
-## couple of notes
-- [X] rm personal section from sidebar to settings.
-      (page probably need to be re-design)
-- [X] show "star person" at sidebar top
-- [X] rm "score board" from sidebar.
-- redesign write post / comment panel
-    - [X] preview on the fly?
-    - [ ] display tag right under input box.
-- [X] customize bootstrap css which is un-necessary large.
-- [ ] allow user add tag?
-- [ ] show person score like stackoverflow
-- [?] mv tags to sidebar.
-- [?] do not display click count.
-
+- when `cabal-dev` ask for `force-reinstalls`, it is likely to have incorrect depends config
 
 
 ## CODE FRAGEMENT
