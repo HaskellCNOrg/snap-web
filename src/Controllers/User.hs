@@ -42,13 +42,14 @@ routes =  [
           ]
 
 redirectToUserDetailPage :: AppHandler ()
-redirectToUserDetailPage = redirect "/user"
+redirectToUserDetailPage = redirect303 "/user"
 
 ------------------------------------------------------------------------------
 
 -- | Perform a action `AppHandler ()` within Auth user otherwise redirect to signin.
 --   FIXME: 1. Waring message
 --          2. Maybe redirect back to last page but home page.
+--          3. Another improved handler with premission check.
 --
 withAuthUser :: AppHandler () -> AppHandler ()
 withAuthUser = requireUser appAuth redirectToSignin
@@ -56,7 +57,7 @@ withAuthUser = requireUser appAuth redirectToSignin
 -- | Redirect to signin page.
 -- 
 redirectToSignin :: AppHandler ()
-redirectToSignin = redirect "/signin"
+redirectToSignin = redirect303 "/signin"
 
 ------------------------------------------------------------------------------
     

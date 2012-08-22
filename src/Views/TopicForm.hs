@@ -6,8 +6,8 @@ import Control.Applicative ((<$>), (<*>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Text.Digestive
+import Text.Digestive.FormExt
 
-import Views.Validators
 import Models.Topic
 import Models.Utils
 
@@ -46,3 +46,4 @@ titleValidation = checkMinLength 5 . checkRequired "title is required"
 
 contentValidation :: Monad m => Form Text m Text -> Form Text m Text
 contentValidation = checkMinLength 10 . checkRequired "content is required"
+

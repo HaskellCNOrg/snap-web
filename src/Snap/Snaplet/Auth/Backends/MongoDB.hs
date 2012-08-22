@@ -50,7 +50,8 @@ settingsFromConfig = do
     lockout' <- liftIO $ C.lookup config "lockout"
     let lo = maybe id (\x s -> s { asLockout = Just (second fromInteger x) })
                    lockout'
-    siteKey' <- liftIO (C.lookup config "siteKey")
+    siteKey' <- liftIO (C.lookup config "db.siteKey")
+
     -- very wired that not able to lookup anything from config even exists.
 
     let sk = maybe id (\x s -> s { asSiteKey = x }) siteKey'

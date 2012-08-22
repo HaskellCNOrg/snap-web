@@ -2,6 +2,9 @@
 
 module Views.UserSplices where
 
+import           Control.Monad
+import           Control.Monad.Trans
+import           Control.Applicative ((<$>), (<*>))
 import           Snap.Snaplet.Auth
 import           Text.Templating.Heist
 import qualified Data.Text as T
@@ -42,5 +45,15 @@ renderUser user = runChildrenWithText
                   where formatUTCTime' Nothing  = ""
                         formatUTCTime'  (Just x) = formatUTCTime x 
 
+
+----------------------------------------------------------------------------
+
+-- | Has Edit premission when either current user is Admin or Author.
+-- 
+hasEditPermissionSplice :: User   -- ^ Author of some.
+                        -> Splice AppHandler
+hasEditPermissionSplice author = do
+    has <- lift $ hasUpdatePermission author
+    if has then runChildren else return []
 
 ----------------------------------------------------------------------------

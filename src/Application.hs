@@ -25,6 +25,7 @@ data App = App
     , _appSession :: Snaplet SessionManager
     , _appMongoDB :: Snaplet MongoDB
     , _appAuth    :: Snaplet (AuthManager App)
+    , _adminRole  :: Role                       -- ^ Role for admin user. keep it simple for now.
     }
 
 makeLens ''App

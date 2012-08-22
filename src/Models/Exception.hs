@@ -28,5 +28,5 @@ throwUE = throw . UserException . show
 -- | Transform MongoDB @Failure@ to customiable @UserException@.
 -- 
 failureToUE :: (MonadIO m) => Failure -> m a
-failureToUE (DocNotFound s) = throw $ UserException "Document not Found."
+failureToUE (DocNotFound _) = throw $ UserException "Document not Found."
 failureToUE e = throw . UserException $ show e

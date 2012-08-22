@@ -1,81 +1,75 @@
+online demo: <http://demo.haskellcn.org>
+
 ## Travis CI
 
 - [![Master](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
-- [![Branch/0.1](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=branch/0.1)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
 
-## Impl TODOS
+## Features
+### 0.1
+ - User Registration
+ - Add/Update New Posts
+ - Add Comment to either a Topic or Comment
+ - Pagination for Posts
+ - i18n support
 
-1. [X] dig details of snaplet-auth, valitation checking.
-    - directly display error msg from snaplet-auth
-2. [X] use mongoDB auth backend rather than JSON
-    2.1 [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
+## Installation
 
-3. [X] Be able to do post
-4. [X] list posts in home page
-5. [X] Be able to view Post detail page.
-6. [X] Integrate with Markdown
-7. [X] Be able to edit post.
-    - [X] 7.1 unfiy those 3 utils 
-    - [ ] 7.2 display time per client. check example?
-          Seems node-club display time per server.
+**Assume OS is \*inux with make otherwise figure out yourself by reading Makefile**
 
-7. [X] Extra user fileds, e.g. email, homeUrl.
-       signup / user detail page.
+0. Install MongoDB
 
-- [X] Be able to comment
-- [X] FIX: topic author column shall be ObjectId but Text
-- [ ] be able to comment to comment
-- [ ] Markdown does support Chinese!!???
+1. Install Snaplet-Environments
+
+**Need to be in this way because the one in Hackage is not compatibale with snap-0.8**
+
+    git clone git://github.com/HaskellCNOrg/Snaplet-Environments.git
+    cd Snaplet-Environments
+    make install
+    
+2. digestive-functors-heist
+
+**need fix at 4b9d8212e768dc3dbb1f8b8e3cec5da9a789ea81 in order to allow Markdown work. Therefore need build local otherwise need install 0.0.4 which has not been tested in this App yet..**
+
+    cabal install digestive-functors-0.3.0.1 digestive-functors-snap-0.3.2.0
+    git clone https://github.com/jaspervdj/digestive-functors
+    cd digestive-functors/digestive-functors-heist
+    cabal configure && cabal build && cabal install
+   
+3. Install a.haskell.cn
+
+    git clone git://github.com/HaskellCNOrg/a.haskellcn.git
+    cp data/env.cfg.default data/env.cfg
+    cd a.haskellcn
+    make bp
+
+4. Open browser to <http://localhost:9000>
+
+## Production Deployment
+
+0. Assume have done all steps in Installation section
+
+1. cd a.haskellcn
+
+2. make create-site 
+
+*All required files will be copy into _site folder, read make task for detail*
+
+## Notes
+
+1. Customization files
+
+- `data/env.cfg`, which has config that not going to be shared
+- `data/main.cfg`
+- `data/message-*.cfg`
+
+2. Is it better to specify version of dependency rather than range?
+
+## License
+
+Check the LICENSE file
+
+## Contribute
+
+Feel free ask questiones and contribute.
 
 
-- [ ] Highlight error on input box
-- [ ] authorization, user roles??
-- [ ] Styles
-- [ ] pagination
-- Tag + Category suppert
-    - [ ] allow user add tag on the fly when post topic
-    - [ ] Category is predifined.
-
-- [ ] Message to user when new comments
-- [ ] mail integration (active, reset, etc..)
-- [ ] sub folders for tpl?
-
-### Makefile
-
-- [ ] Compress & combine JS
-- [ ] Generate min.css per .less files
-- [ ] How to update template incorporate those two thing above?
-
-### Snap Technical
-
-- [ ] compress html (remove extra space and comments. )
-      paresHTML (seems parseHTML from xmlhtml reads 'return' and extra space as a node??)
-
-## couple of notes
-  - rm personal section from sidebar to settings.
-    (page probably need to be re-design)
-  - show "star person" at sidebar top
-  - rm "score board" from sidebar.
-  - redesign write post / comment panel
-    + preview on the fly?
-    + display tag right under input box.
-  - customize bootstrap css which is un-necessary large.
-  - rm '个性签名' at setting
-  - (optional) allow user add tag?
-  - (optional) show person score like stackoverflow
-  - (optional) mv tags to sidebar.
-  - (optional) do not display click count / last update.
-  - good examples
-    + stackoverflow
-    + tumblr.com
-
-## Know bugs
-  -  annoy message ("follow myself") when follow people.
-  - not display correctly when admin modified post of someone else.
-     (It shows modify my author rather than admin)
-
-## Dev question
-
-- The `when.. throw.. or continue` is very impretive. could be more functional?
-- DB fatal error when type is `ObjectId` but is text in DB actually.
-  (type error is basiacly because how ObjectId implements FromBSON and ToBSON)

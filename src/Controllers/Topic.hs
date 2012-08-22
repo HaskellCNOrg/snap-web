@@ -22,6 +22,7 @@ import qualified Data.Text as T
 
 import           Application
 import           Controllers.User hiding (routes)
+import           Controllers.Home (redirect303)
 import           Models.Exception 
 import           Models.Topic 
 import           Models.Utils
@@ -30,6 +31,7 @@ import           Views.ReplyForm
 import           Views.TopicSplices
 import           Views.Utils
 import qualified Models.Topic as MT
+import qualified Models.User as MU
 
 
 ------------------------------------------------------------------------------
@@ -46,14 +48,23 @@ routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes. MAYBE: combine with topicput-GET.
           ]
 
+------------------------------------------------------------------------------
+
 topicIdParam :: BS.ByteString
 topicIdParam = "topicid"
+
+redirectTopicDetailPage :: String -> AppHandler ()
+redirectTopicDetailPage tid = redirect303 $ "/topic/" `BS.append` sToBS tid
 
 ------------------------------------------------------------------------------
 
 
-redirectTopicDetailPage :: String -> AppHandler ()
-redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
+tplTopicForm :: BS.ByteString
+tplTopicForm = "topic-form"
+
+tplTopicDetail :: BS.ByteString
+tplTopicDetail = "topic-detail"
+
 
 ------------------------------------------------------------------------------
 
@@ -62,23 +73,26 @@ redirectTopicDetailPage tid = redirect $ "/topic/" `BS.append` sToBS tid
 createTopicH :: AppHandler ()
 createTopicH = withAuthUser $ do
                              (view, result) <- runForm "create-topic-form" topicForm
+--                             liftIO $ print result
                              case result of
                                Just topic -> doCreateTopic' topic
                                Nothing    -> toTopicFormPage view
  
--- | Save a new topic
+-- | Performance saving a new topic.
+--   This is not public and assume done within login session.
+-- 
 doCreateTopic' :: TopicVo -> AppHandler ()
 doCreateTopic' tv = do 
-                  loginName <- fmap (userLogin . fromJust) $ with appAuth currentUser
-                  topic     <- try $ MT.createNewTopic =<< liftIO (topicVoToNewTopic tv loginName)
+                  (Just uid') <- MU.findCurrentUserId
+                  topic     <- try $ MT.createNewTopic =<< liftIO (topicVoToNewTopic tv uid')
                   case topic of 
                     Left e  -> writeText $ showUE e 
                                -- FIXME:  return to detail edit page with errors.
-                    Right t -> redirectTopicDetailPage (topicIdToString t)
+                    Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
 
 toTopicFormPage :: View T.Text -> AppHandler ()
-toTopicFormPage = renderDfPage "topic-form"
+toTopicFormPage = renderDfPage tplTopicForm
 
 
 ------------------------------------------------------------------------------
@@ -97,7 +111,7 @@ toTopicDetailPage result = do (view, _) <- runReplyForm
 
 renderTopicDetailPage :: Either UserException Topic -> View T.Text -> AppHandler ()
 renderTopicDetailPage result view = renderDfPageSplices 
-                                    "topic-detail" 
+                                    tplTopicDetail
                                     view 
                                     (bindSplices (topicDetailSplices result))
 
@@ -135,19 +149,20 @@ doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
                   findTopic <- try (findOneTopic (read $ textToS $ topicId tv ))
                   case findTopic of
-                      Left  l -> writeText $ showUE l -- FIXME:  return to detail edit page with errors.
+                      Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
+                                                      --         2. put findOneTopic and saveTopic in one try??
                       Right r -> do
                                    result <- try $ MT.saveTopic =<< liftIO (topicVoToTopic tv r)
                                    case result of 
                                          Left e  -> writeText $ showUE e 
                                                      -- FIXME:  return to detail edit page with errors.
-                                         Right t -> redirectTopicDetailPage (topicIdToString t)
+                                         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
 ------------------------------------------------------------------------------
 
 -- | Generate a new @Topic@ from @TopicVo@.
 -- 
-topicVoToNewTopic :: TopicVo -> T.Text -> IO MT.Topic
+topicVoToNewTopic :: TopicVo -> MU.UserObjId -> IO MT.Topic
 topicVoToNewTopic tv author = do
     now <- getCurrentTime
     return  Topic 
@@ -160,6 +175,7 @@ topicVoToNewTopic tv author = do
              }
 
 -- | Populate change to a existing @Topic@ from topicVo
+--   FIXME: may update by other users, e.g. Administrator user.
 -- 
 topicVoToTopic :: TopicVo -> MT.Topic -> IO MT.Topic
 topicVoToTopic tv topic = do

@@ -4,9 +4,8 @@ module Views.UserForm where
 import Control.Applicative ((<$>), (<*>))
 import Data.Text (Text)
 import Text.Digestive
+import Text.Digestive.FormExt
 
-
-import Views.Validators
 import Models.User
 
 -- | 

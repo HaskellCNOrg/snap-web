@@ -17,6 +17,7 @@ import           Data.Time (UTCTime)
 
 import           Application
 import           Models.Exception
+import           Models.Utils
 
 --import           Control.Monad.Trans
 
@@ -26,10 +27,10 @@ data Topic = Topic
     { _topicId :: Maybe ObjectId
     , _title   :: T.Text
     , _content :: T.Text
-    , _author  :: T.Text
+    , _author  :: ObjectId
     , _createAt :: UTCTime
     , _updateAt :: UTCTime
-    } deriving (Show)
+    } deriving (Show, Eq)
 
 {-
 	last_reply: { type: ObjectId },
@@ -119,10 +120,8 @@ topicFromDocumentOrThrow d = case parseEither documentToTopic d of
     Right r -> return r
   
 
-topicIdToString :: Topic -> String
-topicIdToString t = maybe "" show (_topicId t)
+getTopicId :: Topic -> T.Text
+getTopicId = objectIdToText . _topicId
 
-topicIdToText :: Topic -> T.Text
-topicIdToText = T.pack . topicIdToString
 
 ------------------------------------------------------------------------------

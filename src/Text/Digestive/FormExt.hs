@@ -1,17 +1,22 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Views.Validators where
+-- 
+-- Extension to Text.Digestive.Form.
+-- Basically more utils.
+--
 
-import qualified Data.Text as T
+module Text.Digestive.FormExt where
+
+import Control.Applicative ((<$>))
 import Data.Maybe (isJust)
 import Data.Text (Text)
+import qualified Data.Text as T
 import Text.Digestive
 
-import Models.Utils
 
 ---------------------------------------------------- Validator
 
--- | Maybe: more accurate email addr. validator.
+-- | MAYBE: more accurate email addr. validator.
 --
 emailValidator :: T.Text -> Bool
 emailValidator = isJust . T.find (== '@')
@@ -41,5 +46,14 @@ checkValidEmail = check "Please input valid email address." emailValidator
 -- | Check for min length reqirued.
 -- 
 checkMinLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
-checkMinLength l = check ("Content is simple. min length " `T.append` sToText l ) minLength
+checkMinLength l = check ("Content is too simple. min length " `T.append` intToText) minLength
                       where minLength = (>= l) . T.length  
+                            intToText = T.pack (show l)
+
+
+-- | Check for max length reqirued.
+-- 
+checkMaxLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
+checkMaxLength l = check ("Content exceeds max length " `T.append` intToText) maxLength
+                      where maxLength = (<= l) . T.length  
+                            intToText = T.pack (show l)

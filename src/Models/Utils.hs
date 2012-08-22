@@ -15,7 +15,8 @@ import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
-import           Data.Bson (ObjectId)
+import           Data.Bson (ObjectId, Value(..))
+import qualified Data.Bson as BSON
 
 ----------------------------------------------------------------
 
@@ -49,11 +50,18 @@ lbsToText = T.decodeUtf8 . lbsToStrickBS
 textToBS :: T.Text -> BS.ByteString
 textToBS = T.encodeUtf8
 
-loggerDebug :: (Show a, MonadIO m) => a -> m ()
-loggerDebug = liftIO . print 
-
+bsToText :: BS.ByteString -> T.Text
+bsToText = T.decodeUtf8
 
 ------------------------------------------------------------------------------
 
 textToObjectId :: T.Text -> ObjectId
 textToObjectId = read . textToS
+
+objectIdToText :: Maybe ObjectId -> T.Text
+objectIdToText = maybe "" sToText 
+
+------------------------------------------------------------------------------
+
+objectIdFromValue :: Value -> Maybe ObjectId
+objectIdFromValue = BSON.cast'

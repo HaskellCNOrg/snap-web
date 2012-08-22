@@ -3,13 +3,16 @@
 module Models.User 
     ( LoginUser(..)
     , User(..)
+    , UserObjId
     , createNewUser
     , loginUser
     , findCurrentUser
     , findCurrentUserId
     , findCurrentAuthUser
     , findOneUser
-    , saveUser ) where
+    , saveUser
+    , hasUpdatePermission
+    , isCurrentUserAdmin ) where
 
 import           Control.Applicative ((<$>), (<*>), pure)
 import           Control.Monad
@@ -20,16 +23,19 @@ import           Data.Bson
 import           Data.Maybe
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth hiding (loginUser, saveUser)
-import           Snap.Snaplet.MongoDB
 import           Snap.Snaplet.Auth.Backends.MongoDB as SM
+import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
 import qualified Database.MongoDB as DB
+import Snap.Snaplet.Environments
+import Data.Function
 
 import           Models.Exception
 import           Models.Utils
 import           Application
 
 type Email = T.Text
+type UserObjId = ObjectId
 
 -- | A lightweight alternative to @AuthUser@. Use email prefix as login name.
 -- 
@@ -53,9 +59,8 @@ data User = User
     , _userSite    :: T.Text  -- ^ User personal site.
     } deriving (Show)
 
--- | FIXME: this is duplicated defination with what in mongoDBBackend.
---          Need to figure out the root cause why mongoBackend failed to 
---          read a snaplet.cfg file. Hence, could reduce this duplication.
+
+-- | This is where User extra information saved, making diff wih AuthUser.
 -- 
 authUserCollection :: DB.Collection
 authUserCollection = u "users"
@@ -124,7 +129,7 @@ findCurrentUserId :: AppHandler (Maybe ObjectId)
 findCurrentUserId = liftM (join . fmap getUserId) (with appAuth currentUser)
 
 
--- | Find One User
+-- | Find One User without initlize its _authUser field. Usually for user basic information.
 -- 
 findOneUser :: ObjectId -> AppHandler User
 findOneUser oid = do
@@ -141,7 +146,6 @@ saveUser :: User -> AppHandler User
 saveUser lu = do
              res <- eitherWithDB $ DB.save authUserCollection $ userToDocument lu
              either failureToUE (const $ return lu) res 
-
 
 ------------------------------------------------------------------------------
 
@@ -177,5 +181,38 @@ userFromDocumentOrThrow f d = case parseEither f d of
 getUserId :: AuthUser -> Maybe ObjectId
 getUserId = fmap SM.userIdToObjectId . userId
 
---getUserDisplayName :: ObjectId -> AppHandler T.Text
---getUserDisplayName = liftM _userDisplayName . findOneUser
+-- | Basically email of user is a unique because it is used as loginName of AuthUser.
+--   In additions, some @User@ doesn't get its @_authUser@ populated.
+--   
+userEq :: User -> User -> Bool
+userEq = (==) `on` _userEmail
+
+------------------------------------------------------------------------------ ROLE & PREMISSIONS
+
+-- | Get admin roles from config file.
+-- 
+getAdminRole :: AppHandler Role
+getAdminRole = gets _adminRole
+
+-- | Is the @User@ an admin user. a.k.a has Admin role.
+-- 
+isUserAdmin :: AuthUser -> AppHandler Bool
+isUserAdmin user = liftM (hasRole user) getAdminRole
+
+-- | Whether current login user an admin user. a.k.a has Admin role.
+-- 
+isCurrentUserAdmin :: AppHandler Bool
+isCurrentUserAdmin = findCurrentAuthUser >>= isUserAdmin
+
+-- | Whether @User@ has a particular @Role@
+-- 
+hasRole :: AuthUser -> Role -> Bool
+hasRole u r = r `elem` userRoles u
+
+-- | Admin and Author-self has edit/delete permission.
+-- 
+hasUpdatePermission :: User   -- ^ Author of some.
+                    -> AppHandler Bool
+hasUpdatePermission author = (||) 
+                             <$> liftM (userEq author) findCurrentUser
+                             <*> isCurrentUserAdmin

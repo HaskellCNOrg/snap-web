@@ -6,7 +6,8 @@
 
     <dfIfChildErrors>
       <div class="alert alert-error"> 
-         <dfChildErrorListRef />
+ <!-- <dfChildErrorListRef /> -->
+         <dfChildErrorList />
       </div>
     </dfIfChildErrors>
 

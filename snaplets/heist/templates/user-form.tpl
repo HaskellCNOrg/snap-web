@@ -11,14 +11,14 @@
     </dfIfChildErrors>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="userDisplayName">>displayName</dfLabel>
+      <dfLabel class="control-label" ref="userDisplayName"><i18n name="user-display-name" /></dfLabel>
       <div class="controls">
         <dfInputText class="input-large" ref="userDisplayName" />
       </div>
     </div>
 
     <div class="control-group">
-        <dfLabel class="control-label" ref="userSite">User Site</dfLabel>
+        <dfLabel class="control-label" ref="userSite"><i18n name="user-site-url" /></dfLabel>
         <div class="controls">
           <dfInputText class="input-large" ref="userSite" />
         </div>
