@@ -18,6 +18,7 @@ import           Data.Time (UTCTime)
 import           Application
 import           Models.Exception
 import           Models.Utils
+import           Models.Internal.Types
 
 --import           Control.Monad.Trans
 
@@ -32,21 +33,31 @@ data Tag = Tag
 tagCollection :: Collection
 tagCollection = u "tags"
 
+------------------------------------------------------------------------------
 
+instance Persistent Tag where
+  toMongoDocP = tagToDocument
+  fromMongoDocP = tagFromDocumentOrThrow
+  
 ------------------------------------------------------------------------------
 
 -- | save a new tag.
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
 --   TODO: better to make sure _id exists because Nothing objectId will cause error other when viewing.
+saveTag :: Tag -> AppHandler Tag
+saveTag = saveP tagCollection
 
+--    res <- eitherWithDB $ DB.save tagCollection $ tagToDocument tag
+--    either failureToUE (const $ return tag) res 
 
 -----------------------------------------
 
 findAllTags :: AppHandler [Tag]
-findAllTags  = do
-    let tagSelection = select [] tagCollection
-    xs <- eitherWithDB $ rest =<< find (tagSelection )
-    liftIO $ mapM tagFromDocumentOrThrow $ either (const []) id xs
+findAllTags  = getAllP tagCollection
+
+--    let tagSelection = select [] tagCollection
+--    xs <- eitherWithDB $ rest =<< find (tagSelection )
+--    liftIO $ mapM tagFromDocumentOrThrow $ either (const []) id xs
 
 -----------------------------------------
 -- MongoDB Document Transform
@@ -58,10 +69,9 @@ tagToDocument :: Tag -> Document
 tagToDocument tag = case _tagId tag of 
                           Nothing -> docs
                           Just x  -> ("_id" .= x) : docs
-                        where docs = 
-                                [ "name"     .= _tagName tag
-                                , "content"  .= _tagContent tag
-                                ]
+                    where docs = [ "name"     .= _tagName tag
+                                 , "content"  .= _tagContent tag
+                                 ]
 
 -- | Transform mongo Document to be a Tag parser.
 -- 
