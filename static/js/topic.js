@@ -1,6 +1,6 @@
-(function ($) {
-
 $.hcn = $.hcn || {};
+
+;(function ($, hcn) {
 
 $.hcn.initReplyToReply = function () {
 
@@ -42,4 +42,8 @@ $.hcn.initReplyToReply = function () {
 
   };
 
-})(jQuery);
+})(jQuery, $.hcn);
+
+;$(function () {
+   $.hcn.initReplyToReply();
+});

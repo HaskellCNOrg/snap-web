@@ -66,11 +66,7 @@
 
   <bind tag="bottom-scripts">
     <apply template="js-markdown" />
-    <script type="text/javascript">
-      $(function () {
-        $.hcn.initReplyToReply();
-      })
-    </script>
+    <script type="text/javascript" src="/js/topic.js"></script>
   </bind>
   
 </apply>

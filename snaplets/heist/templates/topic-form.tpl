@@ -6,7 +6,7 @@
 
     <dfIfChildErrors>
       <div class="alert alert-error"> 
- <!-- <dfChildErrorListRef /> -->
+        <!-- <dfChildErrorListRef /> -->
          <dfChildErrorList />
       </div>
     </dfIfChildErrors>
@@ -43,15 +43,7 @@
 
 <bind tag="bottom-scripts">
     <apply template="js-markdown" />
-    <script type="text/javascript">
-      $(function () {
-        $('div.alert-error li').each(function (index, x) {
-            console.log($(x).attr("data-error"))
-            console.log($("[name$=" + $(x).attr("data-error") + "]").closest("div.control-group"))
-           $("[name$=" + $(x).attr("data-error") + "]").closest("div.control-group").addClass("error");
-        });
-      })
-    </script>
+    <script type="text/javascript" src="/js/form-error.js"></script>
 </bind>
 
 </apply>
