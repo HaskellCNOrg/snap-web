@@ -37,8 +37,8 @@
 - [ ] oauth
 - [ ] i18n for Digestive-Form validation message.
 - [ ] Why not use "drop down window" for signin and signup ?
+- [ ] update i18n msg file: use nested config
 - [ ] Data Migration.
-
 
 - [/] Highlight error on input box.
       a fix at private branch.
