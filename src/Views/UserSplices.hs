@@ -2,6 +2,7 @@
 
 module Views.UserSplices where
 
+import           Control.Arrow (second)
 import           Control.Monad
 import           Control.Monad.Trans
 import           Control.Applicative ((<$>), (<*>))
@@ -35,16 +36,31 @@ userDetailSplices = eitherToSplices
 -- | Single user to Splice.
 -- 
 renderUser :: User -> Splice AppHandler
-renderUser user = runChildrenWithText
+renderUser user = runChildrenWith $
+                     [ ("userEditable", hasEditPermissionSplice user)
+                     , ("userLastLoginAt", userLastLoginAtSplice $ _authUser user) 
+                     ]
+                     ++
+                     map (second textSplice)
                      [ ("userLogin",       maybe "" userLogin $ _authUser user)
-                     , ("userLastLoginAt", maybe "" (formatUTCTime' . userLastLoginAt) $ _authUser user)
-                     , ("userCreatedAt",   maybe "" (formatUTCTime' . userCreatedAt) $ _authUser user)
+                     , ("userCreatedAt",   maybe "" (formatUTCTimeMaybe . userCreatedAt) $ _authUser user)
                      , ("userEmail",       _userEmail user)
                      , ("userDisplayName", _userDisplayName user)
-                     , ("userSite", _userSite user) ]
-                  where formatUTCTime' Nothing  = ""
-                        formatUTCTime'  (Just x) = formatUTCTime x 
+                     , ("userSite", _userSite user)
+                     ]
 
+formatUTCTimeMaybe Nothing  = ""
+formatUTCTimeMaybe (Just x) = formatUTCTime x 
+
+-- | Display User Last Login time if it has.
+-- 
+userLastLoginAtSplice :: Maybe AuthUser   -- ^ Author of some.
+                        -> Splice AppHandler
+userLastLoginAtSplice Nothing = return []
+userLastLoginAtSplice (Just authusr) =
+    case userLastLoginAt authusr of
+      Nothing -> return []
+      Just time -> runChildrenWithText [ ("lastLoginTime", formatUTCTime time) ]
 
 ----------------------------------------------------------------------------
 

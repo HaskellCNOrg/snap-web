@@ -14,13 +14,10 @@
   <div class="topicMain">
 
     <article class="topic">
-      <h2>
-        <topicTitle />
-      </h2>
+      <h2><topicTitle /></h2>
       <p><topicContent/></p>
 
-      <p class="author">Add by <topicAuthor/> at <topicCreateAt/></p>
-
+      <p class="author"><a href="/user/${topicAuthorId}"><topicAuthor/></a> <topicCreateAt/></p>
       <!-- <p><topicUpdateAt/></p> -->
     </article>
 
@@ -38,7 +35,7 @@
       <replyPerTopic>
         <section class="reply">
           <p><replyContent/></p>
-          <p class="author">Add by <replyAuthor/> at <replyCreateAt/></p>
+          <p class="author"><a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/></p>
 
           <div class="replyOfReply">
             <apply template="reply-to-reply-detail" />

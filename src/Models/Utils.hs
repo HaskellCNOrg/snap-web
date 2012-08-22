@@ -32,6 +32,8 @@ forceNonEmpty x = x
 textToS :: T.Text -> String
 textToS = T.unpack
 
+-- | Transform something which is instance of <code>Show</code> to Text.
+-- 
 sToText :: Show s => s -> T.Text
 sToText = T.pack . show 
 
@@ -58,6 +60,8 @@ bsToText = T.decodeUtf8
 textToObjectId :: T.Text -> ObjectId
 textToObjectId = read . textToS
 
+-- | Maybe ObjectId to Text
+-- 
 objectIdToText :: Maybe ObjectId -> T.Text
 objectIdToText = maybe "" sToText 
 

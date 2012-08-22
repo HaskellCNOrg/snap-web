@@ -37,7 +37,6 @@ replySpliceWithChildren (r, rs) = do
     runChildrenWith $ ("replyToReply", mapSplices replySplice rs)
                       : map (second textSplice) (replySpliceImpl r usrName)
 
---                      ,  ]
 
 ------------------------------------------------------------------------------
 
@@ -56,6 +55,7 @@ replySpliceImpl :: Reply
                 -> [(T.Text, T.Text)]
 replySpliceImpl r user =  
                     [ ("replyAuthor", _userDisplayName user)
+                    , ("replyAuthorId", sToText $ _replyAuthor r)
                     , ("replyId", getReplyId r)
                     , ("replyToTopicId", sToText $ _replyToTopicId r)
                     , ("replyToReplyId", objectIdToText $ _replyToReplyId r)

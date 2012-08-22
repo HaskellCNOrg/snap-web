@@ -27,14 +27,17 @@ import           Snap.Snaplet.Auth.Backends.MongoDB as SM
 import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
 import qualified Database.MongoDB as DB
-import Snap.Snaplet.Environments
+--import Snap.Snaplet.Environments
 import Data.Function
 
 import           Models.Exception
 import           Models.Utils
 import           Application
 
+-- | User Email plays another role as a unique loginName.
+-- 
 type Email = T.Text
+
 type UserObjId = ObjectId
 
 -- | A lightweight alternative to @AuthUser@. Use email prefix as login name.
@@ -91,9 +94,9 @@ createAuthUser' usr = do
     exists <- usernameExists (loginName usr)
     when exists (throw UserAlreadyExists)
     authUsr <- createUser (loginName usr) (password' usr)
-    forceLogin authUsr >>= either throwUE return
-  where passLength    = T.length . password
-        password'     = textToBS . password
+    loginUser usr
+  where passLength = T.length . password
+        password'  = textToBS . password
 
 -- http://hpaste.org/69009, failure piece of code about `withBackend`.
 
@@ -187,7 +190,7 @@ getUserId = fmap SM.userIdToObjectId . userId
 userEq :: User -> User -> Bool
 userEq = (==) `on` _userEmail
 
------------------------------------------------------------------------------- ROLE & PREMISSIONS
+----------------------------------------------------------- ROLE & PREMISSIONS
 
 -- | Get admin roles from config file.
 -- 

@@ -39,8 +39,8 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     dbkey  <- lookupConfigDefault "auth.siteKey" "data/auth-sitekey.txt" 
     ar     <- Role <$> lookupConfigDefault "auth.admin-role" "administrator"
 
-    dbhost <- lookupEnvDefault "host" ""
-    dbc    <- lookupEnvDefault "collection" "haskellcn-mongodb"  
+    dbhost <- lookupConfigDefault "db.host" "127.0.0.1"
+    dbc    <- lookupConfigDefault "db.collection" "haskellcn-mongodb"
 
     h  <- nestSnaplet "heist" heist $ heistInit "templates"
     i  <- nestSnaplet "i18n" i18n $ initI18NSnaplet ul

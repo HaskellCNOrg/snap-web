@@ -6,7 +6,6 @@
     - directly display error msg from snaplet-auth
 (@) [X] use mongoDB auth backend rather than JSON
     - [ ] not able to read cfg file. (line 42 `settingsFromConfig`)
-
 (@) [X] Be able to do post
 (@) [X] list posts in home page
 (@) [X] Be able to view Post detail page.
@@ -20,36 +19,33 @@
 (@) [X] Be able to comment
 (@) [X] FIX: Reply author column shall be ObjectId but Text
 (@) [X] Markdown does support Chinese!!???
-
 (@) [X] be able to comment to comment
     - [X] group comments
 (@) [X] FIX: topic author column shall be ObjectId but Text
+(@) [X] authorization, user roles??
+    - [X] just config to file (use `role` column at auth_user tabale)
+(@) [X] topic pagination
+(@) [X] configable for page size
+(@) [X] redirect with 303 rather than 302
+(@) [X] Link User Detail for any user at post page. (Currently only for login user)
+    - [ ] Bug: infor from AuthUser has not been retrieved.
+
+
+- [ ] Tag allow user add tag on the fly when post topic
+    - ? Instead of relationship collection, how about just a array field of Topic collection.
+- [ ] oauth
+- [ ] i18n for Digestive-Form validation message.
+- [ ] Why not use "drop down window" for signin and signup ?
+- [ ] update i18n msg file: use nested config
+- [ ] Data Migration.
 
 - [/] Highlight error on input box.
       a fix at private branch.
+
       
-(@) [X] authorization, user roles??
-    - [X] just config to file
-    - [ ] database integration.
-
-- [ ] Styles
-- [X] topic pagination
-- [X] configable for page size
-- [X] redirect with 303 rather than 302
-- [X] Link User Detail for any user. (Currently only for login user)
-- [ ] Update Links of UserPage/Login/Logout/NewTopic as icons to nav bar.
-
-
-- [ ] mail integration via email-postmark (active, reset, etc..)
-- [ ] Tag allow user add tag on the fly when post topic
-    - ? Instead of relationship collection, how about just a array field of Topic collection.
-- [ ] User be able to save a topi as favoriate.
-- [ ] i18n for Digestive-Form validation message.
-- [ ] Data Migration.
-
-
-- [ ] comments pagination
+- [ ] User be able to save a topic as favoriate.
 - [ ] Message to user when new comments
+- [ ] comments pagination
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?
 - [ ] JS markdown parse is diff with pandoc.
@@ -57,18 +53,33 @@
 - [ ] Snaplet-Admin
 - [ ] whether POST action successfully or not, it is likely to finish it with a redirection,
       which means TWO requests to user, isn't it overload??
+- [ ] ? Get ride of pandoc since use it very little
+- [ ] mail integration via email-postmark (active, reset, etc..)
 
 ### Makefile
 
-- [ ] Compress & combine JS
-- [ ] Generate min.css per .less files
-- [ ] How to update template incorporate those two thing above?
+- [X] Compress & combine JS
+- [X] Generate min.css per .less files
+- [X] How to update template incorporate those two thing above?
 
 ### Know issues
 
 1. When not login, access handlers that run with `withAuthUser` in ajax way.
    Reproduce: allow any user post comment to a comment.
 
+## couple of notes
+- [X] rm personal section from sidebar to settings.
+      (page probably need to be re-design)
+- [X] show "star person" at sidebar top
+- [X] rm "score board" from sidebar.
+- redesign write post / comment panel
+    - [X] preview on the fly?
+    - [ ] display tag right under input box.
+- [X] customize bootstrap css which is un-necessary large.
+- [ ] allow user add tag?
+- [ ] show person score like stackoverflow
+- [?] mv tags to sidebar.
+- [X] do not display click count.
 
 ## Dev question
 
@@ -87,21 +98,7 @@
 
 - https://github.com/dbp/heist-async
 
-
-## couple of notes
-- [X] rm personal section from sidebar to settings.
-      (page probably need to be re-design)
-- [X] show "star person" at sidebar top
-- [X] rm "score board" from sidebar.
-- redesign write post / comment panel
-    - [X] preview on the fly?
-    - [ ] display tag right under input box.
-- [ ] customize bootstrap css which is un-necessary large.
-- [ ] allow user add tag?
-- [ ] show person score like stackoverflow
-- [ ] mv tags to sidebar.
-- [ ] do not display click count.
-
+- when `cabal-dev` ask for `force-reinstalls`, it is likely to have incorrect depends config
 
 
 ## CODE FRAGEMENT

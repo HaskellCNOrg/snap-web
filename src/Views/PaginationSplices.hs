@@ -14,7 +14,7 @@ import           Models.Utils
 
 -- | Select items for particular page base on Page Size, Current Page
 -- 
-paginationHandler :: (Eq b, Integral a)
+paginationHandler :: (Eq b, Integral a, Show a)
                      => Double   -- ^ Page Size
                      -> a        -- ^ Current Page
                      -> [b]      -- ^ Total items
@@ -31,13 +31,13 @@ paginationHandler s cp xs = do
   return (pageItems, pageSplice)
       
 getPageSize :: AppHandler Int
-getPageSize = lookupEnvDefault "pagesize" 20
+getPageSize = lookupConfigDefault "pagesize" 20
 
 ----------------------------------------------------------------------------
 
 -- | Splice for display pagination elements.
 -- 
-paginationSplice :: Integral a 
+paginationSplice :: (Show a, Integral a)
                     => a                 -- ^ Current Page
                     -> [a]               -- ^ Total size
                     -> Splice AppHandler
@@ -46,7 +46,7 @@ paginationSplice cp xs = return [paginationNode cp xs]
 -- | Generate HTML nodes for topic pagination.
 --   Elements created here because of not sure how to set up "active" class.
 -- 
-paginationNode :: Integral a 
+paginationNode :: (Show a, Integral a)
                => a             -- ^ Current Page
                -> [a]           -- ^ Page Number List
                -> X.Node        -- ^ HTML Nodes for page numbers

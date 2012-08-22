@@ -19,7 +19,7 @@
     <form class="form-horizontal">
 
       <fieldset>
-        <legend><i18n name="user-detail-header" /></legend>
+        <legend><userDisplayName/></legend>
 
       <div class="control-group">
         <label class="control-label"><i18n name="user-email" /></label>
@@ -47,12 +47,12 @@
     </form>
 
     
-    <p><i18n name="user-last-login" />: <userLastLoginAt/></p>
+    <userLastLoginAt><p><i18n name="user-last-login" />: <lastLoginTime/></p></userLastLoginAt>
     <p><i18n name="user-created-since" />: <userCreatedAt/></p>
 
-    <p>
-      <a href="/userput"><i18n name="site-edit" /></a>
-    </p>
+    <userEditable>
+    <p><a href="/userput"><i18n name="site-edit" /></a></p>
+    </userEditable>
 
   </ifFound>
 

@@ -1,7 +1,10 @@
 PROG_PREV = ./dist/build/ahaskellcnorg/ahaskellcnorg
 EXTRA_TEST_LIB = ./dist/build/ahaskellcnorg/ahaskellcnorg-tmp
+
 DIST=dist
 SITE=_site
+
+CABALD=cabal-dev
 
 default: build-dev
 
@@ -9,25 +12,29 @@ clean:
 	rm -rf $(DIST)
 
 hlint:
-	hlint src/ tests/ --report
+	hlint src/ tests/ --report=$(DIST)/hlint.html
 
 ###########################
 ## DEVELOPMENT
 ## 
 ###########################
+init:
+	cabal update
+	$(CABALD) install
+
 conf-dev:
-	cabal --flags="development" configure
+	$(CABALD) --flags="development" configure
 
 build-dev: conf-dev
-	cabal -v build
+	$(CABALD) build
 
 test:
-	cabal --enable-tests configure
-	cabal build
-	cabal test
+	$(CABALD) --enable-tests configure
+	$(CABALD) build
+	$(CABALD) test
 
 p:
-	$(PROG_PREV) -p 9900 @dev
+	$(PROG_PREV) -p 9900
 
 bp: build-dev p
 rp: clean build-dev p
