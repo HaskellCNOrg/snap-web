@@ -79,7 +79,6 @@ findAllTopic  = do
     let topicSelection = select [] topicCollection
     xs <- eitherWithDB $ rest =<< find (topicSelection {sort = sortByUpdateAtDesc} )
     liftIO $ mapM topicFromDocumentOrThrow $ either (const []) id xs
-  where 
 
 sortByUpdateAtDesc :: Order
 sortByUpdateAtDesc = [ "updateAt" =: -1 ]
