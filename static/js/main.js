@@ -10,7 +10,7 @@ $.hcn.initReplyToReply = function () {
      */
     $('a[id^=add-comment-]').click(function (x) {
         var target = $(x.currentTarget),
-            replySection = target.parent().prev('.replyOfReply')
+            replySection = target.parent().prev('.replyOfReply'),
             form   = replySection.find('form');
 
         if (form.length > 0) {
@@ -37,9 +37,9 @@ $.hcn.initReplyToReply = function () {
         $.post(t[0].action, t.serialize(), function (res) {
           t.remove();
           parent.append(res);
-        })
+        });
     });
 
-  }
+  };
 
-})(jQuery)
+})(jQuery);
