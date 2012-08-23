@@ -30,6 +30,7 @@ class Persistent a where
   -- | Transform MongoDB document to perticular type
   fromMongoDocP :: Document -> IO a
   
+  -- | FIXME: Insert ID after save successfully. @see Topic.hs: 51
   -- | Simple MongoDB Save Operation 
   -- 
   saveP :: a -> AppHandler a

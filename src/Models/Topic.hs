@@ -53,7 +53,8 @@ createNewTopic topic = do
 -- | save a new topic. 
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
 -- 
---   FIXME: better to make sure _id exists because Nothing objectId will cause error other when viewing.
+--   FIXME: 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
+--          2. why have createNewTopic and saveTopi?
 -- 
 saveTopic :: Topic -> AppHandler Topic
 saveTopic topic = do
