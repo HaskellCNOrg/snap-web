@@ -40,13 +40,7 @@ import qualified Models.User as MU
 routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/tags",  Snap.method GET getTags)
           ]
-
-contenTypeJSON :: BS.ByteString
-contenTypeJSON = "application/json"
-
-setJSONContentType :: Response -> Response
-setJSONContentType = setContentType contenTypeJSON
-
+  
 ------------------------------------------------------------------------------
 
                     
@@ -55,11 +49,7 @@ setJSONContentType = setContentType contenTypeJSON
 -- FIXME: 1. if content-tye is not json, return empty
 -- 
 getTags :: AppHandler ()
-getTags = do
-    tags <- findAllTags
-    modifyResponse setJSONContentType
-    writeLBS $ encode $ toJSON tags
-
+getTags = findAllTags >>= toJSONResponse
 
 ----------------------------------------
 -- To be JSON 

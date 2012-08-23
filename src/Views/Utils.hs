@@ -10,6 +10,7 @@ module Views.Utils where
 
 ----------------------------------------------------------------
 
+import           Data.Aeson
 import           Control.Applicative
 import           Data.Maybe (fromMaybe)
 import           Data.Time
@@ -90,3 +91,17 @@ formatUTCTime = T.pack . formatTime defaultTimeLocale "%F %H:%M"
 formatUTCTimePerTZ :: TimeZone -> UTCTime -> T.Text
 formatUTCTimePerTZ tz tm = T.pack . formatTime defaultTimeLocale "%F %H:%M" $ utcToLocalTime tz tm
 
+
+------------------------------------------------------------------------------
+-- JSON Response
+
+contenTypeJSON :: BS.ByteString
+contenTypeJSON = "application/json"
+
+setJSONContentType :: Response -> Response
+setJSONContentType = setContentType contenTypeJSON
+
+toJSONResponse :: ToJSON a => a -> AppHandler ()
+toJSONResponse a = do
+  modifyResponse setJSONContentType
+  writeLBS . encode . toJSON $ a
