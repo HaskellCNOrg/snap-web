@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Models.Tag where
 
@@ -36,6 +37,7 @@ tagCollection = u "tags"
 ------------------------------------------------------------------------------
 
 instance Persistent Tag where
+  getSchemaP _ = tagCollection
   toMongoDocP = tagToDocument
   fromMongoDocP = tagFromDocumentOrThrow
   
@@ -45,19 +47,12 @@ instance Persistent Tag where
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
 --   TODO: better to make sure _id exists because Nothing objectId will cause error other when viewing.
 saveTag :: Tag -> AppHandler Tag
-saveTag = saveP tagCollection
-
---    res <- eitherWithDB $ DB.save tagCollection $ tagToDocument tag
---    either failureToUE (const $ return tag) res 
+saveTag = saveP
 
 -----------------------------------------
 
 findAllTags :: AppHandler [Tag]
-findAllTags  = getAllP tagCollection
-
---    let tagSelection = select [] tagCollection
---    xs <- eitherWithDB $ rest =<< find (tagSelection )
---    liftIO $ mapM tagFromDocumentOrThrow $ either (const []) id xs
+findAllTags  = getAllP undefined
 
 -----------------------------------------
 -- MongoDB Document Transform

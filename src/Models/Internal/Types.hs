@@ -18,28 +18,31 @@ import           Models.Utils
 
 -- | A simple generic Persistent handler.
 -- 
--- FIXME: Cant make tight the Collection thus currently have to be parameter of save/get function.
 -- 
 class Persistent a where
   -- | Schema name
-  -- getSchemaP :: Collection
+  --   Implement me like `getSchemaP _ = u "abc"`
+  getSchemaP :: a -> Collection
   
   -- | Transform Data to MongoDB document type
   toMongoDocP :: a -> Document
+  
+  -- | Transform MongoDB document to perticular type
   fromMongoDocP :: Document -> IO a
   
   -- | Simple MongoDB Save Operation 
   -- 
-  saveP :: Collection -> a -> AppHandler a
-  saveP c x = do
-            res <- eitherWithDB $ DB.save c (toMongoDocP x)
+  saveP :: a -> AppHandler a
+  saveP x = do
+            res <- eitherWithDB $ DB.save (getSchemaP x) (toMongoDocP x)
             either failureToUE (const $ return x) res
   
   -- | Fetch All items in the collection
   -- 
-  getAllP :: Collection -> AppHandler [a]
-  getAllP c = do
-            let selection = select [] c
-            xs <- eitherWithDB $ rest =<< find (selection)
-            liftIO $ mapM fromMongoDocP $ either (const []) id xs
+  getAllP :: a -> AppHandler [a]
+  getAllP x  = do
+               let selection = select [] (getSchemaP x)
+               -- let selection = select [] (getSchemaP (undefined::a)) WHY IT FAILED.?             
+               xs <- eitherWithDB $ rest =<< find (selection)
+               liftIO $ mapM fromMongoDocP $ either (const []) id xs
 
