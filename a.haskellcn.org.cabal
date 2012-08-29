@@ -9,8 +9,12 @@ Stability:           Experimental
 Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.2
-tested-with:         GHC == 7.0.3
+tested-with:         GHC == 7.4.1
+Homepage:            https://github.com/HaskellCNOrg
 
+Source-Repository head
+  Type:     git
+  Location: git://github.com/HaskellCNOrg/a.haskellcn.git
 
 Flag development
   Description: Whether to build the server in development (interpreted) mode
