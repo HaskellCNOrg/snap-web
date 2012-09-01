@@ -36,6 +36,12 @@ data Tag = Tag
 tagCollection :: Collection
 tagCollection = u "tags"
 
+-- | Shortcut to get Tag Id in {Text}.
+-- 
+getTagId :: Tag -> T.Text
+getTagId = objectIdToText . _tagId
+
+
 --------------------------------------------------------------------------------
 -- Impl of Persistent Interface
 --------------------------------------------------------------------------------
@@ -45,20 +51,19 @@ tagCollection = u "tags"
 --   0. save or create ?
 --   1. Input from web is [String]
 --   2. batch create new tags?
---   3. insert [ObjectId] to topic tabel
 -- 
 instance MongoDBPersistent Tag where
   mongoColl _  = tagCollection
   toMongoDoc   = tagToDocument
   fromMongoDoc = tagFromDocumentOrThrow
-
+  mongoInsertId tag value = tag { _tagId = BSON.cast' value }
 
 --------------------------------------------------------------------------------
 -- CRUD
 --------------------------------------------------------------------------------
 
 
--- | save a new tag.
+-- | Insert a new tag.
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
 --   TODO: better to make sure _id exists because Nothing objectId will cause error other when viewing.
 insertTag :: Tag -> AppHandler Tag
@@ -99,9 +104,3 @@ tagFromDocumentOrThrow :: Document -> IO Tag
 tagFromDocumentOrThrow d = case parseEither documentToTag d of
     Left e  -> throw $ BackendError $ show e
     Right r -> return r
-
--- | Shortcut to get Tag Id in {Text}.
--- 
-getTagId :: Tag -> T.Text
-getTagId = objectIdToText . _tagId
-

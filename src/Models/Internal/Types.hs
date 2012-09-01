@@ -1,4 +1,3 @@
-{-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
 
 -- | (Try) to be Generic Operation for DB operations
 -- 
@@ -24,9 +23,11 @@ class MongoDBPersistent a where
   mongoColl :: a -> Collection
   
   -- | Transform Data to MongoDB document type
+  --
   toMongoDoc :: a -> Document
   
   -- | Transform MongoDB document to perticular type
+  --
   fromMongoDoc :: Document -> IO a
   
   -- | FIXME: Insert ID after save successfully. @see Topic.hs: 51
@@ -36,8 +37,14 @@ class MongoDBPersistent a where
            => a    -- ^ new model that will be save
            -> m a  -- ^ saved model with id.
   mongoInsert x = do
-            res <- eitherWithDB $ DB.insert (mongoColl x) (toMongoDoc x)
-            either failureToUE (const $ return x) res
+    res <- eitherWithDB $ DB.insert (mongoColl x) (toMongoDoc x)
+    either failureToUE (return $ mongoInsertId x) res
+  
+  -- | Update ID field of model after insert to mongoDB successfully.
+  -- 
+  mongoInsertId :: a        -- ^ original data that about to be save.
+                   -> Value -- ^ return value after mongoDB.insert, should be a ObjectID.
+                   -> a     -- ^ updated data with ID filed get updated.
   
   -- | Fetch All items in the collection
   -- 
@@ -47,6 +54,6 @@ class MongoDBPersistent a where
   mongoFindAll x  = do
                let selection = select [] (mongoColl x)
                -- let selection = select [] (getSchemaP (undefined::a)) WHY IT FAILED.?             
-               xs <- eitherWithDB $ rest =<< find (selection)
+               xs <- eitherWithDB $ rest =<< find selection
                liftIO $ mapM fromMongoDoc $ either (const []) id xs
 
