@@ -2,15 +2,10 @@
 
 module Views.TagSplices where
 
-import           Control.Arrow (second)
 import           Control.Monad.Trans
---import           Control.Monad (liftM)
-import Data.Maybe (fromMaybe)
---import           Data.Function (on)
+import           Data.Maybe (fromMaybe)
 import           Text.Templating.Heist
-import           Data.List
 import           Data.Bson (ObjectId)
-import qualified Data.Map as MP
 import qualified Data.Text as T
 
 import Application
@@ -32,5 +27,5 @@ tagSplice = runChildrenWithText . tagSpliceImpl
 
 
 tagSpliceImpl :: Tag -> [(T.Text, T.Text)]
-tagSpliceImpl (Tag id name _) = [ ("tagId", objectIdToText id) 
+tagSpliceImpl (Tag tid name _) = [ ("tagId", objectIdToText tid)
                                 , ("tagName", name) ]

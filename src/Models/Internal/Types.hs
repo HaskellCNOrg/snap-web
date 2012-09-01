@@ -7,10 +7,7 @@ module Models.Internal.Types where
 
 import           Control.Monad.Trans
 import           Database.MongoDB
-import qualified Data.Text as T
 import           Snap
-import           Snap.Core
-import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 import qualified Database.MongoDB as DB
 
@@ -81,11 +78,10 @@ class MongoDBPersistent a where
                   -> m [a]
   mongoFindSome _ [] = return []
   -- THIS DOESNT WORK YET --
-  mongoFindSome x ids@(x1:xs) = do
-    let oid = mongoGetId x
-        coll = mongoColl x
-        selection = select [ "_id" =: ids ] coll
-    eitherWithDB $ rest =<< find selection
+  mongoFindSome x ids = do
+    let collect = mongoColl x
+        sel = select [ "_id" =: ids ] collect
+    eitherWithDB $ rest =<< find sel
     >>= liftIO . mapM fromMongoDoc . either (const []) id
 
 {-

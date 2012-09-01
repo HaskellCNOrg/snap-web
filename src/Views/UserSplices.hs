@@ -3,9 +3,7 @@
 module Views.UserSplices where
 
 import           Control.Arrow (second)
-import           Control.Monad
 import           Control.Monad.Trans
-import           Control.Applicative ((<$>), (<*>))
 import           Snap.Snaplet.Auth
 import           Text.Templating.Heist
 import qualified Data.Text as T

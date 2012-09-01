@@ -4,7 +4,7 @@ EXTRA_TEST_LIB = ./dist/build/ahaskellcnorg/ahaskellcnorg-tmp
 DIST=dist
 SITE=_site
 
-CABALD=cabal-dev
+CBD=cabal-dev
 
 default: build-dev
 
@@ -20,18 +20,18 @@ hlint:
 ###########################
 init:
 	cabal update
-	$(CABALD) install
+	$(CBD) install
 
 conf-dev:
-	$(CABALD) --flags="development" configure
+	$(CBD) --flags="development" configure
 
 build-dev: conf-dev
-	$(CABALD) build
+	$(CBD) build
 
 test:
-	$(CABALD) --enable-tests configure
-	$(CABALD) build
-	$(CABALD) test
+	$(CBD) --enable-tests configure
+	$(CBD) build
+	$(CBD) test
 
 p:
 	$(PROG_PREV) -p 9900
@@ -45,8 +45,8 @@ rp: clean build-dev p
 ###########################
 
 build: 
-	cabal configure
-	cabal build
+	$(CBD) configure
+	$(CBD) build 1>./log/build.log 2>&1
 
 rebuild: clean build
 

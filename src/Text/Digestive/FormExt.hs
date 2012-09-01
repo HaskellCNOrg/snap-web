@@ -7,7 +7,6 @@
 
 module Text.Digestive.FormExt where
 
-import Control.Applicative ((<$>))
 import Data.Maybe (isJust)
 import Data.Text (Text)
 import qualified Data.Text as T

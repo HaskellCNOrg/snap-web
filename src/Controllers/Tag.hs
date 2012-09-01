@@ -5,33 +5,17 @@ module Controllers.Tag
        , saveTags
        ) where
 
-import           Data.Aeson
-import           Control.Monad
-import           Control.Monad.Trans
-import           Control.Monad.CatchIO (throw, try)
-import           Data.Maybe (fromJust, isNothing)
-import           Data.Time
 import           Snap.Core
 import qualified Snap.Core as Snap
 import           Snap.Snaplet
-import           Snap.Snaplet.Auth
-import           Text.Digestive
-import           Text.Digestive.Snap
-import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
 import           Data.Bson (ObjectId)
 
 import           Application
-import           Controllers.User hiding (routes)
-import           Controllers.Types
-import           Models.Exception 
-import           Models.Utils
-import           Views.Utils
 import           Models.Tag
---import qualified Models.Tag as MT
-import qualified Models.User as MU
-
+import           Views.Utils
+import           Controllers.Types
 
 ------------------------------------------------------------------------------
 

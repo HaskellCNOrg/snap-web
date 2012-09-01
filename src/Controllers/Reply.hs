@@ -6,14 +6,12 @@ module Controllers.Reply
 import           Control.Monad.CatchIO (try)
 import           Control.Monad.Trans
 import           Data.Time
-import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
-import qualified Snap.Core as Snap
 
 import           Application
 import           Controllers.Topic hiding (routes)

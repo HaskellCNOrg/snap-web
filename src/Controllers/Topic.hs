@@ -13,7 +13,6 @@ import           Data.Time
 import           Snap.Core
 import qualified Snap.Core as Snap
 import           Snap.Snaplet
-import           Snap.Snaplet.Auth
 import           Text.Digestive
 import           Text.Digestive.Snap
 import           Text.Templating.Heist
@@ -182,13 +181,14 @@ splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' 
 topicVoToNewTopic :: TopicVo -> User.UserObjId -> IO Topic
 topicVoToNewTopic tv author = do
     now <- getCurrentTime
-    return  Topic 
+    return Topic 
              { _topicId = Nothing
              , _title   = title tv
              , _content = content tv
              , _author  = author
              , _createAt = now
-             , _updateAt = now              
+             , _updateAt = now
+             , _topicTags = Just []
              }
 
 -- | Populate change to a existing @Topic@ from topicVo

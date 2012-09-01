@@ -4,19 +4,13 @@ module Models.Tag where
 
 import           Control.Applicative ((<$>), (<*>))
 import           Control.Monad.CatchIO (throw)
-import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
 import           Database.MongoDB
-import qualified Data.Bson as BSON
-import qualified Database.MongoDB as DB
 import           Snap.Snaplet.Auth
-import           Snap.Snaplet.MongoDB
 import qualified Data.Text as T
-import           Data.Time (UTCTime)
 
 import           Application
-import           Models.Exception
 import           Models.Utils
 import           Models.Internal.Types
 
@@ -54,7 +48,7 @@ instance MongoDBPersistent Tag where
   mongoColl _  = tagCollection
   toMongoDoc   = tagToDocument
   fromMongoDoc = tagFromDocumentOrThrow
-  mongoInsertId tag value = tag { _tagId = objectIdFromValue value }
+  mongoInsertId tag v = tag { _tagId = objectIdFromValue v }
   mongoGetId = _tagId
 
 --------------------------------------------------------------------------------

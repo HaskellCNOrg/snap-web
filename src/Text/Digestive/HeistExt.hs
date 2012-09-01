@@ -2,15 +2,9 @@
 
 module Text.Digestive.HeistExt where
 
-import           Snap.Core
-import qualified Snap.Core as Snap
-import           Snap.Snaplet
 import           Text.Digestive
-import           Text.Digestive.Snap
-import           Text.Digestive.View
 import           Text.Templating.Heist
 import Data.Text (Text)
-import qualified Data.Text as T
 import qualified Text.XmlHtml as X
 
 
