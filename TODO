@@ -122,11 +122,3 @@ extractTags = T.words
 tags    :: [T.Text]
 
 ~~~~~
-
-~~~~~
-//MONGODB
-{ x : { $in : [ a, b ] } }
-$set
-~~~~~
-
-        

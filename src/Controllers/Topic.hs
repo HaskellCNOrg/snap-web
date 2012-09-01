@@ -8,7 +8,7 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.Trans
 import           Control.Monad.CatchIO (throw, try)
-import           Data.Maybe (fromJust, isNothing)
+import           Data.Maybe (fromJust, isNothing, catMaybes)
 import           Data.Time
 import           Snap.Core
 import qualified Snap.Core as Snap
@@ -24,15 +24,15 @@ import           Application
 import           Controllers.User hiding (routes)
 import           Controllers.Tag (saveTags)
 import           Controllers.Home (redirect303)
-import           Models.Exception 
-import           Models.Topic 
 import           Models.Utils
 import           Views.TopicForm
 import           Views.ReplyForm
 import           Views.TopicSplices
 import           Views.Utils
-import qualified Models.Topic as MT
-import qualified Models.User as MU
+import           Models.Exception
+import           Models.Topic
+import qualified Models.User as User
+import qualified Models.Tag as Tag
 
 
 ------------------------------------------------------------------------------
@@ -84,8 +84,8 @@ createTopicH = withAuthUser $ do
 -- 
 doCreateTopic' :: TopicVo -> AppHandler ()
 doCreateTopic' tv = do 
-                  (Just uid') <- MU.findCurrentUserId
-                  topic     <- try $ MT.createNewTopic =<< liftIO (topicVoToNewTopic tv uid')
+                  (Just uid') <- User.findCurrentUserId
+                  topic     <- try $ createNewTopic =<< liftIO (topicVoToNewTopic tv uid')
                   case topic of 
                     Left e  -> writeText $ showUE e 
                                -- FIXME:  return to detail edit page with errors.
@@ -150,23 +150,23 @@ saveTopicH = withAuthUser $ do
 -- 
 doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
-  saveTags (topicTags tv)
+  tags <- saveTags (topicTags tv)
   findTopic <- try (findOneTopic (textToObjectId $ topicId tv ))
   case findTopic of
     Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
                                     --         2. put findOneTopic and saveTopic in one try??
     Right r -> do
-      result <- try $ MT.saveTopic =<< liftIO (topicVoToTopic tv r)
+      result <- try $ saveTopic =<< liftIO (topicVoToTopic tv tags r)
       case result of 
         Left e  -> writeText $ showUE e 
-        -- FIXME:  return to detail edit page with errors.
+        -- ^ FIXME:  return to detail edit page with errors.
         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
 ------------------------------------------------------------------------------
 
 -- | Generate a new @Topic@ from @TopicVo@.
 -- 
-topicVoToNewTopic :: TopicVo -> MU.UserObjId -> IO MT.Topic
+topicVoToNewTopic :: TopicVo -> User.UserObjId -> IO Topic
 topicVoToNewTopic tv author = do
     now <- getCurrentTime
     return  Topic 
@@ -180,11 +180,13 @@ topicVoToNewTopic tv author = do
 
 -- | Populate change to a existing @Topic@ from topicVo
 -- 
-topicVoToTopic :: TopicVo -> MT.Topic -> IO MT.Topic
-topicVoToTopic tv topic = do
+topicVoToTopic :: TopicVo -> [Tag.Tag] -> Topic -> IO Topic
+topicVoToTopic tv tags topic = do
     now <- getCurrentTime
     return  topic 
              { _title    = title tv
              , _content  = content tv
-             , _updateAt = now              
+             , _updateAt = now
+             , _topicTags = Just tagsId
              }
+    where tagsId = catMaybes $ fmap Tag._tagId tags

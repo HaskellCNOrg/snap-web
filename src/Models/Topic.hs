@@ -30,15 +30,15 @@ data Topic = Topic
     , _author   :: ObjectId
     , _createAt :: UTCTime
     , _updateAt :: UTCTime
+    , _topicTags :: Maybe [ObjectId]
     } deriving (Show, Eq)
-
-{-
-	last_reply: { type: ObjectId },
-	last_reply_at: { type: Date, default: Date.now },
--}
 
 topicCollection :: Collection
 topicCollection = u "topics"
+
+getTopicId :: Topic -> T.Text
+getTopicId = objectIdToText . _topicId
+
 
 ------------------------------------------------------------------------------
 
@@ -99,6 +99,7 @@ topicToDocument topic = case _topicId topic of
                                 , "author"   .= _author topic
                                 , "createAt" .= _createAt topic
                                 , "updateAt" .= _updateAt topic
+                                , "tags"     .= _topicTags topic
                                 ]
 
 -- | Transform mongo Document to be a Topic parser.
@@ -111,6 +112,7 @@ documentToTopic d = Topic
                     <*> d .: "author"
                     <*> d .: "createAt" 
                     <*> d .: "updateAt"
+                    <*> d .: "tags"
 
 -- | parse the topic document
 -- 
@@ -119,9 +121,5 @@ topicFromDocumentOrThrow d = case parseEither documentToTopic d of
     Left e  -> throw $ BackendError $ show e
     Right r -> return r
   
-
-getTopicId :: Topic -> T.Text
-getTopicId = objectIdToText . _topicId
-
 
 ------------------------------------------------------------------------------

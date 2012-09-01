@@ -46,11 +46,7 @@ getTagId = objectIdToText . _tagId
 -- Impl of Persistent Interface
 --------------------------------------------------------------------------------
 
-
--- | FIXME: couple of thoughts: 
---   0. save or create ?
---   1. Input from web is [String]
---   2. batch create new tags?
+-- Impl of Persistent Interface
 -- 
 instance MongoDBPersistent Tag where
   mongoColl _  = tagCollection
@@ -65,7 +61,9 @@ instance MongoDBPersistent Tag where
 
 -- | Insert a new tag.
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
---   TODO: better to make sure _id exists because Nothing objectId will cause error other when viewing.
+-- | FIXME: couple of thoughts: 
+--   2. batch create new tags?
+--
 insertTag :: Tag -> AppHandler Tag
 insertTag = mongoInsert
 
