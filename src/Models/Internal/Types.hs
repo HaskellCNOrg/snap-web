@@ -13,9 +13,9 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 import           Control.Monad.Trans
 
-import           Models.Exception
+import           Models.Internal.Exception
 
--- | A simple generic Persistent handler.
+-- | A simple generic MongoDB Persistent class.
 -- 
 -- 
 class MongoDBPersistent a where
