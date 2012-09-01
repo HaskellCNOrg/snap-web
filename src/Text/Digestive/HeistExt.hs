@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
 
-module Views.DigestiveFunctorSplicesExt where
+module Text.Digestive.HeistExt where
 
 import           Snap.Core
 import qualified Snap.Core as Snap

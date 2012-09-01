@@ -29,7 +29,7 @@ import Data.Text.Read
 
 import           Application
 import           Models.Utils
-import           Views.DigestiveFunctorSplicesExt
+import           Text.Digestive.HeistExt
 
 ----------------------------------------------------------------
 -- Utils for Digestive Functor form
