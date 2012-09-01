@@ -9,6 +9,7 @@ import Text.Digestive
 import Text.Digestive.FormExt
 
 import Models.Topic
+import Models.Tag
 import Models.Utils
 
 
@@ -19,7 +20,7 @@ data TopicVo = TopicVo
                { title   :: T.Text
                , content :: T.Text
                , topicId :: T.Text
-               , topicTags :: [T.Text]
+               , topicTags :: T.Text
                } deriving (Show)
 
 
@@ -30,24 +31,22 @@ topicForm = TopicVo
     <$> "title"    .: titleValidation (text Nothing)
     <*> "content"  .: contentValidation (text Nothing)
     <*> "tid"      .: text Nothing
-    <*> "tags"     .: toTagList (text Nothing)
+    <*> "tags"     .: text Nothing
 
 -- | Render a form base on exists @Topic@ for editing.
+--
 -- 
-topicEditForm :: Monad m => Topic -> Form Text m TopicVo
-topicEditForm t = TopicVo
+topicEditForm :: Monad m => Topic -> [Tag] -> Form Text m TopicVo
+topicEditForm t tags = TopicVo
     <$> "title"    .: titleValidation (text $ Just $ _title t)
     <*> "content"  .: contentValidation (text $ Just $ _content t)
     <*> "tid"      .: checkRequired "Fatal error happened.(tid is required)" (text $ fmap sToText (_topicId t))
-    <*> "tags"     .: toTagList (text Nothing)
+    <*> "tags"     .: tagsToText tags
 
-toTagList :: Monad m => Form Text m Text -> Form Text m [Text]
-toTagList = fmap splitOnSpaceOrComma
-
--- | Split Text by space or comma and get ride of extra empty text.
+-- | combinate tag names to display.
 -- 
-splitOnSpaceOrComma :: Text -> [Text]
-splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' ')
+tagsToText :: Monad m => [Tag] -> Form Text m Text
+tagsToText = text . Just . T.intercalate " " . map _tagName
 
 
 -- | Topic Title Validation. (Required + minlength 5)

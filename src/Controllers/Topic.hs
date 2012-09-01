@@ -8,7 +8,7 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.Trans
 import           Control.Monad.CatchIO (throw, try)
-import           Data.Maybe (fromJust, isNothing, catMaybes)
+import           Data.Maybe (fromJust, isNothing, catMaybes, fromMaybe)
 import           Data.Time
 import           Snap.Core
 import qualified Snap.Core as Snap
@@ -74,7 +74,6 @@ tplTopicDetail = "topic-detail"
 createTopicH :: AppHandler ()
 createTopicH = withAuthUser $ do
                              (view, result) <- runForm "create-topic-form" topicForm
-                             liftIO $ print result
                              case result of
                                Just topic -> doCreateTopic' topic
                                Nothing    -> toTopicFormPage view
@@ -100,6 +99,9 @@ toTopicFormPage = renderDfPage tplTopicForm
                     
 -- | topic detail viewer per topic id.
 -- 
+-- FIXME: change Model.findOneTopic to (Maybe ObjectId)
+--        then use =? at mongoDB selector to see what is return value.
+--
 viewTopicH :: AppHandler ()
 viewTopicH = do
     tid <- decodedParamMaybe topicIdParam
@@ -129,7 +131,11 @@ editTopicH = withAuthUser $ do
 
 toEditTopicPageOr' :: Either UserException Topic -> AppHandler ()    
 toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
-    where toEditingPage t = runForm "edit-topic-form" (topicEditForm t) >>= (toTopicFormPage . fst)
+    where toEditingPage t = do
+                            tags <- Tag.findSomeTags (fromMaybe [] $ _topicTags t)
+                            --liftIO $ print tags
+                            runForm "edit-topic-form" (topicEditForm t tags)
+                            >>= (toTopicFormPage . fst)
 
 
 -- | Save the edit to a topic.
@@ -137,7 +143,7 @@ toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
 saveTopicH :: AppHandler ()
 saveTopicH = withAuthUser $ do
                  (view, result) <- runForm "edit-topic-form" topicForm
-                 liftIO $ print result            
+                 --liftIO $ print result            
                  case result of
                    Just topic -> doUpdateTopic' topic
                    Nothing    -> toTopicFormPage view -- FIXME: bug..to form page should runForm first.
@@ -150,7 +156,7 @@ saveTopicH = withAuthUser $ do
 -- 
 doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
-  tags <- saveTags (topicTags tv)
+  tags <- saveTags (getTags tv)
   findTopic <- try (findOneTopic (textToObjectId $ topicId tv ))
   case findTopic of
     Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
@@ -158,9 +164,16 @@ doUpdateTopic' tv = do
     Right r -> do
       result <- try $ saveTopic =<< liftIO (topicVoToTopic tv tags r)
       case result of 
-        Left e  -> writeText $ showUE e 
-        -- ^ FIXME:  return to detail edit page with errors.
+        Left e  -> writeText $ showUE e  -- FIXME:  return to detail edit page with errors.
+
         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
+  where
+    getTags = splitOnSpaceOrComma . topicTags
+
+-- | Split Text by space or comma and get ride of extra empty text.
+-- 
+splitOnSpaceOrComma :: T.Text -> [T.Text]
+splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' ')
 
 ------------------------------------------------------------------------------
 

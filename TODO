@@ -118,7 +118,17 @@
 extractTags :: Text -> [Text]
 extractTags = T.words
 
-"tags"     .: textList extractTags (checkRequired "Tags is required" $ text Nothing)
+tags"     .: textList extractTags (checkRequired "Tags is required" $ text Nothing)
 tags    :: [T.Text]
+
+====> FAILED: because Pure is not visiable
+
+--textList :: Formlet v m [a]
+----textList def = Pure Nothing $ Text $ fromMaybe [] def
+--textList = generalRead (fromMaybe [])
+--
+--generalRead :: Monad a => (Maybe a -> a) -> Formlet v m a
+--generalRead f =  Pure Nothing . Text . f
+
 
 ~~~~~

@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Models.Tag where
 
@@ -31,6 +30,9 @@ data Tag = Tag
     , _tagContent :: Maybe T.Text
     } deriving (Show, Eq)
 
+emptyTag :: Tag
+emptyTag = Tag Nothing "" Nothing
+
 -- | Schema name
 -- 
 tagCollection :: Collection
@@ -52,7 +54,8 @@ instance MongoDBPersistent Tag where
   mongoColl _  = tagCollection
   toMongoDoc   = tagToDocument
   fromMongoDoc = tagFromDocumentOrThrow
-  mongoInsertId tag value = tag { _tagId = BSON.cast' value }
+  mongoInsertId tag value = tag { _tagId = objectIdFromValue value }
+  mongoGetId = _tagId
 
 --------------------------------------------------------------------------------
 -- CRUD
@@ -69,8 +72,13 @@ insertTag = mongoInsert
 
 
 findAllTags :: AppHandler [Tag]
-findAllTags  = mongoFindAll undefined
+findAllTags  = mongoFindAll emptyTag
 
+findOneTag :: ObjectId -> AppHandler Tag
+findOneTag oid = mongoFindOne $ emptyTag { _tagId = Just oid }
+
+findSomeTags :: [ObjectId] -> AppHandler [Tag]
+findSomeTags = mapM findOneTag -- FIXME: mongoFindSome emptyTag
 
 --------------------------------------------------------------------------------
 -- MongoDB Document Transform

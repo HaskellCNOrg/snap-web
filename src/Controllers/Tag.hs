@@ -20,9 +20,11 @@ import           Text.Digestive.Snap
 import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
+import           Data.Bson (ObjectId)
 
 import           Application
 import           Controllers.User hiding (routes)
+import           Controllers.Types
 import           Models.Exception 
 import           Models.Utils
 import           Views.Utils
@@ -47,8 +49,13 @@ routes =  [ ("/tags",  Snap.method GET getTags)
 -- FIXME: 1. if content-tye is not json, return empty
 -- 
 getTags :: AppHandler ()
-getTags = findAllTags >>= toJSONResponse
+getTags = findAllTags 
+          >>= toJSONResponse
 
+--ids = map textToObjectId ["504181850353211077000002"]
+
+getSomeTags :: [ObjectId] -> AppHandler [Tag]
+getSomeTags = findSomeTags
 
 ------------------------------------------------------------------------------
 
@@ -62,12 +69,4 @@ saveTags = mapM insertTag . map textToTag
            where textToTag name = emptyTag { _tagName = name }
 
 
-emptyTag = Tag Nothing (T.pack "") Nothing
-
 ----------------------------------------
--- To be JSON 
-
-instance ToJSON Tag where
-  toJSON (Tag id name _) = object [ "id"   .= name
-                                  , "name" .= name
-                                  ]
