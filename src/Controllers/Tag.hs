@@ -65,7 +65,7 @@ getSomeTags = findSomeTags
 --  FIXME: do not save tags that already exists.
 -- 
 saveTags :: [T.Text] -> AppHandler [Tag]
-saveTags = mapM insertTag . map textToTag
+saveTags = mapM (insertTag . textToTag)
            where textToTag name = emptyTag { _tagName = name }
 
 

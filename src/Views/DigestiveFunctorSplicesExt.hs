@@ -16,7 +16,7 @@ import qualified Text.XmlHtml as X
 
 
 dfChildErrorListRef :: Monad m => View Text -> Splice m
-dfChildErrorListRef view = do
+dfChildErrorListRef view =
     return $ errorList (viewErrors view)
   where errorList :: [(Path, Text)] -> [X.Node]
         errorList []    = []

@@ -14,7 +14,6 @@ import           Data.List (find)
 import           Data.Maybe (fromMaybe)
 import           Snap.Snaplet
 import qualified Data.HashMap.Lazy                   as HM
-import qualified Data.Text                           as T
 import qualified Data.Text as T
 import qualified Data.UString as U
 
