@@ -1,6 +1,6 @@
 // ----- Variables
 // 
-@mdEditorWidth: 500px;
+@largeWidth: 500px;
 @mdEditorHeight: 80px;
 
 @authorFontSize: 11px;
@@ -21,6 +21,11 @@
 .grayBorderDotted {
     border-top: 1px dotted @grayLight;
 }
+
+// ----- Extends bootstrap
+.input-xylarge    { width: @largeWidth; }
+
+
 
 // -----
 
@@ -90,11 +95,8 @@ body {
           section:hover {
               .grayHover;
           }
-          form {
-            textarea {
-              width: @mdEditorWidth;
-              height: @mdEditorHeight;
-            }
+          .wmd-input {
+               height: @mdEditorHeight;
           }
        }
 

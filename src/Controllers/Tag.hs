@@ -2,7 +2,8 @@
 
 module Controllers.Tag
        ( routes
-) where
+       , saveTags
+       ) where
 
 import           Data.Aeson
 import           Control.Monad
@@ -56,9 +57,12 @@ getTags = findAllTags >>= toJSONResponse
 --
 --  FIXME: do not save tags that already exists.
 -- 
-saveTags :: [Tag] -> AppHandler [Tag]
-saveTags = mapM insertTag
+saveTags :: [T.Text] -> AppHandler [Tag]
+saveTags = mapM insertTag . map textToTag
+           where textToTag name = emptyTag { _tagName = name }
 
+
+emptyTag = Tag Nothing (T.pack "") Nothing
 
 ----------------------------------------
 -- To be JSON 

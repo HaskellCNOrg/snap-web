@@ -22,6 +22,7 @@ import qualified Data.Text as T
 
 import           Application
 import           Controllers.User hiding (routes)
+import           Controllers.Tag (saveTags)
 import           Controllers.Home (redirect303)
 import           Models.Exception 
 import           Models.Topic 
@@ -73,7 +74,7 @@ tplTopicDetail = "topic-detail"
 createTopicH :: AppHandler ()
 createTopicH = withAuthUser $ do
                              (view, result) <- runForm "create-topic-form" topicForm
---                             liftIO $ print result
+                             liftIO $ print result
                              case result of
                                Just topic -> doCreateTopic' topic
                                Nothing    -> toTopicFormPage view
@@ -136,6 +137,7 @@ toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
 saveTopicH :: AppHandler ()
 saveTopicH = withAuthUser $ do
                  (view, result) <- runForm "edit-topic-form" topicForm
+                 liftIO $ print result            
                  case result of
                    Just topic -> doUpdateTopic' topic
                    Nothing    -> toTopicFormPage view -- FIXME: bug..to form page should runForm first.
@@ -148,16 +150,17 @@ saveTopicH = withAuthUser $ do
 -- 
 doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
-                  findTopic <- try (findOneTopic (read $ textToS $ topicId tv ))
-                  case findTopic of
-                      Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
-                                                      --         2. put findOneTopic and saveTopic in one try??
-                      Right r -> do
-                                   result <- try $ MT.saveTopic =<< liftIO (topicVoToTopic tv r)
-                                   case result of 
-                                         Left e  -> writeText $ showUE e 
-                                                     -- FIXME:  return to detail edit page with errors.
-                                         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
+  saveTags (topicTags tv)
+  findTopic <- try (findOneTopic (textToObjectId $ topicId tv ))
+  case findTopic of
+    Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
+                                    --         2. put findOneTopic and saveTopic in one try??
+    Right r -> do
+      result <- try $ MT.saveTopic =<< liftIO (topicVoToTopic tv r)
+      case result of 
+        Left e  -> writeText $ showUE e 
+        -- FIXME:  return to detail edit page with errors.
+        Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
 ------------------------------------------------------------------------------
 

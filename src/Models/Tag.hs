@@ -28,7 +28,7 @@ import           Models.Internal.Types
 data Tag = Tag
     { _tagId      :: Maybe ObjectId
     , _tagName    :: T.Text
-    , _tagContent :: T.Text
+    , _tagContent :: Maybe T.Text
     } deriving (Show, Eq)
 
 -- | Schema name

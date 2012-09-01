@@ -14,7 +14,7 @@
     <div class="control-group">
       <dfLabel class="control-label" ref="title"><i18n name="topic-title"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-large" ref="title" autofocus />
+        <dfInputText class="input-xylarge" ref="title" autofocus />
       </div>
     </div>
 
@@ -27,6 +27,13 @@
           <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" />
         </div>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <dfLabel class="control-label" ref="tags"><i18n name="topic-tag"/></dfLabel>
+      <div class="controls">
+        <dfInputText class="input-xylarge" ref="tags" />
       </div>
     </div>
 

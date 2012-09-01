@@ -30,7 +30,7 @@ topicForm = TopicVo
     <$> "title"    .: titleValidation (text Nothing)
     <*> "content"  .: contentValidation (text Nothing)
     <*> "tid"      .: text Nothing
-    <*> "tags"     .: toList (text Nothing)
+    <*> "tags"     .: toTagList (text Nothing)
 
 -- | Render a form base on exists @Topic@ for editing.
 -- 
@@ -39,10 +39,16 @@ topicEditForm t = TopicVo
     <$> "title"    .: titleValidation (text $ Just $ _title t)
     <*> "content"  .: contentValidation (text $ Just $ _content t)
     <*> "tid"      .: checkRequired "Fatal error happened.(tid is required)" (text $ fmap sToText (_topicId t))
-    <*> "tags"     .: toList (text Nothing)
+    <*> "tags"     .: toTagList (text Nothing)
 
-toList :: Monad m => Form Text m Text -> Form Text m [Text]
-toList = fmap (flip (:) [])
+toTagList :: Monad m => Form Text m Text -> Form Text m [Text]
+toTagList = fmap splitOnSpaceOrComma
+
+-- | Split Text by space or comma and get ride of extra empty text.
+-- 
+splitOnSpaceOrComma :: Text -> [Text]
+splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' ')
+
 
 -- | Topic Title Validation. (Required + minlength 5)
 -- 
