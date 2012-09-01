@@ -1,13 +1,16 @@
 
 <dfForm id="add-comment-form-${replyid}" action="/topic/${topicid}/${replyid}/reply">
    
-     <dfIfChildErrors>
-        <div class="alert alert-error"> 
-           <dfChildErrorList />
-        </div>
-      </dfIfChildErrors>
+  <dfIfChildErrors>
+    <div class="alert alert-error"> 
+      <dfChildErrorList />
+    </div>
+  </dfIfChildErrors>
 
-  <dfInputTextArea ref="replyContent" />
+  <div class="wmd-panel">
+    <dfInputTextArea ref="replyContent" class="wmd-input" />
+  </div>
+  
 
   <dfInputHidden ref="replyToTopicId" value="${topicid}"/>
   <dfInputHidden ref="replyToReplyId" value="${replyid}"/>
