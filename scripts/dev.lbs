@@ -1,0 +1,25 @@
+~~~~~
+
+<i18n name="shared-cancel">
+    <input class="btn btn-large btn-danger btn-cancel" value="${i18nValue}" type="button" name="cancel">
+</i18n>
+
+~~~~~
+
+
+**FAILED: because Pure is not visiable**
+
+-- | tags are separated by space in a string, thus needs split.
+-- 
+extractTags :: Text -> [Text]
+extractTags = T.words
+
+tags    .: textList extractTags (checkRequired "Tags is required" $ text Nothing)
+tags    :: [T.Text]
+
+--textList :: Formlet v m [a]
+----textList def = Pure Nothing $ Text $ fromMaybe [] def
+--textList = generalRead (fromMaybe [])
+--
+--generalRead :: Monad a => (Maybe a -> a) -> Formlet v m a
+--generalRead f =  Pure Nothing . Text . f

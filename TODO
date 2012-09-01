@@ -29,57 +29,48 @@
 (@) [X] redirect with 303 rather than 302
 (@) [X] Link User Detail for any user at post page. (Currently only for login user)
     - [ ] Bug: infor from AuthUser has not been retrieved.
+(@) [X] Highlight error on input box.
+      a fix at private branch.
+
 
 
 - [ ] Tag allow user add tag on the fly when post topic
     - ? Instead of relationship collection, how about just a array field of Topic collection.
+    - [X] save tags at create / edit topic
+    - [ ] list topics per tag
 - [ ] oauth
 - [ ] i18n for Digestive-Form validation message.
 - [ ] Why not use "drop down window" for signin and signup ?
 - [ ] update i18n msg file: use nested config
 - [ ] Data Migration.
 
-- [/] Highlight error on input box.
-      a fix at private branch.
 
       
 - [ ] User be able to save a topic as favoriate.
 - [ ] Message to user when new comments
+- [ ] Snaplet-Admin
+- [ ] add 'like/dislike' for topic
+
+
+- [ ] show person score like stackoverflow
 - [ ] comments pagination
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?
 - [ ] JS markdown parse is diff with pandoc.
-- [ ] Page shortcuts. JIRA!
-- [ ] Snaplet-Admin
-- [ ] whether POST action successfully or not, it is likely to finish it with a redirection,
-      which means TWO requests to user, isn't it overload??
 - [ ] ? Get ride of pandoc since use it very little
+- [ ] Page shortcuts. JIRA!
+- [/] whether POST action successfully or not, it is likely to finish it with a redirection,
+       which means TWO requests to user, isn't it overload??
 - [ ] mail integration via email-postmark (active, reset, etc..)
 
-### Makefile
 
-- [X] Compress & combine JS
-- [X] Generate min.css per .less files
-- [X] How to update template incorporate those two thing above?
+* * * * *
 
 ### Know issues
 
 1. When not login, access handlers that run with `withAuthUser` in ajax way.
    Reproduce: allow any user post comment to a comment.
 
-## couple of notes
-- [X] rm personal section from sidebar to settings.
-      (page probably need to be re-design)
-- [X] show "star person" at sidebar top
-- [X] rm "score board" from sidebar.
-- redesign write post / comment panel
-    - [X] preview on the fly?
-    - [ ] display tag right under input box.
-- [X] customize bootstrap css which is un-necessary large.
-- [ ] allow user add tag?
-- [ ] show person score like stackoverflow
-- [?] mv tags to sidebar.
-- [X] do not display click count.
 
 ## Dev question
 
@@ -100,35 +91,24 @@
 
 - when `cabal-dev` ask for `force-reinstalls`, it is likely to have incorrect depends config
 
+### Makefile
 
-## CODE FRAGEMENT
-
-~~~~~
-
-<i18n name="shared-cancel">
-    <input class="btn btn-large btn-danger btn-cancel" value="${i18nValue}" type="button" name="cancel">
-</i18n>
-
-~~~~~
-
-~~~~~
-
--- | tags are separated by space in a string, thus needs split.
--- 
-extractTags :: Text -> [Text]
-extractTags = T.words
-
-tags"     .: textList extractTags (checkRequired "Tags is required" $ text Nothing)
-tags    :: [T.Text]
-
-====> FAILED: because Pure is not visiable
-
---textList :: Formlet v m [a]
-----textList def = Pure Nothing $ Text $ fromMaybe [] def
---textList = generalRead (fromMaybe [])
---
---generalRead :: Monad a => (Maybe a -> a) -> Formlet v m a
---generalRead f =  Pure Nothing . Text . f
+- [X] Compress & combine JS
+- [X] Generate min.css per .less files
+- [X] How to update template incorporate those two thing above?
 
 
-~~~~~
+* * * * *
+
+## couple of notes
+- [X] rm personal section from sidebar to settings.
+      (page probably need to be re-design)
+- [X] show "star person" at sidebar top
+- [X] rm "score board" from sidebar.
+- redesign write post / comment panel
+    - [X] preview on the fly?
+    - [X] display tag right under input box.
+- [X] customize bootstrap css which is un-necessary large.
+- [X] allow user add tag?
+- [X] mv tags to sidebar.
+- [X] do not display click count.
