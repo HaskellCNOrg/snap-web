@@ -19,6 +19,13 @@
 
       <p class="author"><a href="/user/${topicAuthorId}"><topicAuthor/></a> <topicCreateAt/></p>
       <!-- <p><topicUpdateAt/></p> -->
+
+      <ul class="tags">
+        <topicTagList>
+          <li><a href="/tag/${tagId}"><tagName/></a></li>
+        </topicTagList>
+      </ul>
+
     </article>
 
     <!-- FIXME: Show me when has authorization.-->

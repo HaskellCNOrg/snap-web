@@ -19,6 +19,7 @@ import Models.User
 import Views.MarkdownSplices
 import Views.ReplySplices
 import Views.UserSplices
+import Views.TagSplices
 import Views.PaginationSplices
 import Views.Types
 import Views.Utils
@@ -77,14 +78,15 @@ renderTopicSimple tag = do
 -- | Render a Topic with its replies.
 -- 
 renderTopic :: Topic -> Splice AppHandler
-renderTopic tag = do
-    rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId tag)
-    user <- findTopicAuthor tag
+renderTopic topic = do
+    rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId topic)
+    user <- findTopicAuthor topic
     runChildrenWith $
-      map (second textSplice) (topicToSpliceContent tag user)
-      ++ [ ("topicContent", markdownToHtmlSplice $ _content tag)
+      map (second textSplice) (topicToSpliceContent topic user)
+      ++ [ ("topicContent", markdownToHtmlSplice $ _content topic)
          , ("replyPerTopic", allReplyPerTopicSplice rs)
-         , ("topicEditable", hasEditPermissionSplice user) ]
+         , ("topicEditable", hasEditPermissionSplice user) 
+         , ("topicTagList", topicTagSplice $ _topicTags topic)]
 
 ------------------------------------------------------------------------------
     
