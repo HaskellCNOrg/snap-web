@@ -65,7 +65,14 @@ textToObjectId = read . textToS
 objectIdToText :: Maybe ObjectId -> T.Text
 objectIdToText = maybe "" sToText 
 
-------------------------------------------------------------------------------
-
+-- | Case MongoDB.value to ObjectId
+--
 objectIdFromValue :: Value -> Maybe ObjectId
 objectIdFromValue = BSON.cast'
+
+------------------------------------------------------------------------------
+
+-- | Split Text by space or comma and get ride of extra empty text.
+-- 
+splitOnSpaceOrComma :: T.Text -> [T.Text]
+splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' ')

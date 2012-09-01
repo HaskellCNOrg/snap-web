@@ -6,6 +6,7 @@ import           Control.Applicative ((<$>), (<*>))
 import           Control.Monad.CatchIO (throw)
 import           Data.Baeson.Types
 import           Data.Bson
+import           Data.Maybe (catMaybes)
 import           Database.MongoDB
 import           Snap.Snaplet.Auth
 import qualified Data.Text as T
@@ -13,8 +14,6 @@ import qualified Data.Text as T
 import           Application
 import           Models.Utils
 import           Models.Internal.Types
-
---import           Control.Monad.Trans
 
 -- | Tag model
 -- 
@@ -32,10 +31,18 @@ emptyTag = Tag Nothing "" Nothing
 tagCollection :: Collection
 tagCollection = u "tags"
 
--- | Shortcut to get Tag Id in {Text}.
+
+--------------------------------------------------------------------------------
+-- Shortcuts
+--------------------------------------------------------------------------------
+
+-- | Get Tag Id in {Text}.
 -- 
 getTagId :: Tag -> T.Text
 getTagId = objectIdToText . _tagId
+
+toTagIds :: [Tag] -> Maybe [ObjectId]
+toTagIds = Just . catMaybes . fmap _tagId
 
 
 --------------------------------------------------------------------------------

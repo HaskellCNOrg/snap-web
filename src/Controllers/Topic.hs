@@ -8,7 +8,7 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.Trans
 import           Control.Monad.CatchIO (throw, try)
-import           Data.Maybe (fromJust, isNothing, catMaybes, fromMaybe)
+import           Data.Maybe (fromJust, isNothing, fromMaybe)
 import           Data.Time
 import           Snap.Core
 import qualified Snap.Core as Snap
@@ -18,6 +18,7 @@ import           Text.Digestive.Snap
 import           Text.Templating.Heist
 import qualified Data.ByteString as BS
 import qualified Data.Text as T
+import           Data.Bson (ObjectId)
 
 import           Application
 import           Controllers.User hiding (routes)
@@ -83,7 +84,8 @@ createTopicH = withAuthUser $ do
 doCreateTopic' :: TopicVo -> AppHandler ()
 doCreateTopic' tv = do 
                   (Just uid') <- User.findCurrentUserId
-                  topic     <- try $ createNewTopic =<< liftIO (topicVoToNewTopic tv uid')
+                  tags <- doSaveTags tv
+                  topic     <- try $ createNewTopic =<< liftIO (topicVoToNewTopic tv tags uid')
                   case topic of 
                     Left e  -> writeText $ showUE e 
                                -- FIXME:  return to detail edit page with errors.
@@ -155,7 +157,7 @@ saveTopicH = withAuthUser $ do
 -- 
 doUpdateTopic' :: TopicVo -> AppHandler ()
 doUpdateTopic' tv = do
-  tags <- saveTags (getTags tv)
+  tags <- doSaveTags tv
   findTopic <- try (findOneTopic (textToObjectId $ topicId tv ))
   case findTopic of
     Left  l -> writeText $ showUE l -- FIXME:  1. return to detail edit page with errors.
@@ -166,20 +168,22 @@ doUpdateTopic' tv = do
         Left e  -> writeText $ showUE e  -- FIXME:  return to detail edit page with errors.
 
         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
-  where
-    getTags = splitOnSpaceOrComma . topicTags
 
--- | Split Text by space or comma and get ride of extra empty text.
--- 
-splitOnSpaceOrComma :: T.Text -> [T.Text]
-splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' ')
+
+------------------------------------------------------------------------------
+
+-- | Save multiple Tags.
+--
+doSaveTags :: TopicVo -> AppHandler [Tag.Tag]
+doSaveTags = saveTags . splitOnSpaceOrComma . topicTags
+
 
 ------------------------------------------------------------------------------
 
 -- | Generate a new @Topic@ from @TopicVo@.
 -- 
-topicVoToNewTopic :: TopicVo -> User.UserObjId -> IO Topic
-topicVoToNewTopic tv author = do
+topicVoToNewTopic :: TopicVo -> [Tag.Tag] -> User.UserObjId -> IO Topic
+topicVoToNewTopic tv tags author = do
     now <- getCurrentTime
     return Topic 
              { _topicId = Nothing
@@ -188,7 +192,7 @@ topicVoToNewTopic tv author = do
              , _author  = author
              , _createAt = now
              , _updateAt = now
-             , _topicTags = Just []
+             , _topicTags = Tag.toTagIds tags
              }
 
 -- | Populate change to a existing @Topic@ from topicVo
@@ -200,6 +204,6 @@ topicVoToTopic tv tags topic = do
              { _title    = title tv
              , _content  = content tv
              , _updateAt = now
-             , _topicTags = Just tagsId
+             , _topicTags = Tag.toTagIds tags
              }
-    where tagsId = catMaybes $ fmap Tag._tagId tags
+
