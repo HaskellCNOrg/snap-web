@@ -24,10 +24,10 @@ import           Models.Utils
 -- | 
 -- 
 data Topic = Topic
-    { _topicId :: Maybe ObjectId
-    , _title   :: T.Text
-    , _content :: T.Text
-    , _author  :: ObjectId
+    { _topicId  :: Maybe ObjectId
+    , _title    :: T.Text
+    , _content  :: T.Text
+    , _author   :: ObjectId
     , _createAt :: UTCTime
     , _updateAt :: UTCTime
     } deriving (Show, Eq)

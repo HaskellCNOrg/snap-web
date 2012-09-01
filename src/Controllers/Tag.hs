@@ -32,10 +32,8 @@ import qualified Models.User as MU
 
 ------------------------------------------------------------------------------
 
--- | READ: the similarity is a little bit trick because of
---         1. want to separate create and save handler
---         2. action name (topic-form.tpl) is relative path'topic'
---            therefore it could be /topic or /topicput/topic base last URL.
+-- | Routes
+--  /tags -> get all tags
 -- 
 routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/tags",  Snap.method GET getTags)
@@ -43,18 +41,29 @@ routes =  [ ("/tags",  Snap.method GET getTags)
   
 ------------------------------------------------------------------------------
 
-                    
--- | topic detail viewer per topic id.
+-- | Fetch all tags
 -- 
 -- FIXME: 1. if content-tye is not json, return empty
 -- 
 getTags :: AppHandler ()
 getTags = findAllTags >>= toJSONResponse
 
+
+------------------------------------------------------------------------------
+
+-- | Save a list of tags and return them getting ID has been insert.
+--   Perform save if is new otherwise ignore.
+--
+--  FIXME: do not save tags that already exists.
+-- 
+saveTags :: [Tag] -> AppHandler [Tag]
+saveTags = mapM insertTag
+
+
 ----------------------------------------
 -- To be JSON 
 
 instance ToJSON Tag where
-  toJSON (Tag id name _) = object [ "id" .= name
+  toJSON (Tag id name _) = object [ "id"   .= name
                                   , "name" .= name
                                   ]

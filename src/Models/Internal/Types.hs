@@ -38,7 +38,7 @@ class MongoDBPersistent a where
            -> m a  -- ^ saved model with id.
   mongoInsert x = do
     res <- eitherWithDB $ DB.insert (mongoColl x) (toMongoDoc x)
-    either failureToUE (return $ mongoInsertId x) res
+    either failureToUE (return . (mongoInsertId x)) res
   
   -- | Update ID field of model after insert to mongoDB successfully.
   -- 

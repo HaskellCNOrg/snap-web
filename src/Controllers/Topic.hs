@@ -118,8 +118,7 @@ renderTopicDetailPage result view = renderDfPageSplices
 
 ------------------------------------------------------------------------------
                     
--- | Edit a topic.
--- 
+-- | Open 'Edit a topic' page.
 -- 
 editTopicH :: AppHandler ()
 editTopicH = withAuthUser $ do
@@ -132,6 +131,8 @@ toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
     where toEditingPage t = runForm "edit-topic-form" (topicEditForm t) >>= (toTopicFormPage . fst)
 
 
+-- | Save the edit to a topic.
+--
 saveTopicH :: AppHandler ()
 saveTopicH = withAuthUser $ do
                  (view, result) <- runForm "edit-topic-form" topicForm
@@ -175,7 +176,6 @@ topicVoToNewTopic tv author = do
              }
 
 -- | Populate change to a existing @Topic@ from topicVo
---   FIXME: may update by other users, e.g. Administrator user.
 -- 
 topicVoToTopic :: TopicVo -> MT.Topic -> IO MT.Topic
 topicVoToTopic tv topic = do

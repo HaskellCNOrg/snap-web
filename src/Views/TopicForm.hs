@@ -19,6 +19,7 @@ data TopicVo = TopicVo
                { title   :: T.Text
                , content :: T.Text
                , topicId :: T.Text
+               , topicTags :: [T.Text]
                } deriving (Show)
 
 
@@ -29,6 +30,7 @@ topicForm = TopicVo
     <$> "title"    .: titleValidation (text Nothing)
     <*> "content"  .: contentValidation (text Nothing)
     <*> "tid"      .: text Nothing
+    <*> "tags"     .: toList (text Nothing)
 
 -- | Render a form base on exists @Topic@ for editing.
 -- 
@@ -37,13 +39,18 @@ topicEditForm t = TopicVo
     <$> "title"    .: titleValidation (text $ Just $ _title t)
     <*> "content"  .: contentValidation (text $ Just $ _content t)
     <*> "tid"      .: checkRequired "Fatal error happened.(tid is required)" (text $ fmap sToText (_topicId t))
+    <*> "tags"     .: toList (text Nothing)
 
+toList :: Monad m => Form Text m Text -> Form Text m [Text]
+toList = fmap (flip (:) [])
 
--- | FIXME: is it possible doing in Monad?
+-- | Topic Title Validation. (Required + minlength 5)
 -- 
 titleValidation :: Monad m => Form Text m Text -> Form Text m Text
 titleValidation = checkMinLength 5 . checkRequired "title is required"
 
+-- | Topic Content Validation. (Required + minlength 10)
+-- 
 contentValidation :: Monad m => Form Text m Text -> Form Text m Text
 contentValidation = checkMinLength 10 . checkRequired "content is required"
 
