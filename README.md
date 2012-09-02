@@ -2,7 +2,7 @@ online demo: <http://demo.haskellcn.org>
 
 ## Travis CI
 
-- [![Master](https://secure.travis-ci.org/HaskellCNOrg/a.haskellcn.png?branch=master)](http://travis-ci.org/HaskellCNOrg/a.haskellcn)
+- [![Master](https://secure.travis-ci.org/HaskellCNOrg/snap-web)](http://travis-ci.org/HaskellCNOrg/snap-web)
 
 ## Features
 ### 0.1
@@ -20,13 +20,13 @@ online demo: <http://demo.haskellcn.org>
 
 0. Install MongoDB
    
-1. Install a.haskell.cn
+1. Install snap-web
 
-```
-git clone git://github.com/HaskellCNOrg/a.haskellcn.git
-cd a.haskellcn
-make init bp
-```
+  ```
+  git clone git://github.com/HaskellCNOrg/snap-web.git
+  cd snap-web
+  make init bp
+  ```
 
 2. Open browser to <http://localhost:9900>
 
@@ -34,7 +34,7 @@ make init bp
 
 0. Assume have done all steps in Installation section
 
-1. cd a.haskellcn
+1. cd snap-web
 
 2. make create-site 
 
@@ -45,12 +45,9 @@ make init bp
 ## Notes
 
 1. Customization files
-
-- `data/env.cfg`, which has config that not going to be shared
-- `data/main.cfg`
-- `data/message-*.cfg`
-
-2. Is it better to specify version of dependency rather than range?
+  - `prod.cfg`, `devel.cfg`
+  - `data/main.cfg`
+  - `data/message-*.cfg`
 
 ## License
 
