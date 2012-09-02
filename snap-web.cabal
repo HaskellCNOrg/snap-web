@@ -1,6 +1,6 @@
-Name:                ahaskellcnorg
+Name:                Snap-Web
 Version:             0.2
-Synopsis:            haskellcn-community
+Synopsis:            snap web
 Description:         A light weight forum
 License:             AllRightsReserved
 Author:              Haisheng,Wu
@@ -14,7 +14,7 @@ Homepage:            https://github.com/HaskellCNOrg
 
 Source-Repository head
   Type:     git
-  Location: git://github.com/HaskellCNOrg/a.haskellcn.git
+  Location: git://github.com/HaskellCNOrg/snap-web.git
 
 Flag development
   Description: Whether to build the server in development (interpreted) mode
