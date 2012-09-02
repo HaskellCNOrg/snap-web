@@ -1,3 +1,8 @@
 language: haskell
 notifications:
   email: false
+
+# brnach whitelist
+branches:
+  only:
+    - branch/0.2
