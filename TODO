@@ -35,9 +35,11 @@
 
 
 - [ ] Tag allow user add tag on the fly when post topic
-    - ? Instead of relationship collection, how about just a array field of Topic collection.
+    - [X] Instead of relationship collection, how about just a array field of Topic collection.
     - [X] save tags at create / edit topic
     - [ ] list topics per tag
+    - [ ] Batch Creation?
+- [ ] Logging
 - [ ] oauth
 - [ ] i18n for Digestive-Form validation message.
 - [ ] Why not use "drop down window" for signin and signup ?

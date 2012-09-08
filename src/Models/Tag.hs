@@ -104,10 +104,10 @@ findOneTag :: ObjectId -> AppHandler Tag
 findOneTag oid = mongoFindOne $ emptyTag { _tagId = Just oid }
 
 findSomeTags :: [ObjectId] -> AppHandler [Tag]
-findSomeTags = mongoFindSome emptyTag
+findSomeTags = mongoFindIds emptyTag
 
 -- | FIXME: how to transform between Text and Internal.Text
 --          therefore do not need convert text to string.
 --
 findSomeTagsName :: [Text] -> AppHandler [Tag]
-findSomeTagsName = mongoFindSomeBy emptyTag "name" . map textToS
+findSomeTagsName = mongoFindSomeBy "name" emptyTag . map textToS

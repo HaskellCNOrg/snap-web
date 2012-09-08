@@ -41,6 +41,7 @@ class MongoDBPersistent a where
                 -> Value  -- ^ return value after mongoDB.insert, should be a ObjectID.
                 -> a      -- ^ updated data with ID filed get updated.
   
+
 -- | FIXME: Insert ID after save successfully. @see Topic.hs: 51
 -- | Simple MongoDB Save Operation 
 -- 
@@ -49,6 +50,7 @@ mongoInsert :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a
          -> m a  -- ^ saved model with id.
 mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
                 >>= either failureToUE (return . mongoInsertId x)
+
 
 -- | Fetch All items in the collection
 -- 
@@ -61,6 +63,7 @@ mongoFindAll x  =
   eitherWithDB (rest =<< find (select [] (mongoColl x)))
   >>= liftIO . mapM fromMongoDoc . either (const []) id
 
+
 -- | Find One item.
 --
 mongoFindOne :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
@@ -70,39 +73,34 @@ mongoFindOne x =
   eitherWithDB (fetch (select ("_id" =? mongoGetId x) (mongoColl x)))
   >>= either failureToUE (liftIO . fromMongoDoc)
 
+
 -- | Find some via list of IDs.
 --
-mongoFindSome :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+mongoFindIds :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
                  => a
                  -> [ObjectId] 
                  -> m [a]
-mongoFindSome _ [] = return []
-mongoFindSome x ids = do
-    let collect = mongoColl x
-        selIn = selectIn ids
-        sel = select [ "_id" =: selIn ] collect
-    eitherWithDB $ rest =<< find sel
-    >>= liftIO . mapM fromMongoDoc . either (const []) id
+mongoFindIds = mongoFindSomeBy "_id"
     
+
 -- | Find some via list of certain column name.
 --   MAYBE: this turns out to be complicated.
 --
 mongoFindSomeBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, Val b)
-                 => a
-                 -> Label     -- ^ Column name
+                 => Label     -- ^ Column name
+                 -> a
                  -> [b]       -- ^ List of values
                  -> m [a]
 mongoFindSomeBy _ _ [] = return []
-mongoFindSomeBy x l xs = do
+mongoFindSomeBy l x xs = do
     let collect = mongoColl x
         selIn = selectIn xs
         sel = select [ l =: selIn ] collect
     eitherWithDB $ rest =<< find sel
     >>= liftIO . mapM fromMongoDoc . either (const []) id
 
+
 -- | Prepare "$in" statement for query.
 --
 selectIn :: Val a => [a] -> Document
 selectIn xs = ["$in" =: xs]
-
--- findSomeByIds; findSomeBy
