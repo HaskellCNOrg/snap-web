@@ -18,8 +18,9 @@ import           Models.Internal.Exception
 -- 
 -- 
 class MongoDBPersistent a where
-  -- | Schema name
-  --   Implement me like `getSchemaP _ = u "abc"`
+  
+  -- | Schema name. Implement me like `getSchemaP _ = u "abc"`
+  --
   mongoColl :: a -> Collection
   
   -- | Transform Data to MongoDB document type
@@ -34,51 +35,49 @@ class MongoDBPersistent a where
   -- 
   mongoGetId :: a -> Maybe ObjectId
   
-  -- DB Operations --
-  
-  -- | FIXME: Insert ID after save successfully. @see Topic.hs: 51
-  -- | Simple MongoDB Save Operation 
-  -- 
-  mongoInsert :: (MonadIO m, MonadState app m, HasMongoDB app) 
-           => a    -- ^ new model that will be save
-           -> m a  -- ^ saved model with id.
-  mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
-                  >>= either failureToUE (return . mongoInsertId x)
-  
   -- | Update ID field of model after insert to mongoDB successfully.
   -- 
   mongoInsertId :: a      -- ^ original data that about to be save.
                 -> Value  -- ^ return value after mongoDB.insert, should be a ObjectID.
                 -> a      -- ^ updated data with ID filed get updated.
   
-  -- | Fetch All items in the collection
-  -- 
-  -- WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
-  -- 
-  mongoFindAll :: (MonadIO m, MonadState app m, HasMongoDB app)
-                  => a       -- ^ an empty model. (work around for the concern below.
-                  -> m [a]   -- ^ list of model data that has been retrieved.
-  mongoFindAll x  = 
-    eitherWithDB (rest =<< find (select [] (mongoColl x)))
-    >>= liftIO . mapM fromMongoDoc . either (const []) id
-  
-  -- | Find One item.
-  --
-  mongoFindOne :: (MonadIO m, MonadState app m, HasMongoDB app)
-                  => a
-                  -> m a
-  mongoFindOne x =
-    eitherWithDB (fetch (select ("_id" =? mongoGetId x) (mongoColl x)))
-    >>= either failureToUE (liftIO . fromMongoDoc)
+-- | FIXME: Insert ID after save successfully. @see Topic.hs: 51
+-- | Simple MongoDB Save Operation 
+-- 
+mongoInsert :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a) 
+         => a    -- ^ new model that will be save
+         -> m a  -- ^ saved model with id.
+mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
+                >>= either failureToUE (return . mongoInsertId x)
+
+-- | Fetch All items in the collection
+-- 
+-- WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
+-- 
+mongoFindAll :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+                => a       -- ^ an empty model. (work around for the concern below.
+                -> m [a]   -- ^ list of model data that has been retrieved.
+mongoFindAll x  = 
+  eitherWithDB (rest =<< find (select [] (mongoColl x)))
+  >>= liftIO . mapM fromMongoDoc . either (const []) id
+
+-- | Find One item.
+--
+mongoFindOne :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+                => a
+                -> m a
+mongoFindOne x =
+  eitherWithDB (fetch (select ("_id" =? mongoGetId x) (mongoColl x)))
+  >>= either failureToUE (liftIO . fromMongoDoc)
 
   -- | Find some via list of IDs.
   --
-  mongoFindSome :: (MonadIO m, MonadState app m, HasMongoDB app)
-                   => a
-                   -> [ObjectId] 
-                   -> m [a]
-  mongoFindSome _ [] = return []
-  mongoFindSome x ids = do
+mongoFindSome :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+                 => a
+                 -> [ObjectId] 
+                 -> m [a]
+mongoFindSome _ [] = return []
+mongoFindSome x ids = do
     let collect = mongoColl x
         selIn = selectIn ids
         sel = select [ "_id" =: selIn ] collect
