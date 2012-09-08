@@ -10,6 +10,7 @@ import           Database.MongoDB
 import           Snap
 import           Snap.Snaplet.MongoDB
 import qualified Database.MongoDB as DB
+import           Data.Bson
 
 import           Models.Internal.Exception
 
@@ -55,8 +56,8 @@ class MongoDBPersistent a where
   -- WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
   -- 
   mongoFindAll :: (MonadIO m, MonadState app m, HasMongoDB app)
-             => a       -- ^ an empty model. (work around for the concern below.
-             -> m [a]   -- ^ list of model data that has been retrieved.
+                  => a       -- ^ an empty model. (work around for the concern below.
+                  -> m [a]   -- ^ list of model data that has been retrieved.
   mongoFindAll x  = 
     eitherWithDB (rest =<< find (select [] (mongoColl x)))
     >>= liftIO . mapM fromMongoDoc . either (const []) id
@@ -70,21 +71,22 @@ class MongoDBPersistent a where
     eitherWithDB (fetch (select ("_id" =? mongoGetId x) (mongoColl x)))
     >>= either failureToUE (liftIO . fromMongoDoc)
 
-  -- | FIXME: is able find some via list of IDs???
+  -- | Find some via list of IDs.
   --
   mongoFindSome :: (MonadIO m, MonadState app m, HasMongoDB app)
-                  => a
-                  -> [ObjectId] 
-                  -> m [a]
+                   => a
+                   -> [ObjectId] 
+                   -> m [a]
   mongoFindSome _ [] = return []
-  -- THIS DOESNT WORK YET --
   mongoFindSome x ids = do
     let collect = mongoColl x
-        sel = select [ "_id" =: ids ] collect
+        selIn = selectIn ids
+        sel = select [ "_id" =: selIn ] collect
     eitherWithDB $ rest =<< find sel
     >>= liftIO . mapM fromMongoDoc . either (const []) id
+    
 
-{-
---js =  Javascript [] ("{tags $in" `T.append` (T.pack $ show ids) `T.append` "}")
--}
-
+-- | Prepare "$in" statement for query.
+--
+selectIn :: Val a => [a] -> Document
+selectIn xs = ["$in" =: xs]
