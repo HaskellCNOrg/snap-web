@@ -27,6 +27,13 @@ requiredValidator :: T.Text -> Bool
 requiredValidator = not . T.null . T.strip
 
 
+maxListValidator :: Int                  -- ^ Max
+                    -> (Text -> [Text])  -- ^ Convert to list
+                    -> Text              -- ^ Input text
+                    -> Bool
+maxListValidator n f = (<= n) . length . f
+
+
 ---------------------------------------------------- Validate Action
 
 

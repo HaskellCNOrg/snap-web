@@ -31,7 +31,7 @@ topicForm = TopicVo
     <$> "title"    .: titleValidation (text Nothing)
     <*> "content"  .: contentValidation (text Nothing)
     <*> "tid"      .: text Nothing
-    <*> "tags"     .: text Nothing
+    <*> "tags"     .: tagsValidation (text Nothing)
 
 -- | Render a form base on exists @Topic@ for editing.
 --
@@ -41,7 +41,7 @@ topicEditForm t tags = TopicVo
     <$> "title"    .: titleValidation (text $ Just $ _title t)
     <*> "content"  .: contentValidation (text $ Just $ _content t)
     <*> "tid"      .: checkRequired "Fatal error happened.(tid is required)" (text $ fmap sToText (_topicId t))
-    <*> "tags"     .: tagsToText tags
+    <*> "tags"     .: tagsValidation (tagsToText tags)
 
 -- | combinate tag names to display.
 -- 
@@ -54,8 +54,15 @@ tagsToText = text . Just . T.intercalate " " . map _tagName
 titleValidation :: Monad m => Form Text m Text -> Form Text m Text
 titleValidation = checkMinLength 5 . checkRequired "title is required"
 
+
 -- | Topic Content Validation. (Required + minlength 10)
 -- 
 contentValidation :: Monad m => Form Text m Text -> Form Text m Text
 contentValidation = checkMinLength 10 . checkRequired "content is required"
+
+
+-- | Tags Validation. (no more than 8 tags)
+-- 
+tagsValidation :: Monad m => Form Text m Text -> Form Text m Text
+tagsValidation = check "No more than 8 Tags" (maxListValidator 8 splitOnSpaceOrComma)
 

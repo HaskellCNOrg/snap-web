@@ -106,8 +106,6 @@ findOneTag oid = mongoFindOne $ emptyTag { _tagId = Just oid }
 findSomeTags :: [ObjectId] -> AppHandler [Tag]
 findSomeTags = mongoFindIds emptyTag
 
--- | FIXME: how to transform between Text and Internal.Text
---          therefore do not need convert text to string.
---
 findSomeTagsName :: [Text] -> AppHandler [Tag]
 findSomeTagsName = mongoFindSomeBy "name" emptyTag . map textToS
+  -- `map.textToS` is because T.Text is not a Val instance but Internal.Text and String.
