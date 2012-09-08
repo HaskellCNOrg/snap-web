@@ -70,8 +70,8 @@ mongoFindOne x =
   eitherWithDB (fetch (select ("_id" =? mongoGetId x) (mongoColl x)))
   >>= either failureToUE (liftIO . fromMongoDoc)
 
-  -- | Find some via list of IDs.
-  --
+-- | Find some via list of IDs.
+--
 mongoFindSome :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
                  => a
                  -> [ObjectId] 
@@ -84,8 +84,25 @@ mongoFindSome x ids = do
     eitherWithDB $ rest =<< find sel
     >>= liftIO . mapM fromMongoDoc . either (const []) id
     
+-- | Find some via list of certain column name.
+--   MAYBE: this turns out to be complicated.
+--
+mongoFindSomeBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, Val b)
+                 => a
+                 -> Label     -- ^ Column name
+                 -> [b]       -- ^ List of values
+                 -> m [a]
+mongoFindSomeBy _ _ [] = return []
+mongoFindSomeBy x l xs = do
+    let collect = mongoColl x
+        selIn = selectIn xs
+        sel = select [ l =: selIn ] collect
+    eitherWithDB $ rest =<< find sel
+    >>= liftIO . mapM fromMongoDoc . either (const []) id
 
 -- | Prepare "$in" statement for query.
 --
 selectIn :: Val a => [a] -> Document
 selectIn xs = ["$in" =: xs]
+
+-- findSomeByIds; findSomeBy

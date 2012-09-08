@@ -23,14 +23,12 @@ init:
 	$(CBD) install
 
 conf-dev:
-	$(CBD) --flags="development" configure
+	$(CBD) --flags="development" --enable-tests configure
 
 build-dev: conf-dev
 	$(CBD) build
 
-test:
-	$(CBD) --enable-tests configure
-	$(CBD) build
+test: build-dev
 	$(CBD) test
 
 p:

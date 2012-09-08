@@ -9,6 +9,7 @@ import           Data.Bson
 import           Data.Maybe (catMaybes)
 import           Database.MongoDB
 import           Snap.Snaplet.Auth
+import  Data.Text (Text)
 import qualified Data.Text as T
 
 import           Application
@@ -105,3 +106,8 @@ findOneTag oid = mongoFindOne $ emptyTag { _tagId = Just oid }
 findSomeTags :: [ObjectId] -> AppHandler [Tag]
 findSomeTags = mongoFindSome emptyTag
 
+-- | FIXME: how to transform between Text and Internal.Text
+--          therefore do not need convert text to string.
+--
+findSomeTagsName :: [Text] -> AppHandler [Tag]
+findSomeTagsName = mongoFindSomeBy emptyTag "name" . map textToS
