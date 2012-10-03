@@ -27,8 +27,11 @@ import           Views.Utils
 --  /tags -> get all tags
 --
 routes :: [(BS.ByteString, Handler App App ())]
-routes =  [ ("/tags",  Snap.method GET getTags)
+routes =  [ ("/tags",  Snap.method GET getTagsH)
           ]
+
+tagIdParam :: BS.ByteString
+tagIdParam = "tagid"
 
 ------------------------------------------------------------------------------
 
@@ -36,9 +39,9 @@ routes =  [ ("/tags",  Snap.method GET getTags)
 --
 -- MAYBE: 1. if content-tye is not json, return empty
 --
-getTags :: AppHandler ()
-getTags = findAllTags
-          >>= toJSONResponse
+getTagsH :: AppHandler ()
+getTagsH = findAllTags
+           >>= toJSONResponse
 
 ------------------------------------------------------------------------------
 
