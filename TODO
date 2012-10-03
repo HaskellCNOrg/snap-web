@@ -39,12 +39,11 @@
     - [X] save tags at create / edit topic
     - [ ] list topics per tag
     - [ ] Batch Creation?
-- [ ] Logging
+    - [ ] style for tag input box
 - [ ] oauth
 - [ ] Why not use "drop down window" for signin and signup ?
 - [ ] update i18n msg file: use nested config
 - [ ] Data Migration.
-- [ ] i18n for Digestive-Form validation message.
 
 - [ ] full pandoc support?
   - lbs support
@@ -53,6 +52,7 @@
 
 
       
+- [ ] i18n for Digestive-Form validation message.
 - [ ] User be able to save a topic as favoriate.
 - [ ] Message to user when new comments
 - [ ] Snaplet-Admin
@@ -62,6 +62,8 @@
   - delete comment/reply
 
 
+
+- [ ] Logging
 - [ ] show person score like stackoverflow
 - [ ] comments pagination
 - [ ] Category is predifined.
