@@ -27,7 +27,7 @@ paginationHandler cp xs = do
       pageNumberList = [1..pageCount']
       pageItems      = sliceForPage cp' pageSize xs
       pageSplice     = paginationSplice cp' pageNumberList
-      startIndex     = 1 + pageSize * (fromIntegral (cp' - 1))
+      startIndex     = 1 + pageSize * fromIntegral (cp' - 1)
   return (startIndex, pageItems, pageSplice)
 
 getPageSize :: AppHandler Int

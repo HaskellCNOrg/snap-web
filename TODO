@@ -33,16 +33,17 @@
       a fix at private branch.
 
 
-
-- [ ] Tag allow user add tag on the fly when post topic
+      
+- [-] Tag allow user add tag on the fly when post topic
     - [X] Instead of relationship collection, how about just a array field of Topic collection.
     - [X] save tags at create / edit topic
-    - [ ] list topics per tag
+    - [X] list topics per tag
     - [ ] Batch Creation?
     - [ ] style for tag input box
+    - [ ] ISSUE: pagination at "topics list per tag" page
 - [ ] oauth
-- [ ] Why not use "drop down window" for signin and signup ?
-- [ ] update i18n msg file: use nested config
+- [X] 404 page
+- [X] update i18n msg file: use nested config
 - [ ] Data Migration.
 
 - [ ] full pandoc support?
@@ -70,10 +71,11 @@
 - [ ] sub folders for tpl?
 - [ ] JS markdown parse is diff with pandoc.
 - [ ] Page shortcuts. JIRA!
-- [/] whether POST action successfully or not, it is likely to finish it with a redirection,
+- (/) whether POST action successfully or not, it is likely to finish it with a redirection,
        which means TWO requests to user, isn't it overload??
 - [ ] mail integration via email-postmark (active, reset, etc..)
 
+- [ ] How about use "drop down window" for signin and signup ?
 
 * * * * *
 
