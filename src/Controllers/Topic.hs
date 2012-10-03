@@ -17,7 +17,7 @@ import           Data.Time
 import           Snap.Core
 import qualified Snap.Core             as Snap
 import           Snap.Snaplet
-import Snap.Snaplet.Heist
+import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
 import           Text.Templating.Heist
@@ -131,7 +131,7 @@ renderTopicDetailPage result view = renderDfPageSplices
 ------------------------------------------------------------------------------
 
 -- | View topics per particular tag
--- 
+--
 
 viewTopicsByTagH :: AppHandler ()
 viewTopicsByTagH = do

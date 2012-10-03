@@ -1,5 +1,6 @@
 PROG_PREV = ./dist/build/ahaskellcnorg/ahaskellcnorg
 EXTRA_TEST_LIB = ./dist/build/ahaskellcnorg/ahaskellcnorg-tmp
+STYLE=stylish-haskell
 
 DIST=dist
 SITE=_site
@@ -13,6 +14,7 @@ clean:
 
 hlint:
 	hlint src/ tests/ --report=$(DIST)/hlint.html
+	$(STYLE) -i src/**/*.hs
 
 ###########################
 ## DEVELOPMENT

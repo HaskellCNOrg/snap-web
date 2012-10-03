@@ -11,7 +11,7 @@ import           Text.Templating.Heist
 
 import           Application
 
-import           Models.Topic (findAllTopic)
+import           Models.Topic          (findAllTopic)
 import           Views.TopicSplices
 import           Views.Utils
 

@@ -17,11 +17,10 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 
 import           Application
-import           Models.Internal.Types
 import           Models.Exception
+import           Models.Internal.Types
 import           Models.Utils
 
---import           Control.Monad.Trans
 
 -- |
 --
@@ -44,7 +43,7 @@ getTopicId = objectIdToText . _topicId
 emptyTopic :: AppHandler Topic
 emptyTopic = do
   oid <- liftIO genObjectId
-  let t = timestamp oid         
+  let t = timestamp oid
   return $ Topic Nothing "" "" oid t t Nothing
 
 --------------------------------------------------------------------------------
@@ -99,29 +98,18 @@ topicFromDocumentOrThrow d = case parseEither documentToTopic d of
 -- CRUD
 --------------------------------------------------------------------------------
 
-------------------------------------------------------------------------------
 
 -- | create a new topic.
 --
 createNewTopic ::  Topic -> AppHandler Topic
 createNewTopic = mongoInsert
 
---    res <- eitherWithDB $ DB.insert topicCollection $ topicToDocument topic
---    either failureToUE (return . insertId') res
---  where insertId' x = topic { _topicId = BSON.cast' x}
 
 -- | save a new topic.
---   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
---
---   FIXME: 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
---          2. why have createNewTopic and saveTopic?
 --
 saveTopic :: Topic -> AppHandler Topic
-saveTopic topic = do
-    res <- eitherWithDB $ DB.save topicCollection $ topicToDocument topic
-    either failureToUE (const $ return topic) res
+saveTopic = mongoSave
 
-------------------------------------------------------------------------------
 
 -- | Find One Topic
 --
@@ -130,13 +118,12 @@ findOneTopic oid = do
   et <- emptyTopic
   mongoFindById $ et { _topicId = Just oid }
 
-------------------------------------------------------------------------------
 
 -- | Find All Topic.
 --
 findAllTopic :: AppHandler [Topic]
 findAllTopic  = findTopicGeneric []
-    
+
 
 -- | Find topic per tag.
 --
@@ -152,7 +139,7 @@ findTopicGeneric se = do
   et <- emptyTopic
   let topicSelection = select se topicCollection
   mongoFindAllBy et (topicSelection {sort = sortByCreateAtDesc})
-  
+
 
 sortByCreateAtDesc :: Order
 sortByCreateAtDesc = [ "createAt" =: -1 ]

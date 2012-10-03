@@ -15,6 +15,9 @@ import           Snap.Snaplet.MongoDB
 
 import           Models.Internal.Exception
 
+
+--------------------------------------------------------------------------------
+
 -- | A simple generic MongoDB Persistent class.
 --
 --
@@ -43,14 +46,30 @@ class MongoDBPersistent a where
                 -> a      -- ^ updated data with ID filed get updated.
 
 
--- | FIXME: Insert ID after save successfully. @see Topic.hs: 51
--- | Simple MongoDB Save Operation
+--------------------------------------------------------------------------------
+
+
+-- | Simple MongoDB Insert Operation
 --
 mongoInsert :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
-         => a    -- ^ new model that will be save
-         -> m a  -- ^ saved model with id.
+               => a    -- ^ new model that will be save
+               -> m a  -- ^ saved model with id.
 mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
                 >>= either failureToUE (return . mongoInsertId x)
+
+
+-- | Simple MongoDB Save Operation
+--
+-- meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
+--
+-- MAYBE:
+-- 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
+-- 
+mongoSave :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+             => a    -- ^ new model that will be save
+             -> m a  -- ^ saved model with id.
+mongoSave x = eitherWithDB (DB.save (mongoColl x) (toMongoDoc x))
+              >>= either failureToUE (const $ return x)
 
 
 -- | Fetch All items in the collection
@@ -63,6 +82,7 @@ mongoFindAll :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent 
 mongoFindAll x  =
   eitherWithDB (rest =<< find (select [] (mongoColl x)))
   >>= liftIO . mapM fromMongoDoc . either (const []) id
+
 
 -- | Fetch All items in the collection per user defined selector(query).
 --
