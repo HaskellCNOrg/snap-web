@@ -52,10 +52,11 @@ allTopicsSplice :: Integral a
                    -> Splice AppHandler
 allTopicsSplice topics page = do
     let t = filter (isJust . _topicId) topics
-    (xs, splice) <- lift $ paginationHandler currentPage' t
+    (i, xs, splice) <- lift $ paginationHandler currentPage' t
     runChildrenWith
       [ ("allTopics", mapSplices renderTopicSimple xs)
-      , ("pagination", splice)]
+      , ("pagination", splice)
+      , ("startIndex", textSplice $ sToText i) ]
     where total' = fromIntegral . length
           currentPage' :: Integral a => a
           currentPage' = maybe 1 fromIntegral page

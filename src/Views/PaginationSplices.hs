@@ -17,7 +17,7 @@ import           Models.Utils
 paginationHandler :: (Eq b, Integral a, Show a)
                      => a        -- ^ Current Page
                      -> [b]      -- ^ Total items
-                     -> AppHandler ([b], Splice AppHandler) -- ^ items for current page and page splice
+                     -> AppHandler (Int, [b], Splice AppHandler) -- ^ items for current page and page splice
 paginationHandler cp xs = do
   pageSize <- getPageSize
   let total          = length xs
@@ -27,7 +27,8 @@ paginationHandler cp xs = do
       pageNumberList = [1..pageCount']
       pageItems      = sliceForPage cp' pageSize xs
       pageSplice     = paginationSplice cp' pageNumberList
-  return (pageItems, pageSplice)
+      startIndex     = 1 + pageSize * (fromIntegral (cp' - 1))
+  return (startIndex, pageItems, pageSplice)
 
 getPageSize :: AppHandler Int
 getPageSize = lookupConfigDefault "pagesize" 20

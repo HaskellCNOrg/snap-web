@@ -7,7 +7,7 @@
       <!-- if count of topics > 0 -->
       <section class="topicList">
         <header>
-          <h2><i18n name="topic.list.header" /></h2>
+          <h2><i18n name="topic.listHeader" /></h2>
         </header>
 
         <ifNoTopics>
@@ -15,11 +15,11 @@
         </ifNoTopics>
 
         <homeTopics>
-          <ul>
+          <ol start="${startIndex}">
             <allTopics>
               <li><a href="/topic/${topicId}"><topicTitle/></a> <p class="author">Submited by <topicAuthor/> at <topicCreateAt /></p></li>
             </allTopics>
-          </ul>
+          </ol>
           <div class="pagination">
             <pagination />
           </div>
