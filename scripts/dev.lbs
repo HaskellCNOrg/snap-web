@@ -23,3 +23,19 @@ tags    :: [T.Text]
 --
 --generalRead :: Monad a => (Maybe a -> a) -> Formlet v m a
 --generalRead f =  Pure Nothing . Text . f
+
+
+~~~~~
+
+
+ <!-- FIXME: show me when user login
+  
+  <ifLoggedIn>  
+    <a href="#">Share</a>
+    <a href="/favorite">Save</a>
+  </ifLoggedIn>
+  
+  -->
+
+
+~~~~

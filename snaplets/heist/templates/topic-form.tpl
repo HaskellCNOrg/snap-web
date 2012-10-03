@@ -12,14 +12,14 @@
     </dfIfChildErrors>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="title"><i18n name="topic-title"/></dfLabel>
+      <dfLabel class="control-label" ref="title"><i18n name="topic.title"/></dfLabel>
       <div class="controls">
         <dfInputText class="input-xylarge" ref="title" autofocus />
       </div>
     </div>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="content" for="wmd-input"><i18n name="topic-content"/></dfLabel>
+      <dfLabel class="control-label" ref="content" for="wmd-input"><i18n name="topic.content"/></dfLabel>
 
       <div class="controls">
         <div class="wmd-panel">
@@ -31,7 +31,7 @@
     </div>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="tags"><i18n name="topic-tag"/></dfLabel>
+      <dfLabel class="control-label" ref="tags"><i18n name="topic.tag"/></dfLabel>
       <div class="controls">
         <dfInputText class="input-xylarge" ref="tags" />
       </div>
@@ -40,7 +40,7 @@
     <dfInputHidden ref="tid" />
 
     <div class="form-actions">
-        <i18n name="topic-submit">
+        <i18n name="topic.submit">
           <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
         </i18n>
     </div>

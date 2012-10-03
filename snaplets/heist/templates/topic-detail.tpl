@@ -31,13 +31,13 @@
     <ifLoggedIn>
       <topicEditable>
         <div name="topicToolbar" class="clear">
-            <a href="/topicput/${topicId}"><i18n name="site-edit" /></a>
+            <a href="/topicput/${topicId}"><i18n name="site.edit" /></a>
         </div>
       </topicEditable>
     </ifLoggedIn>
 
     <div class="replyPerTopic">
-      <h3><i18n name="topic-answers" /></h3>
+      <h3><i18n name="topic.answers" /></h3>
       <replyPerTopic>
         <section class="reply">
           <p><replyContent/></p>
@@ -50,7 +50,7 @@
           <ifLoggedIn>
             <!-- JS impl in @initReplyToReplyBtn@ -->
             <p>
-              <a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="topic-add-reply" /></a>
+              <a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
             </p>
             <!-- <a href="/topic/${topicId}/${replyId}/delete/">Delete</a> -->
           </ifLoggedIn>
@@ -76,14 +76,3 @@
   </bind>
   
 </apply>
-
-
-
- <!-- FIXME: show me when user login
-  
-  <ifLoggedIn>  
-    <a href="#">Share</a>
-    <a href="/favorite">Save</a>
-  </ifLoggedIn>
-  
-  -->

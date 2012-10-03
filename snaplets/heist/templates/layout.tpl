@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><i18n name="site-name" /></title>
+    <title><i18n name="site.name" /></title>
     <meta name="author" content="freizl"/>
     <meta name="description" content="haskell chinese community"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

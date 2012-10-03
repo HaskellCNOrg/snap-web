@@ -13,24 +13,24 @@
     <loginErrors />
 
     <fieldset>
-      <legend><i18n name="user-signin" /></legend>
+      <legend><i18n name="user.signin" /></legend>
 
       <div class="control-group">
-        <dfLabel class="control-label" ref="loginName"><i18n name="user-username"/></dfLabel>
+        <dfLabel class="control-label" ref="loginName"><i18n name="user.userName"/></dfLabel>
         <div class="controls">
           <dfInputText class="input-large" ref="loginName" type="email" required autofocus placeholder="me@example.com" />
         </div>
       </div>
       
       <div class="control-group">
-        <dfLabel class="control-label" ref="password"><i18n name="user-password"/></dfLabel>
+        <dfLabel class="control-label" ref="password"><i18n name="user.password"/></dfLabel>
         <div class="controls">
           <dfInputPassword class="input-large" ref="password" required />
         </div>
       </div>
       
       <div class="form-actions">
-        <i18n name="user-login">
+        <i18n name="user.login">
           <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
         </i18n>
       </div>

@@ -22,21 +22,21 @@
         <legend><userDisplayName/></legend>
 
       <div class="control-group">
-        <label class="control-label"><i18n name="user-email" /></label>
+        <label class="control-label"><i18n name="user.email" /></label>
         <div class="controls">
           <span class="input-xlarge uneditable-input"><userEmail/></span>
         </div>
       </div>
 
       <div class="control-group">
-        <label class="control-label"><i18n name="user-display-name" /></label>
+        <label class="control-label"><i18n name="user.displayName" /></label>
         <div class="controls">
           <span class="input-xlarge uneditable-input"><userDisplayName/></span>
         </div>
       </div>
 
       <div class="control-group">
-        <label class="control-label"><i18n name="user-site-url" /></label>
+        <label class="control-label"><i18n name="user.siteUrl" /></label>
         <div class="controls">
           <span class="input-xlarge uneditable-input"><userSite/></span>
         </div>
@@ -47,11 +47,11 @@
     </form>
 
     
-    <userLastLoginAt><p><i18n name="user-last-login" />: <lastLoginTime/></p></userLastLoginAt>
-    <p><i18n name="user-created-since" />: <userCreatedAt/></p>
+    <userLastLoginAt><p><i18n name="user.lastLogin" />: <lastLoginTime/></p></userLastLoginAt>
+    <p><i18n name="user.createdSince" />: <userCreatedAt/></p>
 
     <userEditable>
-    <p><a href="/userput"><i18n name="site-edit" /></a></p>
+    <p><a href="/userput"><i18n name="site.edit" /></a></p>
     </userEditable>
 
   </ifFound>

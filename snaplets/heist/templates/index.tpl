@@ -2,12 +2,12 @@
 
     <div id="content">
 
-      <a class="btn btn-large btn-primary pull-right" href="/topic"><i18n name="topic-new" /></a>
+      <a class="btn btn-large btn-primary pull-right" href="/topic"><i18n name="topic.add" /></a>
 
       <!-- if count of topics > 0 -->
       <section class="topicList">
         <header>
-          <h2><i18n name="topic-list-header" /></h2>
+          <h2><i18n name="topic.list.header" /></h2>
         </header>
 
         <ifNoTopics>
