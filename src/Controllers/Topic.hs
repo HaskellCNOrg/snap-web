@@ -23,6 +23,7 @@ import           Text.Digestive.Snap
 import           Text.Templating.Heist
 
 import           Application
+import           Controllers.Exception (exceptionH)
 import           Controllers.Home      (redirect303)
 import           Controllers.Tag       (saveTags)
 import           Controllers.User      hiding (routes)
@@ -137,7 +138,7 @@ viewTopicsByTagH :: AppHandler ()
 viewTopicsByTagH = do
   tagId <- decodedParamText tagIdParam
   try (findTopicByTag (textToObjectId tagId))
-  >>= either (writeText . showUE) toTopicListPerTagPage
+  >>= either exceptionH toTopicListPerTagPage
 
 toTopicListPerTagPage :: [Topic] -> AppHandler ()
 toTopicListPerTagPage topics = heistLocal (bindSplices $ topicSplices topics Nothing) $ render "index"
