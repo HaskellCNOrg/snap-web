@@ -40,12 +40,16 @@
     - [ ] list topics per tag
     - [ ] Batch Creation?
 - [ ] Logging
-- [ ] lbs support
 - [ ] oauth
-- [ ] i18n for Digestive-Form validation message.
 - [ ] Why not use "drop down window" for signin and signup ?
 - [ ] update i18n msg file: use nested config
 - [ ] Data Migration.
+- [ ] i18n for Digestive-Form validation message.
+
+- [ ] full pandoc support?
+  - lbs support
+  - use pandoc via process(a.k.a command line) like what snap.splices.markdown does.
+  - get ride of markdown.js but preview via server side service?
 
 
       
@@ -53,6 +57,9 @@
 - [ ] Message to user when new comments
 - [ ] Snaplet-Admin
 - [ ] add 'like/dislike' for topic
+- [ ] Deletion
+  - delete topic
+  - delete comment/reply
 
 
 - [ ] show person score like stackoverflow
@@ -60,7 +67,6 @@
 - [ ] Category is predifined.
 - [ ] sub folders for tpl?
 - [ ] JS markdown parse is diff with pandoc.
-- [ ] ? Get ride of pandoc since use it very little
 - [ ] Page shortcuts. JIRA!
 - [/] whether POST action successfully or not, it is likely to finish it with a redirection,
        which means TWO requests to user, isn't it overload??
