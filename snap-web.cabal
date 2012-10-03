@@ -20,7 +20,7 @@ Flag development
   Description: Whether to build the server in development (interpreted) mode
   Default: False
 
-Executable ahaskellcnorg
+Executable snap-web
   hs-source-dirs: src
   main-is: Main.hs
 

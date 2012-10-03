@@ -1,5 +1,6 @@
-PROG_PREV = ./dist/build/ahaskellcnorg/ahaskellcnorg
-EXTRA_TEST_LIB = ./dist/build/ahaskellcnorg/ahaskellcnorg-tmp
+PROG_PREV = ./dist/build/snap-web/snap-web
+PROG_NAME = ./snap-web
+#EXTRA_TEST_LIB = ./dist/build/snap-web/snap-web-tmp
 STYLE=stylish-haskell
 
 DIST=dist
@@ -50,25 +51,22 @@ build:
 
 rebuild: clean build
 
-preview:
-	$(PROG_PREV) -p 9900 @prod
-
-
 ##
 ##       1. create new dir _sites
 ##       2. compress HTML
 ##       3. combine & compress JS; replace related links in templates.
 ##       4. generate main.css via lessc; replace related links in templates.
+##       5. [ ] md5sum
 ## 
 
-markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js
-markdownMergeJS=markdown.js
+markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js markdown.js
+markdownMergeJS=markdown.min.js
 
-create-site: 
+create-site: rebuild
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
 	mkdir -p $(SITE)/static/css
-	cp snaplet.cfg $(SITE)
+	cp devel.cfg $(SITE)/prod.cfg
 	cp -r snaplets data $(SITE)
 	cp -r static/img $(SITE)/static/img
 	cp -r static/js $(SITE)/static/js
@@ -92,6 +90,10 @@ create-site:
 	done
 
 	cp $(PROG_PREV) $(SITE)
+
+
+prod:
+	cd $(SITE) && $(PROG_NAME) -p 9900 @prod
 
 ####################### Doc
 
