@@ -40,7 +40,7 @@
     - [X] list topics per tag
     - [ ] Batch Creation?
     - [ ] style for tag input box
-    - [ ] ISSUE: pagination at "topics list per tag" page
+    - [X] pagination at "topics list per tag" page
 - [ ] oauth
 - [X] 404 page
 - [X] update i18n msg file: use nested config

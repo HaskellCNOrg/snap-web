@@ -136,12 +136,13 @@ renderTopicDetailPage result view = renderDfPageSplices
 
 viewTopicsByTagH :: AppHandler ()
 viewTopicsByTagH = do
-  tagId <- decodedParamText tagIdParam
-  try (findTopicByTag (textToObjectId tagId))
-  >>= either exceptionH toTopicListPerTagPage
+  tagId  <- decodedParamText tagIdParam
+  page   <- decodedParamNum "pagenum"
+  result <- try (findTopicByTag (textToObjectId tagId))
+  either exceptionH (toTopicListPerTagPage page) result
 
-toTopicListPerTagPage :: [Topic] -> AppHandler ()
-toTopicListPerTagPage topics = heistLocal (bindSplices $ topicSplices topics Nothing) $ render "index"
+toTopicListPerTagPage :: Integral a => Maybe a -> [Topic] -> AppHandler ()
+toTopicListPerTagPage page topics = heistLocal (bindSplices $ topicSplices topics page) $ render "index"
 
 
 ------------------------------------------------------------------------------

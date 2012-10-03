@@ -2,7 +2,9 @@
 
 module Views.PaginationSplices where
 
+import qualified Data.ByteString           as BS
 import qualified Data.Text                 as T
+import           Snap
 import           Snap.Snaplet.Environments
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
@@ -20,28 +22,39 @@ paginationHandler :: (Eq b, Integral a, Show a)
                      -> AppHandler (Int, [b], Splice AppHandler) -- ^ items for current page and page splice
 paginationHandler cp xs = do
   pageSize <- getPageSize
+  req <- getRequest
+  let uri = requestURL (rqURI req)
+--  liftIO $ print $
   let total          = length xs
       sDouble        = fromIntegral pageSize
       pageCount'     = ceiling $ fromIntegral total / sDouble
       cp'            = fixCurrentPage cp pageCount'
       pageNumberList = [1..pageCount']
       pageItems      = sliceForPage cp' pageSize xs
-      pageSplice     = paginationSplice cp' pageNumberList
+      pageSplice     = return [paginationNode cp' pageNumberList (urlGen uri)]
       startIndex     = 1 + pageSize * fromIntegral (cp' - 1)
   return (startIndex, pageItems, pageSplice)
 
 getPageSize :: AppHandler Int
 getPageSize = lookupConfigDefault "pagesize" 20
 
+-- | Request URL could be "/", "/tags/xxx", "/?pagenum=2", etc.
+--   Fetch the URI regardless of parameter via '?'.
+--
+requestURL :: BS.ByteString -> T.Text
+requestURL = T.takeWhile (/= '?') . bsToText
+
 ----------------------------------------------------------------------------
 
 -- | Splice for display pagination elements.
 --
-paginationSplice :: (Show a, Integral a)
-                    => a                 -- ^ Current Page
-                    -> [a]               -- ^ Total size
-                    -> Splice AppHandler
-paginationSplice cp xs = return [paginationNode cp xs]
+-- paginationSplice :: (Show a, Integral a)
+--                    => a                   -- ^ Current Page
+--                    -> [a]                 -- ^ Total size
+--                    -> (T.Text -> T.Text)  -- ^ pagination url generator
+--                    -> Splice AppHandler
+-- paginationSplice cp xs gen = return [paginationNode cp xs gen]
+
 
 -- | Generate HTML nodes for topic pagination.
 --   Elements created here because of not sure how to set up "active" class.
@@ -49,9 +62,10 @@ paginationSplice cp xs = return [paginationNode cp xs]
 paginationNode :: (Show a, Integral a)
                => a             -- ^ Current Page
                -> [a]           -- ^ Page Number List
+               -> (T.Text -> T.Text)  -- ^ pagination url generator
                -> X.Node        -- ^ HTML Nodes for page numbers
-paginationNode _ [] = X.Comment "insufficient data for pagination"
-paginationNode i xs =
+paginationNode _ [] _ = X.Comment "insufficient data for pagination"
+paginationNode i xs gen =
     let cp = sToText i
         doNode = X.Element "ul" [] lis
         lis = map (f . sToText) xs
@@ -60,15 +74,17 @@ paginationNode i xs =
           | otherwise = X.Element "li" [] [a n]
         a n
           | cp == n   = X.Element "a" [] [X.TextNode n]
-          | otherwise = X.Element "a" [("href", topicPageLink n)] [X.TextNode n]
+          | otherwise = X.Element "a" [("href", gen n)] [X.TextNode n]
     in doNode
 
 
-topicPageLink :: T.Text -> T.Text
-topicPageLink = T.append topicHref
+-- | Create URL generator base on given root url
+--
+urlGen :: T.Text -> T.Text -> T.Text
+urlGen t = T.append (t `T.append` topicHref)
 
 topicHref :: T.Text
-topicHref = "/?pagenum="
+topicHref = "?pagenum="
 
 
 ---------------------------------------------------------------
