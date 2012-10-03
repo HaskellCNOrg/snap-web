@@ -28,10 +28,9 @@
 
     </article>
 
-    <!-- FIXME: Show me when has authorization.-->
     <ifLoggedIn>
       <topicEditable>
-        <div name="topicToolbar">
+        <div name="topicToolbar" class="clear">
             <a href="/topicput/${topicId}"><i18n name="site-edit" /></a>
         </div>
       </topicEditable>
