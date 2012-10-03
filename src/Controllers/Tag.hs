@@ -30,9 +30,6 @@ routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/tags",  Snap.method GET getTagsH)
           ]
 
-tagIdParam :: BS.ByteString
-tagIdParam = "tagid"
-
 ------------------------------------------------------------------------------
 
 -- | Fetch all tags

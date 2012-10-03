@@ -9,6 +9,11 @@
         <header>
           <h2><i18n name="topic-list-header" /></h2>
         </header>
+
+        <ifNoTopics>
+          <p><i18n name="topic.empty" /></p>
+        </ifNoTopics>
+
         <homeTopics>
           <ul>
             <allTopics>

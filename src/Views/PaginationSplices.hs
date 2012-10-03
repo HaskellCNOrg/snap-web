@@ -15,11 +15,10 @@ import           Models.Utils
 -- | Select items for particular page base on Page Size, Current Page
 --
 paginationHandler :: (Eq b, Integral a, Show a)
-                     => Double   -- ^ Page Size
-                     -> a        -- ^ Current Page
+                     => a        -- ^ Current Page
                      -> [b]      -- ^ Total items
                      -> AppHandler ([b], Splice AppHandler) -- ^ items for current page and page splice
-paginationHandler s cp xs = do
+paginationHandler cp xs = do
   pageSize <- getPageSize
   let total          = length xs
       sDouble        = fromIntegral pageSize

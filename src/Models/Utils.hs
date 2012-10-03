@@ -57,6 +57,8 @@ bsToText = T.decodeUtf8
 
 ------------------------------------------------------------------------------
 
+-- | NOTE: exception "no parse" if failed to convert.
+--
 textToObjectId :: T.Text -> ObjectId
 textToObjectId = read . textToS
 

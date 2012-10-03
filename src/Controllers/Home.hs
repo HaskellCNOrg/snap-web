@@ -11,6 +11,7 @@ import           Text.Templating.Heist
 
 import           Application
 
+import           Models.Topic (findAllTopic)
 import           Views.TopicSplices
 import           Views.Utils
 
@@ -21,7 +22,8 @@ import           Views.Utils
 index :: Handler App App ()
 index = ifTop $ do
     page <- decodedParamNum "pagenum"
-    heistLocal (bindSplices $ topicSplices page) $ render "index"
+    topics <- findAllTopic
+    heistLocal (bindSplices $ topicSplices topics page) $ render "index"
 
 redirectToHome :: Handler App App ()
 redirectToHome = redirect303 "/"

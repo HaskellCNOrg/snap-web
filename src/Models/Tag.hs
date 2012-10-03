@@ -51,7 +51,7 @@ toTagIds = Just . catMaybes . fmap _tagId
 -- Impl of Persistent Interface
 --------------------------------------------------------------------------------
 
--- Impl of Persistent Interface
+-- Impl
 --
 instance MongoDBPersistent Tag where
   mongoColl _  = tagCollection
@@ -102,11 +102,12 @@ findAllTags :: AppHandler [Tag]
 findAllTags  = mongoFindAll emptyTag
 
 findOneTag :: ObjectId -> AppHandler Tag
-findOneTag oid = mongoFindOne $ emptyTag { _tagId = Just oid }
+findOneTag oid = mongoFindById $ emptyTag { _tagId = Just oid }
 
 findSomeTags :: [ObjectId] -> AppHandler [Tag]
 findSomeTags = mongoFindIds emptyTag
 
 findSomeTagsName :: [Text] -> AppHandler [Tag]
 findSomeTagsName = mongoFindSomeBy "name" emptyTag . map textToS
-  -- `map.textToS` is because T.Text is not a Val instance but Internal.Text and String.
+
+-- `map.textToS` is because T.Text is not a Val instance but Internal.Text and String.

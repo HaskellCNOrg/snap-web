@@ -17,6 +17,7 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 
 import           Application
+import           Models.Internal.Types
 import           Models.Exception
 import           Models.Utils
 
@@ -40,52 +41,22 @@ topicCollection = u "topics"
 getTopicId :: Topic -> T.Text
 getTopicId = objectIdToText . _topicId
 
+emptyTopic :: AppHandler Topic
+emptyTopic = do
+  oid <- liftIO genObjectId
+  let t = timestamp oid         
+  return $ Topic Nothing "" "" oid t t Nothing
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- Impl of Persistent Interface
+--------------------------------------------------------------------------------
 
--- | create a new topic.
---
-createNewTopic ::  Topic -> AppHandler Topic
-createNewTopic topic = do
-    res <- eitherWithDB $ DB.insert topicCollection $ topicToDocument topic
-    either failureToUE (return . insertId') res
-  where insertId' x = topic { _topicId = BSON.cast' x}
-
--- | save a new topic.
---   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
---
---   FIXME: 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
---          2. why have createNewTopic and saveTopi?
---
-saveTopic :: Topic -> AppHandler Topic
-saveTopic topic = do
-    res <- eitherWithDB $ DB.save topicCollection $ topicToDocument topic
-    either failureToUE (const $ return topic) res
-
-------------------------------------------------------------------------------
-
--- | Find One Topic
---
-findOneTopic :: ObjectId -> AppHandler Topic
-findOneTopic oid = do
-    res <- eitherWithDB $ fetch (select [ "_id" =: oid ] topicCollection)
-    either failureToUE (liftIO . topicFromDocumentOrThrow) res
-
-------------------------------------------------------------------------------
-
--- | Find All Topic.
---   FIXME: pagination.
---
-findAllTopic :: AppHandler [Topic]
-findAllTopic  = do
-    let topicSelection = select [] topicCollection
-    xs <- eitherWithDB $ rest =<< find (topicSelection {sort = sortByUpdateAtDesc} )
-    liftIO $ mapM topicFromDocumentOrThrow $ either (const []) id xs
-
-sortByUpdateAtDesc :: Order
-sortByUpdateAtDesc = [ "createAt" =: -1 ]
-
-------------------------------------------------------------------------------
+instance MongoDBPersistent Topic where
+  mongoColl _  = topicCollection
+  toMongoDoc   = topicToDocument
+  fromMongoDoc = topicFromDocumentOrThrow
+  mongoInsertId topic v = topic { _topicId = objectIdFromValue v }
+  mongoGetId = _topicId
 
 -- | Transform @Topic@ to mongoDB document.
 --   Nothing of id mean new topic thus empty "_id" let mongoDB generate objectId.
@@ -123,4 +94,68 @@ topicFromDocumentOrThrow d = case parseEither documentToTopic d of
     Right r -> return r
 
 
+
+--------------------------------------------------------------------------------
+-- CRUD
+--------------------------------------------------------------------------------
+
 ------------------------------------------------------------------------------
+
+-- | create a new topic.
+--
+createNewTopic ::  Topic -> AppHandler Topic
+createNewTopic = mongoInsert
+
+--    res <- eitherWithDB $ DB.insert topicCollection $ topicToDocument topic
+--    either failureToUE (return . insertId') res
+--  where insertId' x = topic { _topicId = BSON.cast' x}
+
+-- | save a new topic.
+--   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
+--
+--   FIXME: 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
+--          2. why have createNewTopic and saveTopic?
+--
+saveTopic :: Topic -> AppHandler Topic
+saveTopic topic = do
+    res <- eitherWithDB $ DB.save topicCollection $ topicToDocument topic
+    either failureToUE (const $ return topic) res
+
+------------------------------------------------------------------------------
+
+-- | Find One Topic
+--
+findOneTopic :: ObjectId -> AppHandler Topic
+findOneTopic oid = do
+  et <- emptyTopic
+  mongoFindById $ et { _topicId = Just oid }
+
+------------------------------------------------------------------------------
+
+-- | Find All Topic.
+--
+findAllTopic :: AppHandler [Topic]
+findAllTopic  = findTopicGeneric []
+    
+
+-- | Find topic per tag.
+--
+findTopicByTag :: ObjectId                   -- ^ Tag ID
+                  -> AppHandler [Topic]
+findTopicByTag tagId = findTopicGeneric  [ "tags" =: tagId ]
+
+
+-- | Even generic find handler
+--
+findTopicGeneric :: Selector -> AppHandler [Topic]
+findTopicGeneric se = do
+  et <- emptyTopic
+  let topicSelection = select se topicCollection
+  mongoFindAllBy et (topicSelection {sort = sortByCreateAtDesc})
+  
+
+sortByCreateAtDesc :: Order
+sortByCreateAtDesc = [ "createAt" =: -1 ]
+
+------------------------------------------------------------------------------
+

@@ -55,7 +55,7 @@ mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
 
 -- | Fetch All items in the collection
 --
--- WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
+-- ?? WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
 --
 mongoFindAll :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
                 => a       -- ^ an empty model. (work around for the concern below.
@@ -64,13 +64,23 @@ mongoFindAll x  =
   eitherWithDB (rest =<< find (select [] (mongoColl x)))
   >>= liftIO . mapM fromMongoDoc . either (const []) id
 
+-- | Fetch All items in the collection per user defined selector(query).
+--
+mongoFindAllBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+                  => a       -- ^ an empty model. (work around for the concern below.
+                  -> Query
+                  -> m [a]   -- ^ list of model data that has been retrieved.
+mongoFindAllBy _ query =
+  eitherWithDB (rest =<< find query)
+  >>= liftIO . mapM fromMongoDoc . either (const []) id
+
 
 -- | Find One item.
 --
-mongoFindOne :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
-                => a
-                -> m a
-mongoFindOne x =
+mongoFindById :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+                 => a
+                 -> m a
+mongoFindById x =
   eitherWithDB (fetch (select ("_id" =? mongoGetId x) (mongoColl x)))
   >>= either failureToUE (liftIO . fromMongoDoc)
 
@@ -89,7 +99,7 @@ mongoFindIds = mongoFindSomeBy "_id"
 --
 mongoFindSomeBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, Val b)
                  => Label     -- ^ Column name
-                 -> a
+                 -> a         -- ^ The Persistent target
                  -> [b]       -- ^ List of values
                  -> m [a]
 mongoFindSomeBy _ _ [] = return []

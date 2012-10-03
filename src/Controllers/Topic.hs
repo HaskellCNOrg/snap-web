@@ -17,6 +17,7 @@ import           Data.Time
 import           Snap.Core
 import qualified Snap.Core             as Snap
 import           Snap.Snaplet
+import Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
 import           Text.Templating.Heist
@@ -39,21 +40,26 @@ import           Views.Utils
 ------------------------------------------------------------------------------
 
 -- | READ: the similarity is a little bit trick because of
---         1. want to separate create and save handler
---         2. action name (topic-form.tpl) is relative path'topic'
---            therefore it could be /topic or /topicput/topic base last URL.
+--         1.(x) want to separate create and save handler
+--         2.(x) action name (topic-form.tpl) is relative path'topic'
+--               therefore it could be /topic or /topicput/topic base last URL.
+--         3. MAYBE: combine with topicput-GET
 --
 routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topic/:topicid", Snap.method GET viewTopicH)    -- view a topic
           , ("/topicput/:topicid", Snap.method GET editTopicH) -- show detail for editing
-          , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes. MAYBE: combine with topicput-GET.
+          , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes.
+          , ("/tag/:tagid",  Snap.method GET viewTopicsByTagH) -- list topic per tag
           ]
 
 ------------------------------------------------------------------------------
 
 topicIdParam :: BS.ByteString
 topicIdParam = "topicid"
+
+tagIdParam :: BS.ByteString
+tagIdParam = "tagid"
 
 redirectTopicDetailPage :: String -> AppHandler ()
 redirectTopicDetailPage tid = redirect303 $ "/topic/" `BS.append` sToBS tid
@@ -108,7 +114,8 @@ viewTopicH :: AppHandler ()
 viewTopicH = do
     tid <- decodedParamMaybe topicIdParam
     try (do when (isNothing tid) (throw (UserException "Fatal: tid not specifed."))
-            findOneTopic (read . bsToS . fromJust $ tid)) >>= toTopicDetailPage
+            findOneTopic (read . bsToS . fromJust $ tid))
+    >>= toTopicDetailPage
 
 toTopicDetailPage :: Either UserException Topic -> AppHandler ()
 toTopicDetailPage result = do (view, _) <- runReplyForm
@@ -119,6 +126,21 @@ renderTopicDetailPage result view = renderDfPageSplices
                                     tplTopicDetail
                                     view
                                     (bindSplices (topicDetailSplices result))
+
+
+------------------------------------------------------------------------------
+
+-- | View topics per particular tag
+-- 
+
+viewTopicsByTagH :: AppHandler ()
+viewTopicsByTagH = do
+  tagId <- decodedParamText tagIdParam
+  try (findTopicByTag (textToObjectId tagId))
+  >>= either (writeText . showUE) toTopicListPerTagPage
+
+toTopicListPerTagPage :: [Topic] -> AppHandler ()
+toTopicListPerTagPage topics = heistLocal (bindSplices $ topicSplices topics Nothing) $ render "index"
 
 
 ------------------------------------------------------------------------------
@@ -135,7 +157,6 @@ toEditTopicPageOr' :: Either UserException Topic -> AppHandler ()
 toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
     where toEditingPage t = do
                             tags <- Tag.findSomeTags (fromMaybe [] $ _topicTags t)
-                            --liftIO $ print tags
                             runForm "edit-topic-form" (topicEditForm t tags)
                             >>= (toTopicFormPage . fst)
 
