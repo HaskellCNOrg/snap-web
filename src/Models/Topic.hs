@@ -83,7 +83,7 @@ findAllTopic  = do
     liftIO $ mapM topicFromDocumentOrThrow $ either (const []) id xs
 
 sortByUpdateAtDesc :: Order
-sortByUpdateAtDesc = [ "updateAt" =: -1 ]
+sortByUpdateAtDesc = [ "createAt" =: -1 ]
 
 ------------------------------------------------------------------------------
 
