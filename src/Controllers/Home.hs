@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Controllers.Home where
 
@@ -10,16 +11,16 @@ import           Text.Templating.Heist
 
 import           Application
 
-import Views.TopicSplices
-import Views.Utils
+import           Views.TopicSplices
+import           Views.Utils
 
 ------------------------------------------------------------------------------
 
 -- | Renders the front page of the sample site.
--- 
+--
 index :: Handler App App ()
 index = ifTop $ do
-    page <- decodedParamNum "pagenum" 
+    page <- decodedParamNum "pagenum"
     heistLocal (bindSplices $ topicSplices page) $ render "index"
 
 redirectToHome :: Handler App App ()

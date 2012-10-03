@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Controllers.Tag
        ( routes
@@ -6,37 +7,37 @@ module Controllers.Tag
        , filterExistsTags
        ) where
 
+import           Data.Bson           (ObjectId)
+import qualified Data.ByteString     as BS
+import           Data.List           (deleteFirstsBy)
+import qualified Data.Text           as T
 import           Snap.Core
-import qualified Snap.Core as Snap
+import qualified Snap.Core           as Snap
 import           Snap.Snaplet
-import qualified Data.ByteString as BS
-import qualified Data.Text as T
-import           Data.Bson (ObjectId)
-import           Data.List (deleteFirstsBy)
 
 import           Application
+import           Control.Monad.Trans
+import           Controllers.Types
 import           Models.Tag
 import           Views.Utils
-import           Controllers.Types
-import Control.Monad.Trans
 
 ------------------------------------------------------------------------------
 
 -- | Routes
 --  /tags -> get all tags
--- 
+--
 routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/tags",  Snap.method GET getTags)
           ]
-  
+
 ------------------------------------------------------------------------------
 
 -- | Fetch all tags
--- 
+--
 -- MAYBE: 1. if content-tye is not json, return empty
--- 
+--
 getTags :: AppHandler ()
-getTags = findAllTags 
+getTags = findAllTags
           >>= toJSONResponse
 
 ------------------------------------------------------------------------------

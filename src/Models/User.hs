@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Models.User 
+module Models.User
     ( LoginUser(..)
     , User(..)
     , UserObjId
@@ -14,57 +14,57 @@ module Models.User
     , hasUpdatePermission
     , isCurrentUserAdmin ) where
 
-import           Control.Applicative ((<$>), (<*>), pure)
+import           Control.Applicative                (pure, (<$>), (<*>))
 import           Control.Monad
-import           Control.Monad.CatchIO (throw)
+import           Control.Monad.CatchIO              (throw)
 import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
 import           Data.Maybe
+import qualified Data.Text                          as T
+import qualified Database.MongoDB                   as DB
 import           Snap.Snaplet
-import           Snap.Snaplet.Auth hiding (loginUser, saveUser)
+import           Snap.Snaplet.Auth                  hiding (loginUser, saveUser)
 import           Snap.Snaplet.Auth.Backends.MongoDB as SM
 import           Snap.Snaplet.MongoDB
-import qualified Data.Text as T
-import qualified Database.MongoDB as DB
 --import Snap.Snaplet.Environments
-import Data.Function
+import           Data.Function
 
+import           Application
 import           Models.Exception
 import           Models.Utils
-import           Application
 
 -- | User Email plays another role as a unique loginName.
--- 
+--
 type Email = T.Text
 
 type UserObjId = ObjectId
 
 -- | A lightweight alternative to @AuthUser@. Use email prefix as login name.
--- 
+--
 data LoginUser = LoginUser
-    { loginName :: Email
-    , password  :: T.Text
+    { loginName      :: Email
+    , password       :: T.Text
     , repeatPassword :: T.Text
     } deriving (Show)
 
 
 -- | Extent to AuthUser in a separated Collection.
 --   Its objectId is just same with objectId of AuthUser.
--- 
+--
 --   One reason is Snaplet-Auth is likely to do some modify, e.g. when login
 --   which will fresh out our extension.
--- 
-data User = User 
-    { _authUser    :: Maybe AuthUser  -- ^ Maybe type because dont need te fetch sometime.
-    , _userEmail   :: Email
-    , _userDisplayName :: T.Text  
-    , _userSite    :: T.Text  -- ^ User personal site.
+--
+data User = User
+    { _authUser        :: Maybe AuthUser  -- ^ Maybe type because dont need te fetch sometime.
+    , _userEmail       :: Email
+    , _userDisplayName :: T.Text
+    , _userSite        :: T.Text  -- ^ User personal site.
     } deriving (Show)
 
 
 -- | This is where User extra information saved, making diff wih AuthUser.
--- 
+--
 authUserCollection :: DB.Collection
 authUserCollection = u "users"
 
@@ -73,7 +73,7 @@ authUserCollection = u "users"
 -- | Ask Snaplet-Auth to create AuthUser then extend it with additional fields.
 --   Since there is no way to use @withBackend@ from Snaplet-Auth, I have to use
 --   mongo.save to update the user collection.
--- 
+--
 createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
@@ -83,7 +83,7 @@ createNewUser lu = do
 
 -- | Create a user leverage save function from snaplet-auth-mongo-backend,
 --   without additional columns. This is not suppose to be used by upstream API.
--- 
+--
 --   Create user without activation approach thus login automatically.
 --   Maybe use userLockedOutUntil when like to use mail activation.
 --
@@ -115,9 +115,9 @@ loginUser lu = do
 
 -- | NOTES: Assume those handlers will be used after login. a.k.a will be used in @withAuthUser@.
 --   Maybe improve in future.
--- 
+--
 findCurrentUser :: AppHandler User
-findCurrentUser = do 
+findCurrentUser = do
                     authUser <- findCurrentAuthUser
                     res <- findUser' authUser
                     either failureToUE (userFromDoc authUser) res
@@ -133,7 +133,7 @@ findCurrentUserId = liftM (join . fmap getUserId) (with appAuth currentUser)
 
 
 -- | Find One User without initlize its _authUser field. Usually for user basic information.
--- 
+--
 findOneUser :: ObjectId -> AppHandler User
 findOneUser oid = do
     res <- withFindUser' oid
@@ -144,17 +144,17 @@ withFindUser' oid = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid ] authUser
 ------------------------------------------------------------------------------
 
 -- | Save modification to @User@ Collection. @AuthUser@ is not likely to be update by user.
--- 
+--
 saveUser :: User -> AppHandler User
 saveUser lu = do
              res <- eitherWithDB $ DB.save authUserCollection $ userToDocument lu
-             either failureToUE (const $ return lu) res 
+             either failureToUE (const $ return lu) res
 
 ------------------------------------------------------------------------------
 
 -- | Transform @User@ to mongoDB document.
 --   Assume "_id" already exists because AuthUser should be created before.
--- 
+--
 userToDocument :: User -> Document
 userToDocument user =  [ "_id"          .= userId (fromJust $ _authUser user)
                         , "userEmail"   .= _userEmail user
@@ -164,9 +164,9 @@ userToDocument user =  [ "_id"          .= userId (fromJust $ _authUser user)
 
 
 -- | Kind of ORM.
--- 
+--
 userToTopic :: Maybe AuthUser -> Document -> Parser User
-userToTopic au d = User 
+userToTopic au d = User
                    <$> pure au
                    <*> d .: "userEmail"
                    <*> d .: "displayName"
@@ -186,36 +186,36 @@ getUserId = fmap SM.userIdToObjectId . userId
 
 -- | Basically email of user is a unique because it is used as loginName of AuthUser.
 --   In additions, some @User@ doesn't get its @_authUser@ populated.
---   
+--
 userEq :: User -> User -> Bool
 userEq = (==) `on` _userEmail
 
 ----------------------------------------------------------- ROLE & PREMISSIONS
 
 -- | Get admin roles from config file.
--- 
+--
 getAdminRole :: AppHandler Role
 getAdminRole = gets _adminRole
 
 -- | Is the @User@ an admin user. a.k.a has Admin role.
--- 
+--
 isUserAdmin :: AuthUser -> AppHandler Bool
 isUserAdmin user = liftM (hasRole user) getAdminRole
 
 -- | Whether current login user an admin user. a.k.a has Admin role.
--- 
+--
 isCurrentUserAdmin :: AppHandler Bool
 isCurrentUserAdmin = findCurrentAuthUser >>= isUserAdmin
 
 -- | Whether @User@ has a particular @Role@
--- 
+--
 hasRole :: AuthUser -> Role -> Bool
 hasRole u r = r `elem` userRoles u
 
 -- | Admin and Author-self has edit/delete permission.
--- 
+--
 hasUpdatePermission :: User   -- ^ Author of some.
                     -> AppHandler Bool
-hasUpdatePermission author = (||) 
+hasUpdatePermission author = (||)
                              <$> liftM (userEq author) findCurrentUser
                              <*> isCurrentUserAdmin

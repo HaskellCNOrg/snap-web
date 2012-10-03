@@ -1,10 +1,10 @@
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DeriveDataTypeable   #-}
+{-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE OverlappingInstances #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings    #-}
+{-# LANGUAGE RankNTypes           #-}
 {-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 {-
 FROM: https://gist.github.com/2725383
@@ -32,30 +32,31 @@ module Data.Baeson.Types
        )
        where
 
-import Control.Applicative
-import Control.Monad
-import Data.Monoid (Monoid(..))
-import Data.Typeable
+import           Control.Applicative
+import           Control.Monad
+import           Data.Monoid             (Monoid (..))
+import           Data.Typeable
 
-import Data.Maybe (fromMaybe)
-import Data.Time.Clock (UTCTime)
+import           Data.Maybe              (fromMaybe)
+import           Data.Time.Clock         (UTCTime)
 
-import Data.Map(Map)
-import qualified Data.Map as Map
-import Data.Set (Set)
-import qualified Data.Set as Set
+import           Data.Map                (Map)
+import qualified Data.Map                as Map
+import           Data.Set                (Set)
+import qualified Data.Set                as Set
 
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Data.Text.Lazy as LT
+import qualified Data.ByteString         as BS
+import qualified Data.ByteString.Lazy    as BSL
+import qualified Data.Text               as T
+import qualified Data.Text.Encoding      as T
+import qualified Data.Text.Lazy          as LT
 import qualified Data.Text.Lazy.Encoding as LT
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as BSL
 
 import qualified Data.CompactString.UTF8 as CS
 
-import qualified Data.Bson as BSON(Value(..), Document, look, Field(..),
-                                   Binary(..), ObjectId(..))
+import qualified Data.Bson               as BSON (Binary (..), Document,
+                                                  Field (..), ObjectId (..),
+                                                  Value (..), look)
 
 data Result a = Error String
               | Success a

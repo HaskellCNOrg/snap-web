@@ -1,11 +1,12 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Text.Digestive.HeistExt where
 
+import           Data.Text             (Text)
 import           Text.Digestive
 import           Text.Templating.Heist
-import Data.Text (Text)
-import qualified Text.XmlHtml as X
+import qualified Text.XmlHtml          as X
 
 
 

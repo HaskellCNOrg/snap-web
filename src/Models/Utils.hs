@@ -11,17 +11,17 @@ module Models.Utils where
 ----------------------------------------------------------------
 
 import           Control.Monad.Trans
-import qualified Data.ByteString as BS
+import           Data.Bson            (ObjectId, Value (..))
+import qualified Data.Bson            as BSON
+import qualified Data.ByteString      as BS
 import qualified Data.ByteString.Lazy as LBS
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import           Data.Bson (ObjectId, Value(..))
-import qualified Data.Bson as BSON
+import qualified Data.Text            as T
+import qualified Data.Text.Encoding   as T
 
 ----------------------------------------------------------------
 
 -- | Force Just "" to be Nothing.
--- 
+--
 forceNonEmpty :: Maybe BS.ByteString -> Maybe BS.ByteString
 forceNonEmpty Nothing = Nothing
 forceNonEmpty (Just "") = Nothing
@@ -33,9 +33,9 @@ textToS :: T.Text -> String
 textToS = T.unpack
 
 -- | Transform something which is instance of <code>Show</code> to Text.
--- 
+--
 sToText :: Show s => s -> T.Text
-sToText = T.pack . show 
+sToText = T.pack . show
 
 lbsToStrickBS :: LBS.ByteString -> BS.ByteString
 lbsToStrickBS = BS.concat . LBS.toChunks
@@ -61,9 +61,9 @@ textToObjectId :: T.Text -> ObjectId
 textToObjectId = read . textToS
 
 -- | Maybe ObjectId to Text
--- 
+--
 objectIdToText :: Maybe ObjectId -> T.Text
-objectIdToText = maybe "" sToText 
+objectIdToText = maybe "" sToText
 
 -- | Case MongoDB.value to ObjectId
 --
@@ -73,6 +73,6 @@ objectIdFromValue = BSON.cast'
 ------------------------------------------------------------------------------
 
 -- | Split Text by space or comma and get ride of extra empty text.
--- 
+--
 splitOnSpaceOrComma :: T.Text -> [T.Text]
 splitOnSpaceOrComma = filter (/= T.pack "") . T.split (\x -> x == ',' || x == ' ')

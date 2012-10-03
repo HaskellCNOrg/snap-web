@@ -2,18 +2,18 @@
 
 module Views.PaginationSplices where
 
+import qualified Data.Text                 as T
+import           Snap.Snaplet.Environments
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
-import qualified Data.Text as T
-import qualified Text.XmlHtml as X
-import           Snap.Snaplet.Environments
+import qualified Text.XmlHtml              as X
 
 import           Application
 import           Models.Utils
 
 
 -- | Select items for particular page base on Page Size, Current Page
--- 
+--
 paginationHandler :: (Eq b, Integral a, Show a)
                      => Double   -- ^ Page Size
                      -> a        -- ^ Current Page
@@ -29,14 +29,14 @@ paginationHandler s cp xs = do
       pageItems      = sliceForPage cp' pageSize xs
       pageSplice     = paginationSplice cp' pageNumberList
   return (pageItems, pageSplice)
-      
+
 getPageSize :: AppHandler Int
 getPageSize = lookupConfigDefault "pagesize" 20
 
 ----------------------------------------------------------------------------
 
 -- | Splice for display pagination elements.
--- 
+--
 paginationSplice :: (Show a, Integral a)
                     => a                 -- ^ Current Page
                     -> [a]               -- ^ Total size
@@ -45,20 +45,20 @@ paginationSplice cp xs = return [paginationNode cp xs]
 
 -- | Generate HTML nodes for topic pagination.
 --   Elements created here because of not sure how to set up "active" class.
--- 
+--
 paginationNode :: (Show a, Integral a)
                => a             -- ^ Current Page
                -> [a]           -- ^ Page Number List
                -> X.Node        -- ^ HTML Nodes for page numbers
 paginationNode _ [] = X.Comment "insufficient data for pagination"
-paginationNode i xs = 
+paginationNode i xs =
     let cp = sToText i
         doNode = X.Element "ul" [] lis
         lis = map (f . sToText) xs
-        f n 
+        f n
           | cp == n   = X.Element "li" [("class","active")] [a n]
           | otherwise = X.Element "li" [] [a n]
-        a n 
+        a n
           | cp == n   = X.Element "a" [] [X.TextNode n]
           | otherwise = X.Element "a" [("href", topicPageLink n)] [X.TextNode n]
     in doNode
@@ -91,8 +91,8 @@ sliceForPage cp size xs = take size $ drop (drops cp) xs
 
 -- | Fixing invalide page number.
 --   e.g. total page number is 2 but given current page 3, show the last page (2 here) instead.
--- 
-fixCurrentPage :: Integral a 
+--
+fixCurrentPage :: Integral a
                   => a  -- ^ Current Page
                   -> a  -- ^ How many page numbers in total
                   -> a  -- ^ A valid page number

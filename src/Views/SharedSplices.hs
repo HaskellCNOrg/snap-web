@@ -1,13 +1,14 @@
-{-# LANGUAGE CPP             #-}
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE CPP                  #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Views.SharedSplices where
 
-import           Data.Maybe (fromMaybe)
+import           Data.Maybe            (fromMaybe)
+import qualified Data.Text             as T
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
-import qualified Data.Text as T
-import qualified Text.XmlHtml as X
+import qualified Text.XmlHtml          as X
 
 import           Application
 import           Models.User
@@ -35,19 +36,19 @@ sharedSplices = [ ("currentUser", currentUserSplice)
 ----------------------------------------------------------------------------
 
 -- | Current @User@ splice. Diff with Snaplet-Auth.loggedInUser which return @AuthUser@
--- 
+--
 currentUserSplice :: SnapletSplice App App
 currentUserSplice = liftHandler findCurrentUser >>= liftHeist . textSplice . _userDisplayName
 
 -- | Whether current user has admin role.
--- 
+--
 isCurrentUserAdminSplice :: SnapletSplice App App
 isCurrentUserAdminSplice = do
     tf <- liftHandler isCurrentUserAdmin
     if tf then liftHeist runChildren else return []
 
 -- | Show children per Production or Development
--- 
+--
 showOnEnvSplice :: Splice AppHandler
 showOnEnvSplice = do
     node <- getParamNode

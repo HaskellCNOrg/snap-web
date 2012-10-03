@@ -4,14 +4,14 @@
 module Main where
 
 ------------------------------------------------------------------------------
-import           Control.Exception (SomeException, try)
-import qualified Data.Text as T
+import           Control.Exception   (SomeException, try)
+import           Controllers.Site
+import qualified Data.Text           as T
+import           Snap.Core
 import           Snap.Http.Server
 import           Snap.Snaplet
 import           Snap.Snaplet.Config
-import           Snap.Core
 import           System.IO
-import           Controllers.Site
 
 #ifdef DEVELOPMENT
 import           Snap.Loader.Dynamic

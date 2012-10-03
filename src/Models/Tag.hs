@@ -1,23 +1,24 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Models.Tag where
 
-import           Control.Applicative ((<$>), (<*>))
+import           Control.Applicative   ((<$>), (<*>))
 import           Control.Monad.CatchIO (throw)
 import           Data.Baeson.Types
 import           Data.Bson
-import           Data.Maybe (catMaybes)
+import           Data.Maybe            (catMaybes)
+import           Data.Text             (Text)
+import qualified Data.Text             as T
 import           Database.MongoDB
 import           Snap.Snaplet.Auth
-import  Data.Text (Text)
-import qualified Data.Text as T
 
 import           Application
-import           Models.Utils
 import           Models.Internal.Types
+import           Models.Utils
 
 -- | Tag model
--- 
+--
 data Tag = Tag
     { _tagId      :: Maybe ObjectId
     , _tagName    :: T.Text
@@ -28,7 +29,7 @@ emptyTag :: Tag
 emptyTag = Tag Nothing "" Nothing
 
 -- | Schema name
--- 
+--
 tagCollection :: Collection
 tagCollection = u "tags"
 
@@ -38,7 +39,7 @@ tagCollection = u "tags"
 --------------------------------------------------------------------------------
 
 -- | Get Tag Id in {Text}.
--- 
+--
 getTagId :: Tag -> T.Text
 getTagId = objectIdToText . _tagId
 
@@ -51,7 +52,7 @@ toTagIds = Just . catMaybes . fmap _tagId
 --------------------------------------------------------------------------------
 
 -- Impl of Persistent Interface
--- 
+--
 instance MongoDBPersistent Tag where
   mongoColl _  = tagCollection
   toMongoDoc   = tagToDocument
@@ -61,9 +62,9 @@ instance MongoDBPersistent Tag where
 
 -- | Transform @Tag@ to mongoDB document.
 --   Nothing of id mean new topic thus empty "_id" let mongoDB generate objectId.
--- 
+--
 tagToDocument :: Tag -> Document
-tagToDocument tag = case _tagId tag of 
+tagToDocument tag = case _tagId tag of
                           Nothing -> docs
                           Just x  -> ("_id" .= x) : docs
                     where docs = [ "name"     .= _tagName tag
@@ -71,7 +72,7 @@ tagToDocument tag = case _tagId tag of
                                  ]
 
 -- | Transform mongo Document to be a Tag parser.
--- 
+--
 documentToTag :: Document -> Parser Tag
 documentToTag d = Tag
                   <$> d .: "_id"
@@ -79,7 +80,7 @@ documentToTag d = Tag
                   <*> d .: "content"
 
 -- | parse the tag document
--- 
+--
 tagFromDocumentOrThrow :: Document -> IO Tag
 tagFromDocumentOrThrow d = case parseEither documentToTag d of
     Left e  -> throw $ BackendError $ show e
@@ -91,7 +92,7 @@ tagFromDocumentOrThrow d = case parseEither documentToTag d of
 
 -- | Insert a new tag.
 --   meaning insert it if its new (has no "_id" field) or update it if its not new (has "_id" field)
--- | FIXME: couple of thoughts: 
+-- | FIXME: couple of thoughts:
 --   2. batch create new tags?
 --
 insertTag :: Tag -> AppHandler Tag

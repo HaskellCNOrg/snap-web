@@ -1,38 +1,38 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | The work is mainly steal from https://gist.github.com/2725402
--- 
--- 
+--
+--
 
 module Snap.Snaplet.Auth.Backends.MongoDB where
 
 
-import Control.Applicative
-import Control.Arrow
-import Control.Monad
-import Control.Monad.CatchIO(throw)
-import Control.Monad.Error
-import Data.Baeson.Types
-import qualified Data.Bson as BSON
-import Data.Lens.Lazy
-import Data.Maybe
-import Data.Text(Text)
-import qualified Data.Configurator as C
-import qualified Data.HashMap.Lazy as HM
-import qualified Data.Text.Encoding as T
-import qualified Data.Text as T
-import qualified Database.MongoDB as M
-import qualified Snap.Snaplet.MongoDB as SM
-import Snap.Snaplet
-import Snap.Snaplet.Auth
-import Snap.Snaplet.Session
-import Snap.Snaplet.Session.Common
-import System.IO.Pool (Pool, aResource)
-import Web.ClientSession
+import           Control.Applicative
+import           Control.Arrow
+import           Control.Monad
+import           Control.Monad.CatchIO       (throw)
+import           Control.Monad.Error
+import           Data.Baeson.Types
+import qualified Data.Bson                   as BSON
+import qualified Data.Configurator           as C
+import qualified Data.HashMap.Lazy           as HM
+import           Data.Lens.Lazy
+import           Data.Maybe
+import           Data.Text                   (Text)
+import qualified Data.Text                   as T
+import qualified Data.Text.Encoding          as T
+import qualified Database.MongoDB            as M
+import           Snap.Snaplet
+import           Snap.Snaplet.Auth
+import qualified Snap.Snaplet.MongoDB        as SM
+import           Snap.Snaplet.Session
+import           Snap.Snaplet.Session.Common
+import           System.IO.Pool              (Pool, aResource)
+import           Web.ClientSession
 
-import Database.MongoDB ( Database, Pipe
-                        , AccessMode (UnconfirmedWrites)
-                        , Action, Failure(..))
+import           Database.MongoDB            (AccessMode (UnconfirmedWrites),
+                                              Action, Database, Failure (..),
+                                              Pipe)
 
 
 ------------------------------------------------------------------------------
@@ -101,9 +101,9 @@ accessMode :: AccessMode
 accessMode = UnconfirmedWrites
 
 -- | default UserId is Nothing thus set to same as UserLogin
--- 
+--
 mongoSave :: MongoBackend -> AuthUser -> IO AuthUser
-mongoSave mong usr = 
+mongoSave mong usr =
   case userId usr of
       Nothing -> insertUser' usr
       _       -> saveUser' usr
@@ -116,11 +116,11 @@ mongoSave mong usr =
          insertId' x = usr { userId = fmap objectIdToUserId $ BSON.cast' x}
          saveUser' u = do
                        res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong u
-                       case res of 
+                       case res of
                            Left (WriteFailure 11000 _) -> throw DuplicateLogin
                            Left v  -> throwBE v
                            Right _ -> return u
-         throwBE = throw . BackendError . show 
+         throwBE = throw . BackendError . show
 
 
 mongoAct :: MongoBackend -> Action IO a -> (a ->IO b) -> IO b
@@ -198,11 +198,11 @@ instance FromBSON UserId where
 objectIdToUserId :: BSON.ObjectId -> UserId
 objectIdToUserId = UserId . T.pack . show
 
-userIdToObjectId :: UserId -> BSON.ObjectId 
+userIdToObjectId :: UserId -> BSON.ObjectId
 userIdToObjectId = read . T.unpack . unUid
 
 -- | Transform UserId to ObjectId
--- 
+--
 instance ToBSON UserId where
   toBSON = M.ObjId . read . T.unpack . unUid
 

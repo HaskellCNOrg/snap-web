@@ -1,33 +1,34 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Views.ReplySplices where
 
-import           Control.Arrow (second)
+import           Control.Arrow         (second)
+import           Control.Monad         (liftM)
 import           Control.Monad.Trans
-import           Control.Monad (liftM)
-import           Data.Function (on)
-import           Text.Templating.Heist
+import           Data.Function         (on)
 import           Data.List
-import qualified Data.Map as MP
-import qualified Data.Text as T
+import qualified Data.Map              as MP
+import qualified Data.Text             as T
+import           Text.Templating.Heist
 
 
-import Application
-import Models.Reply
-import Models.User
-import Views.Utils
-import Views.UserSplices
-import Models.Utils
+import           Application
+import           Models.Reply
+import           Models.User
+import           Models.Utils
+import           Views.UserSplices
+import           Views.Utils
 
 -- | A Reply and its own replies.
--- 
+--
 type ReplyWithReply = (Reply, [Reply])
 
 
 ------------------------------------------------------------------------------
 
 -- | Reply with all children
--- 
+--
 allReplyPerTopicSplice :: [Reply] -> Splice AppHandler
 allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
 
@@ -42,18 +43,18 @@ replySpliceWithChildren (r, rs) = do
 
 
 -- | Just a Reply without any children
--- 
+--
 replySplice :: Reply -> Splice AppHandler
 replySplice r = do
-    user <- findReplyAuthor r 
-    runChildrenWith $ ("replyEditable", hasEditPermissionSplice user) 
+    user <- findReplyAuthor r
+    runChildrenWith $ ("replyEditable", hasEditPermissionSplice user)
                       : map (second textSplice) (replySpliceImpl r user)
 
 
-replySpliceImpl :: Reply 
+replySpliceImpl :: Reply
                 -> User   -- ^ UserName
                 -> [(T.Text, T.Text)]
-replySpliceImpl r user =  
+replySpliceImpl r user =
                     [ ("replyAuthor", _userDisplayName user)
                     , ("replyAuthorId", sToText $ _replyAuthor r)
                     , ("replyId", getReplyId r)
@@ -66,13 +67,13 @@ replySpliceImpl r user =
 ------------------------------------------------------------------------------
 
 -- | Separate Reply by whether it is a reply or a reply of reply, then zip together.
---   FIXME: 
+--   FIXME:
 --         1. a little complex
 --         2. unit test
--- 
+--
 splitReplies :: [Reply] -> [ReplyWithReply]
-splitReplies rs =  
-    map (g $ toMap $ grouyByToReplyId $ sortByToReplyId $ nonFirstLevelReply rs) 
+splitReplies rs =
+    map (g $ toMap $ grouyByToReplyId $ sortByToReplyId $ nonFirstLevelReply rs)
         (firstLevelReply rs)
     where sortByToReplyId  = sortBy (compare `on` toReplyId)
           grouyByToReplyId = groupBy ((==) `on` _replyToReplyId)
@@ -85,7 +86,7 @@ splitReplies rs =
 
 
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
--- 
+--
 findReplyAuthor :: Reply -> HeistT AppHandler User
 findReplyAuthor reply = lift (findUser' reply)
                         where findUser' = findOneUser . _replyAuthor

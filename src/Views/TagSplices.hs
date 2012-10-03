@@ -1,16 +1,17 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Views.TagSplices where
 
 import           Control.Monad.Trans
-import           Data.Maybe (fromMaybe)
+import           Data.Bson             (ObjectId)
+import           Data.Maybe            (fromMaybe)
+import qualified Data.Text             as T
 import           Text.Templating.Heist
-import           Data.Bson (ObjectId)
-import qualified Data.Text as T
 
-import Application
-import Models.Tag
-import Models.Utils
+import           Application
+import           Models.Tag
+import           Models.Utils
 
 ------------------------------------------------------------------------------
 

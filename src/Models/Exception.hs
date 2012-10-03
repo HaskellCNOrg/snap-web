@@ -1,8 +1,8 @@
-{-# LANGUAGE DeriveDataTypeable         #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
-module Models.Exception 
+module Models.Exception
        (module Models.Internal.Exception)
        where
 
-import Models.Internal.Exception
+import           Models.Internal.Exception
 

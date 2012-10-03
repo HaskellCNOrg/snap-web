@@ -1,18 +1,19 @@
-{-# LANGUAGE OverloadedStrings, ExtendedDefaultRules #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings    #-}
 
 module Views.UserSplices where
 
-import           Control.Arrow (second)
+import           Control.Arrow         (second)
 import           Control.Monad.Trans
+import qualified Data.Text             as T
 import           Snap.Snaplet.Auth
 import           Text.Templating.Heist
-import qualified Data.Text as T
 
 import           Application
-import Models.Exception
-import Models.User
-import Views.Utils
-import Views.Types
+import           Models.Exception
+import           Models.User
+import           Views.Types
+import           Views.Utils
 
 ------------------------------------------------------------------------------
 
@@ -21,9 +22,9 @@ instance SpliceRenderable User where
 
 ------------------------------------------------------------------------------
 
--- | Splices used at user Detail page. 
---   Display either a user or error msg.    
--- 
+-- | Splices used at user Detail page.
+--   Display either a user or error msg.
+--
 
 userDetailSplices :: Either UserException User -> [(T.Text, Splice AppHandler)]
 userDetailSplices = eitherToSplices
@@ -32,11 +33,11 @@ userDetailSplices = eitherToSplices
 ------------------------------------------------------------------------------
 
 -- | Single user to Splice.
--- 
+--
 renderUser :: User -> Splice AppHandler
 renderUser user = runChildrenWith $
                      [ ("userEditable", hasEditPermissionSplice user)
-                     , ("userLastLoginAt", userLastLoginAtSplice $ _authUser user) 
+                     , ("userLastLoginAt", userLastLoginAtSplice $ _authUser user)
                      ]
                      ++
                      map (second textSplice)
@@ -48,10 +49,10 @@ renderUser user = runChildrenWith $
                      ]
 
 formatUTCTimeMaybe Nothing  = ""
-formatUTCTimeMaybe (Just x) = formatUTCTime x 
+formatUTCTimeMaybe (Just x) = formatUTCTime x
 
 -- | Display User Last Login time if it has.
--- 
+--
 userLastLoginAtSplice :: Maybe AuthUser   -- ^ Author of some.
                         -> Splice AppHandler
 userLastLoginAtSplice Nothing = return []
@@ -63,7 +64,7 @@ userLastLoginAtSplice (Just authusr) =
 ----------------------------------------------------------------------------
 
 -- | Has Edit premission when either current user is Admin or Author.
--- 
+--
 hasEditPermissionSplice :: User   -- ^ Author of some.
                         -> Splice AppHandler
 hasEditPermissionSplice author = do

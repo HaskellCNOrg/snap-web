@@ -2,10 +2,10 @@
 
 module Controllers.Types where
 
-import Data.Aeson
-import Models.Tag
-import Models.Utils
-import Data.Bson (ObjectId)
+import           Data.Aeson
+import           Data.Bson    (ObjectId)
+import           Models.Tag
+import           Models.Utils
 
 instance ToJSON Tag where
   toJSON (Tag id name _) = object [ "id"   .= id

@@ -4,24 +4,24 @@
 -- | This module is where all the routes and handlers are defined for your
 --   site. The 'app' function is the initializer that combines everything
 --   together and is exported by this module.
--- 
+--
 module Controllers.Site
   ( app
   ) where
 
 ------------------------------------------------------------------------------
 
+import           Control.Applicative                         ((<$>))
 import           Control.Monad.Trans
-import           Control.Applicative ((<$>))
-import           Database.MongoDB (host)
+import           Database.MongoDB                            (host)
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Auth.Backends.MongoDB
+import           Snap.Snaplet.Environments
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Snap.Snaplet.MongoDB
 import           Snap.Snaplet.Session.Backends.CookieSession
-import           Snap.Snaplet.Environments
 
 ------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ app :: SnapletInit App App
 app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     ul     <- lookupConfig "snaplet.message-locale"
     sk     <- lookupConfigDefault "snaplet.session-key" "data/session-sitekey.txt"
-    dbkey  <- lookupConfigDefault "auth.siteKey" "data/auth-sitekey.txt" 
+    dbkey  <- lookupConfigDefault "auth.siteKey" "data/auth-sitekey.txt"
     ar     <- Role <$> lookupConfigDefault "auth.admin-role" "administrator"
 
     dbhost <- lookupConfigDefault "db.host" "127.0.0.1"

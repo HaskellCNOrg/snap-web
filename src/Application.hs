@@ -7,16 +7,16 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Data.Lens.Template
-import Data.Lens.Common
-import Snap.Snaplet
-import Snap.Snaplet.Heist
-import Snap.Snaplet.I18N
-import Snap.Snaplet.Auth
-import Snap.Snaplet.MongoDB.Core
-import Snap.Snaplet.Session
-import Control.Category ((.))
-import Prelude hiding ((.))
+import           Control.Category          ((.))
+import           Data.Lens.Common
+import           Data.Lens.Template
+import           Prelude                   hiding ((.))
+import           Snap.Snaplet
+import           Snap.Snaplet.Auth
+import           Snap.Snaplet.Heist
+import           Snap.Snaplet.I18N
+import           Snap.Snaplet.MongoDB.Core
+import           Snap.Snaplet.Session
 
 ------------------------------------------------------------------------------
 data App = App
