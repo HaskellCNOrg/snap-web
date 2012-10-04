@@ -48,6 +48,7 @@ isCurrentUserAdminSplice = do
     if tf then liftHeist runChildren else return []
 
 -- | Show children per Production or Development
+--   e.g. <showOnEnv on="devel">.../</showOnEnv>
 --
 showOnEnvSplice :: Splice AppHandler
 showOnEnvSplice = do
