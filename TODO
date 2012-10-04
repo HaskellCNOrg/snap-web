@@ -32,37 +32,37 @@
 (@) [X] Highlight error on input box.
       a fix at private branch.
 
-
+* * * * *
       
 - [-] Tag allow user add tag on the fly when post topic
     - [X] Instead of relationship collection, how about just a array field of Topic collection.
     - [X] save tags at create / edit topic
     - [X] list topics per tag
     - [ ] Batch Creation?
-    - [ ] style for tag input box
+    - [ ] suggesstion for tag input box
     - [X] pagination at "topics list per tag" page
 - [ ] oauth
+- [ ] Data Migration.
 - [X] 404 page
 - [X] update i18n msg file: use nested config
-- [ ] Data Migration.
-
-- [ ] full pandoc support?
+- [X] full pandoc support?
   - lbs support
   - use pandoc via process(a.k.a command line) like what snap.splices.markdown does.
   - get ride of markdown.js but preview via server side service?
+  - [X] pandoc throw error when unexpect tag found. (throwError at MarkdownSplices)
+        ?? How to give to warning before save. (display error as plain text)
+- [X] delete reply and its comments (sub-reply)
 
+* * * * *
 
-      
 - [ ] i18n for Digestive-Form validation message.
 - [ ] User be able to save a topic as favoriate.
 - [ ] Message to user when new comments
 - [ ] Snaplet-Admin
 - [ ] add 'like/dislike' for topic
-- [ ] Deletion
-  - delete topic
-  - delete comment/reply
+- [ ] Delete topic
 
-
+* * * * *
 
 - [ ] Logging
 - [ ] show person score like stackoverflow
@@ -103,6 +103,8 @@
 - https://github.com/dbp/heist-async
 
 - when `cabal-dev` ask for `force-reinstalls`, it is likely to have incorrect depends config
+
+- ??? heist `bind` can not be nested in other tag but only `apply` tag.
 
 ### Makefile
 

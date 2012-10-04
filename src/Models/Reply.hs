@@ -67,9 +67,10 @@ sortByCreateAtDesc = [ "create_at" =: 1, "reply_id" =: 1 ]
 -- | Delete a reply
 --
 deleteReply :: ObjectId -> AppHandler ()
-deleteReply rid = do
-    res <- eitherWithDB $ DB.deleteOne (select [ "_id" =: rid ] replyCollection)
-    either failureToUE (const $ return ()) res
+deleteReply rid = 
+    eitherWithDB (DB.delete (select query replyCollection))
+    >>= either failureToUE (const $ return ())
+    where query = [ "$or" =: [ [ "_id" =: rid ], ["reply_id" =: rid] ] ]
 
 
 ------------------------------------------------------------------------------

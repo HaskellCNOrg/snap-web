@@ -52,7 +52,9 @@
             <p>
               <a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
             </p>
-            <!-- <a href="/topic/${topicId}/${replyId}/delete/">Delete</a> -->
+            <isCurrentUserAdmin>
+              <a href="/topic/${topicId}/${replyId}/delete/">Delete</a>
+            </isCurrentUserAdmin>
           </ifLoggedIn>
           
         </section>
