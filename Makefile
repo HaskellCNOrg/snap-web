@@ -59,8 +59,8 @@ rebuild: clean build
 ##       5. [ ] md5sum
 ## 
 
-markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js markdown.js
-markdownMergeJS=markdown.min.js
+#markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js markdown.js
+#markdownMergeJS=markdown.min.js
 
 create-site: rebuild
 	rm -rf $(SITE)
@@ -74,12 +74,6 @@ create-site: rebuild
 	cd $(SITE)/static/js && for x in *.js ; do \
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
-	done
-	## Merge Markdown JS
-	cd $(SITE)/static/js && for x in $(markdownJS) ; do \
-		cat $$x >> $(markdownMergeJS); \
-		echo >> $(markdownMergeJS); \
-		rm $$x ; \
 	done
 	## Generate CSS from LESS files
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css

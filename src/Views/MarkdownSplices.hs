@@ -24,7 +24,7 @@ import qualified Text.XmlHtml                           as X
 markdownToHtmlSplice :: MonadIO m => T.Text -> Splice m
 markdownToHtmlSplice markup =
     either throwError toDoc $ X.parseHTML "" $ markdownToHtmlString markup
-    where throwError e = return [X.TextNode $ T.pack ("Error parsing markdown output: " ++ e)]
+    where throwError e = return [X.TextNode $ T.pack ("Error parsing markdown output: " ++ e)] --MAYBE:ERROR STYLE
           toDoc = return . X.docContent
 
 ------------------------------------------------------------------------------
