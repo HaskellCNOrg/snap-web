@@ -1,21 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-
 module Views.PaginationSplicesTest (tests) where
 
-import Data.Text (Text)
-import Data.Function (on)
-import Test.Framework (Test, testGroup)
-import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit (Assertion, assert, assertFailure, (@?=))
-import qualified Text.XmlHtml as X
-import Data.Maybe 
+import           Data.Maybe
+import           Data.Text                      (Text)
+import           Test.Framework                 (Test, testGroup)
+import           Test.Framework.Providers.HUnit (testCase)
+import           Test.HUnit                     ((@?=))
+import qualified Text.XmlHtml                   as X
 
-import Views.PaginationSplices
+import           Views.PaginationSplices
 
 tests :: Test
 tests = testGroup "Test.Views.PaginationSplices"
-    [ 
+    [
       testCase "node: 0 0" $ (@?=) verifyEmptyUL True
     , testCase "node: 0 [1,2]" $ (@?=) (verifyULNode 1 [1,2]) True
     , testCase "slice: 1 0 [1,2,3]" $ (@?=) (sliceForPage 3 0 [1,2,3]) []
@@ -26,18 +24,20 @@ tests = testGroup "Test.Views.PaginationSplices"
     ]
 
 -- | FIXME: verification method need improve.
--- 
+--
+
 verifyEmptyUL = f (nodeDataGen 0 [])
                 where f (node, _,  _) = X.isComment node
 
 
 verifyULNode x y = f (nodeDataGen x y)
-               where f (node, name, lis) = isNodeUL name
-                                          && not (null lis)
-                                          && length lis == length y
+               where f (_, name, lis) = isNodeUL name
+                                        && not (null lis)
+                                        && length lis == length y
+
 isNodeUL name  = isJust name && "ul" == fromJust name
 
-nodeDataGen x y  = let node  = paginationNode x y
+nodeDataGen x y  = let node  = paginationNode x y urlGenRoot
                        tName = X.tagName node
                        lis   = X.childNodes node
                    in (node, tName, lis)
@@ -45,6 +45,8 @@ nodeDataGen x y  = let node  = paginationNode x y
 pageSize :: Int
 pageSize = 2
 
+urlGenRoot :: Text -> Text
+urlGenRoot = urlGen "/"
+
 ---------------------------------------------------------
 -- Test Datas
-

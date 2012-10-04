@@ -7,17 +7,14 @@ module Controllers.Tag
        , filterExistsTags
        ) where
 
-import           Data.Bson           (ObjectId)
-import qualified Data.ByteString     as BS
-import           Data.List           (deleteFirstsBy)
-import qualified Data.Text           as T
+import qualified Data.ByteString as BS
+import           Data.List       (deleteFirstsBy)
+import qualified Data.Text       as T
 import           Snap.Core
-import qualified Snap.Core           as Snap
+import qualified Snap.Core       as Snap
 import           Snap.Snaplet
 
 import           Application
-import           Control.Monad.Trans
-import           Controllers.Types
 import           Models.Tag
 import           Views.Utils
 

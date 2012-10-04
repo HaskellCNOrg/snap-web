@@ -14,6 +14,7 @@ import           Snap
 import           Snap.Snaplet.MongoDB
 
 import           Models.Internal.Exception
+import           Models.Internal.JSON
 
 
 --------------------------------------------------------------------------------

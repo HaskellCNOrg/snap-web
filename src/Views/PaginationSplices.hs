@@ -6,7 +6,6 @@ import qualified Data.ByteString           as BS
 import qualified Data.Text                 as T
 import           Snap
 import           Snap.Snaplet.Environments
-import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
 import qualified Text.XmlHtml              as X
 
@@ -46,22 +45,12 @@ requestURL = T.takeWhile (/= '?') . bsToText
 
 ----------------------------------------------------------------------------
 
--- | Splice for display pagination elements.
---
--- paginationSplice :: (Show a, Integral a)
---                    => a                   -- ^ Current Page
---                    -> [a]                 -- ^ Total size
---                    -> (T.Text -> T.Text)  -- ^ pagination url generator
---                    -> Splice AppHandler
--- paginationSplice cp xs gen = return [paginationNode cp xs gen]
-
-
 -- | Generate HTML nodes for topic pagination.
 --   Elements created here because of not sure how to set up "active" class.
 --
 paginationNode :: (Show a, Integral a)
-               => a             -- ^ Current Page
-               -> [a]           -- ^ Page Number List
+               => a                   -- ^ Current Page
+               -> [a]                 -- ^ Page Number List
                -> (T.Text -> T.Text)  -- ^ pagination url generator
                -> X.Node        -- ^ HTML Nodes for page numbers
 paginationNode _ [] _ = X.Comment "insufficient data for pagination"

@@ -3,19 +3,20 @@
 
 module Models.Tag where
 
+import           Application
 import           Control.Applicative   ((<$>), (<*>))
 import           Control.Monad.CatchIO (throw)
+import           Data.Aeson            (ToJSON (..))
+import qualified Data.Aeson            as A
 import           Data.Baeson.Types
 import           Data.Bson
 import           Data.Maybe            (catMaybes)
 import           Data.Text             (Text)
 import qualified Data.Text             as T
 import           Database.MongoDB
-import           Snap.Snaplet.Auth
-
-import           Application
 import           Models.Internal.Types
 import           Models.Utils
+import           Snap.Snaplet.Auth
 
 -- | Tag model
 --
@@ -99,7 +100,7 @@ insertTag :: Tag -> AppHandler Tag
 insertTag = mongoInsert
 
 findAllTags :: AppHandler [Tag]
-findAllTags  = mongoFindAll emptyTag
+findAllTags  = mongoFindAll (undefined::Tag) --emptyTag
 
 findOneTag :: ObjectId -> AppHandler Tag
 findOneTag oid = mongoFindById $ emptyTag { _tagId = Just oid }
@@ -111,3 +112,12 @@ findSomeTagsName :: [Text] -> AppHandler [Tag]
 findSomeTagsName = mongoFindSomeBy "name" emptyTag . map textToS
 
 -- `map.textToS` is because T.Text is not a Val instance but Internal.Text and String.
+
+--------------------------------------------------------------------------------
+-- Instances
+--------------------------------------------------------------------------------
+
+instance ToJSON Tag where
+  toJSON (Tag tid tname _) = A.object [ "id"   A..= tid
+                                      , "name" A..= tname
+                                      ]

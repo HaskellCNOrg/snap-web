@@ -3,16 +3,15 @@
 
 module Views.ReplySplicesTest (tests) where
 
-import Data.Text (Text)
-import Data.Bson (ObjectId)
-import Test.Framework (Test, testGroup)
-import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit (Assertion, assert, assertFailure, (@?=))
-import Data.Time
-import System.IO.Unsafe (unsafePerformIO)
+import           Data.Bson                      (ObjectId)
+import           Data.Time
+import           System.IO.Unsafe               (unsafePerformIO)
+import           Test.Framework                 (Test, testGroup)
+import           Test.Framework.Providers.HUnit (testCase)
+import           Test.HUnit                     (Assertion, (@?=))
 
-import Views.ReplySplices
-import Models.Reply
+import           Models.Reply
+import           Views.ReplySplices
 
 tests :: Test
 tests = testGroup "Test.Views.ReplySplices.splitReplies"
@@ -23,28 +22,28 @@ tests = testGroup "Test.Views.ReplySplices.splitReplies"
     ]
 
 -- | All replies which have no children replies
--- 
+--
 testReplyWithoutChildren :: Assertion
-testReplyWithoutChildren = 
+testReplyWithoutChildren =
     let rs = justReply in
     (@?=) (splitReplies rs) (g rs)
     where g = map (\ r -> (r, []))
 
 
 -- | All children replies
--- 
+--
 testReplyAllChildren :: Assertion
-testReplyAllChildren = 
+testReplyAllChildren =
     let rs = justChildrenReply in
     (@?=) (splitReplies rs) []
 
 -- | reply and its children.
--- 
+--
 testReplyWithChildren :: Assertion
-testReplyWithChildren = 
+testReplyWithChildren =
     let rs = justReplyWithChildren in
     (@?=) (splitReplies rs) [ (reply1, [childrenReply11, childrenReply12])
-                            , (reply2, []) 
+                            , (reply2, [])
                             , (reply3, [childrenReply31]) ]
 
 ---------------------------------------------------------
@@ -85,10 +84,10 @@ defaultReply = Reply
         , _replyContent   = "Dumy comment"
         , _replyAuthor    = read "1234567891"
         , _replyCreateAt  = mockUTCTime
-        } 
+        }
 
 mockUTCTime :: UTCTime
 mockUTCTime = unsafePerformIO getCurrentTime
 
 toObjId :: String -> Maybe ObjectId
-toObjId = Just . read 
+toObjId = Just . read

@@ -28,7 +28,5 @@ eitherToSplices (Right r) = [ ("ifFound"   , toSplice r)
 
 --------------------------------------------------------------
 
-
 instance SpliceRenderable UserException where
     toSplice a = runChildrenWithText [ ("exceptionValue", showUE a) ]
-

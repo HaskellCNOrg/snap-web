@@ -10,7 +10,6 @@ module Models.Utils where
 
 ----------------------------------------------------------------
 
-import           Control.Monad.Trans
 import           Data.Bson            (ObjectId, Value (..))
 import qualified Data.Bson            as BSON
 import qualified Data.ByteString      as BS

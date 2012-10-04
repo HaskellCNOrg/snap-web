@@ -3,16 +3,13 @@
 
 module Controllers.TagsTest (tests) where
 
-import Data.Text (Text)
-import Data.Bson (ObjectId)
-import Test.Framework (Test, testGroup)
-import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit (Assertion, assert, assertFailure, (@?=))
-import Data.Time
-import System.IO.Unsafe (unsafePerformIO)
+import           Data.Text                      (Text)
+import           Test.Framework                 (Test, testGroup)
+import           Test.Framework.Providers.HUnit (testCase)
+import           Test.HUnit                     ((@?=))
 
-import Controllers.Tag
-import Models.Tag
+import           Controllers.Tag
+import           Models.Tag
 
 tests :: Test
 tests = testGroup "Test.Controllers.Tag.saveTags"
@@ -23,7 +20,7 @@ tests = testGroup "Test.Controllers.Tag.saveTags"
     ]
 
 -- | All replies which have no children replies
--- 
+--
 --testReplyWithoutChildren :: Assertion
 
 --------------------------------------------------
@@ -35,10 +32,14 @@ exTags = map textToTag inputTagsText
 textToTag :: Text -> Tag
 textToTag name = emptyTag { _tagName = name }
 
+inputTags :: [Tag]
 inputTags = newTag ++ exTags
 
+newTag :: [Tag]
 newTag = map textToTag newTagText
 
+inputTagsText :: [Text]
 inputTagsText = ["tag3", "tag2"]
 
+newTagText :: [Text]
 newTagText = ["tag1"]

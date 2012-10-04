@@ -93,7 +93,7 @@ createAuthUser' usr = do
     when (passLength usr < mp) (throw $ PasswordTooShort mp)
     exists <- usernameExists (loginName usr)
     when exists (throw UserAlreadyExists)
-    authUsr <- createUser (loginName usr) (password' usr)
+    _ <- createUser (loginName usr) (password' usr)
     loginUser usr
   where passLength = T.length . password
         password'  = textToBS . password
@@ -210,7 +210,7 @@ isCurrentUserAdmin = findCurrentAuthUser >>= isUserAdmin
 -- | Whether @User@ has a particular @Role@
 --
 hasRole :: AuthUser -> Role -> Bool
-hasRole u r = r `elem` userRoles u
+hasRole au r = r `elem` userRoles au
 
 -- | Admin and Author-self has edit/delete permission.
 --
