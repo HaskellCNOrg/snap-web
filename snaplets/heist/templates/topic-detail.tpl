@@ -66,12 +66,13 @@
     <div class="replyEditor">
        <apply template="reply-to-form" />
     </div>
-    <bind tag="bottom-scripts">
-      <apply template="js-markdown" />
-      <script type="text/javascript" src="/js/topic.js"></script>
-    </bind>
   </ifLoggedIn>
 
 </ifFound>
+
+<bind tag="bottom-scripts">
+  <apply template="js-markdown" />
+  <script type="text/javascript" src="/js/topic.js"></script>
+</bind>
   
 </apply>

@@ -52,7 +52,8 @@
 </div>
 
 <bind tag="bottom-scripts">
-    <script type="text/javascript" src="/js/topic-form.js"></script>
+  <apply template="js-markdown" />
+  <script type="text/javascript" src="/js/topic-form.js"></script>
 </bind>
 
 </apply>
