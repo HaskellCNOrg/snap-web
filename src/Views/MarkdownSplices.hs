@@ -24,8 +24,7 @@ import qualified Text.XmlHtml                           as X
 markdownToHtmlSplice :: MonadIO m => T.Text -> Splice m
 markdownToHtmlSplice markup =
     either throwError toDoc $ X.parseHTML "" $ markdownToHtmlString markup
-    where throwError e = throw $ MarkdownException
-                         $ BS.pack ("Error parsing markdown output: " ++ e)
+    where throwError e = return [X.TextNode $ T.pack ("Error parsing markdown output: " ++ e)]
           toDoc = return . X.docContent
 
 ------------------------------------------------------------------------------
@@ -38,7 +37,7 @@ markdownToHtmlString :: T.Text -> BS.ByteString
 markdownToHtmlString = BS.pack . writeDoc . readDoc . tabFilter4 . T.unpack
 
 readDoc :: String -> Pandoc
-readDoc = readMarkdown defaultParserState
+readDoc = readMarkdown (defaultParserState { stateLiterateHaskell = True })
 
 writeDoc :: Pandoc -> String
 writeDoc = UTF8.encodeString . writeHtmlString defaultWriterOptions

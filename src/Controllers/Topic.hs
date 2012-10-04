@@ -32,6 +32,7 @@ import qualified Models.Tag            as Tag
 import           Models.Topic
 import qualified Models.User           as User
 import           Models.Utils
+import           Views.MarkdownSplices
 import           Views.ReplyForm
 import           Views.TopicForm
 import           Views.TopicSplices
@@ -52,6 +53,7 @@ routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topicput/:topicid", Snap.method GET editTopicH) -- show detail for editing
           , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes.
           , ("/tag/:tagid",  Snap.method GET viewTopicsByTagH) -- list topic per tag
+          , ("/topic/preview",  previewTopicH)                          -- preview content via pandoc
           ]
 
 ------------------------------------------------------------------------------
@@ -168,7 +170,6 @@ toEditTopicPageOr' = either (toTopicDetailPage . Left) toEditingPage
 saveTopicH :: AppHandler ()
 saveTopicH = withAuthUser $ do
                  (view, result) <- runForm "edit-topic-form" topicForm
-                 --liftIO $ print result
                  case result of
                    Just topic -> doUpdateTopic' topic
                    Nothing    -> toTopicFormPage view -- FIXME: bug..to form page should runForm first.
@@ -231,3 +232,11 @@ topicVoToTopic tv tags topic = do
              , _topicTags = Tag.toTagIds tags
              }
 
+--------------------------------------------------------------------------------
+
+-- | Preview topic content
+--
+previewTopicH :: AppHandler ()
+previewTopicH = do
+  content <- decodedParamText "content"
+  heistLocal (bindSplice "topicContent" $ markdownToHtmlSplice content) $ render "topic-preview"

@@ -40,6 +40,9 @@
     <dfInputHidden ref="tid" />
 
     <div class="form-actions">
+        <i18n name="topic.preview">
+          <input class="btn btn-large btn-success" value="${i18nValue}" type="button" id="preview" />
+        </i18n>
         <i18n name="topic.submit">
           <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
         </i18n>
@@ -49,8 +52,7 @@
 </div>
 
 <bind tag="bottom-scripts">
-    <apply template="js-markdown" />
-    <script type="text/javascript" src="/js/form-error.js"></script>
+    <script type="text/javascript" src="/js/topic-form.js"></script>
 </bind>
 
 </apply>
