@@ -100,7 +100,7 @@ insertTag :: Tag -> AppHandler Tag
 insertTag = mongoInsert
 
 findAllTags :: AppHandler [Tag]
-findAllTags  = mongoFindAll (undefined::Tag) --emptyTag
+findAllTags  = mongoFindAll (undefined::Tag)
 
 findOneTag :: ObjectId -> AppHandler Tag
 findOneTag oid = mongoFindById $ emptyTag { _tagId = Just oid }

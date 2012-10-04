@@ -136,9 +136,8 @@ findTopicByTag tagId = findTopicGeneric  [ "tags" =: tagId ]
 --
 findTopicGeneric :: Selector -> AppHandler [Topic]
 findTopicGeneric se = do
-  et <- emptyTopic
   let topicSelection = select se topicCollection
-  mongoFindAllBy et (topicSelection {sort = sortByCreateAtDesc})
+  mongoFindAllBy (undefined::Topic) (topicSelection {sort = sortByCreateAtDesc})
 
 
 sortByCreateAtDesc :: Order
