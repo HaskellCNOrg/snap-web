@@ -17,6 +17,7 @@ import           Application
 import           Models.Reply
 import           Models.User
 import           Models.Utils
+import           Views.MarkdownSplices
 import           Views.UserSplices
 import           Views.Utils
 
@@ -32,11 +33,16 @@ type ReplyWithReply = (Reply, [Reply])
 allReplyPerTopicSplice :: [Reply] -> Splice AppHandler
 allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
 
+-- | Display content of a reply as markdown.
+--   Display content of a comment (reply of reply) as plain content.
+--
 replySpliceWithChildren :: ReplyWithReply -> Splice AppHandler
 replySpliceWithChildren (r, rs) = do
     usrName <- findReplyAuthor r
-    runChildrenWith $ ("replyToReply", mapSplices replySplice rs)
-                      : map (second textSplice) (replySpliceImpl r usrName)
+    runChildrenWith $ [ ("replyToReply", mapSplices replySplice rs)
+                      , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
+                      ]                        
+                      ++ map (second textSplice) (replySpliceImpl r usrName)
 
 
 ------------------------------------------------------------------------------
@@ -61,7 +67,7 @@ replySpliceImpl r user =
                     , ("replyToTopicId", sToText $ _replyToTopicId r)
                     , ("replyToReplyId", objectIdToText $ _replyToReplyId r)
                     , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)
-                    , ("replyContent", _replyContent r) ]
+                    , ("replyContent",  _replyContent r) ]
 
 
 ------------------------------------------------------------------------------

@@ -40,7 +40,7 @@
       <h3><i18n name="topic.answers" /></h3>
       <replyPerTopic>
         <section class="reply">
-          <p><replyContent/></p>
+          <p><replyContentMD/></p>
           <p class="author"><a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/></p>
 
           <div class="replyOfReply">
