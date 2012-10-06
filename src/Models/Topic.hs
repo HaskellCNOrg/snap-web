@@ -40,11 +40,11 @@ topicCollection = u "topics"
 getTopicId :: Topic -> T.Text
 getTopicId = objectIdToText . _topicId
 
-emptyTopic :: AppHandler Topic
-emptyTopic = do
-  oid <- liftIO genObjectId
-  let t = timestamp oid
-  return $ Topic Nothing "" "" oid t t Nothing
+-- | A very empty @Topic@
+--
+emptyTopic :: Topic
+emptyTopic = Topic { _topicId = Nothing }
+
 
 --------------------------------------------------------------------------------
 -- Impl of Persistent Interface
@@ -85,7 +85,7 @@ documentToTopic d = Topic
                     <*> d .: "updateAt"
                     <*> d .: "tags"
 
--- | parse the topic document
+-- | Parse the topic document
 --
 topicFromDocumentOrThrow :: Document -> IO Topic
 topicFromDocumentOrThrow d = case parseEither documentToTopic d of
@@ -111,12 +111,10 @@ saveTopic :: Topic -> AppHandler Topic
 saveTopic = mongoSave
 
 
--- | Find One Topic
+-- | Find One Topic by id.
 --
 findOneTopic :: ObjectId -> AppHandler Topic
-findOneTopic oid = do
-  et <- emptyTopic
-  mongoFindById $ et { _topicId = Just oid }
+findOneTopic oid = mongoFindById $ emptyTopic { _topicId = Just oid }
 
 
 -- | Find All Topic.
@@ -137,9 +135,11 @@ findTopicByTag tagId = findTopicGeneric  [ "tags" =: tagId ]
 findTopicGeneric :: Selector -> AppHandler [Topic]
 findTopicGeneric se = do
   let topicSelection = select se topicCollection
-  mongoFindAllBy (undefined::Topic) (topicSelection {sort = sortByCreateAtDesc})
+  mongoFindAllBy emptyTopic (topicSelection {sort = sortByCreateAtDesc})
 
 
+-- | Order by CreateAt column DESC.
+--
 sortByCreateAtDesc :: Order
 sortByCreateAtDesc = [ "createAt" =: -1 ]
 

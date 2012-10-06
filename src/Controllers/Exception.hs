@@ -25,7 +25,7 @@ routes = [ ("",             fourofourH)
 
 fourofourH :: AppHandler ()
 fourofourH = do
-  -- NOTE: this has been print twice. why??
+  -- FIXME: this has been print twice. why??
   -- liftIO $ print "error handler"
   modifyResponse (setResponseStatus 404 "Not Found")
   req <- getRequest

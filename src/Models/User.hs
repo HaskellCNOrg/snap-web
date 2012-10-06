@@ -77,7 +77,9 @@ authUserCollection = u "users"
 createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
-    saveUser $ User (Just authUser) (loginName lu) (extractUserName lu) ""
+    user <- saveUser $ User (Just authUser) (loginName lu) (extractUserName lu) ""
+    with appAuth $ loginUser lu
+    return user
     where extractUserName = T.takeWhile (/= '@') . loginName
 
 
@@ -93,8 +95,7 @@ createAuthUser' usr = do
     when (passLength usr < mp) (throw $ PasswordTooShort mp)
     exists <- usernameExists (loginName usr)
     when exists (throw UserAlreadyExists)
-    _ <- createUser (loginName usr) (password' usr)
-    loginUser usr
+    createUser (loginName usr) (password' usr)
   where passLength = T.length . password
         password'  = textToBS . password
 
