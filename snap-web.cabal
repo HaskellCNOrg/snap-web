@@ -25,7 +25,7 @@ Executable snap-web
   main-is: Main.hs
 
   Build-depends:
-    MonadCatchIO-transformers    >= 0.2   && < 0.4,
+    MonadCatchIO-transformers    >= 0.3   && < 0.4,
     aeson                        >= 0.6   && < 0.7,
     base                         >= 4     && < 5,
     bson                         >= 0.1.7 && < 0.2,
@@ -88,3 +88,12 @@ Test-suite hcn-tests
     test-framework-hunit >= 0.2  && < 0.3,
     -- Copied from regular dependencies:
     base                 >= 4    && < 5
+
+Executable migrate
+  Type:           exitcode-stdio-1.0
+  Hs-source-dirs: scripts
+  Main-is:        migrate.hs
+  Ghc-options:    -Wall -isrc
+  Build-depends:
+    base                 >= 4    && < 5,
+    bson                         >= 0.1.7 && < 0.2

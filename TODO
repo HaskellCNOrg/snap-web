@@ -52,6 +52,10 @@
   - [X] pandoc throw error when unexpect tag found. (throwError at MarkdownSplices)
         ?? How to give to warning before save. (display error as plain text)
 - [X] delete reply and its comments (sub-reply)
+- [X] XSS
+    - http://cnodejs.org/?q=xss
+- [X] pretty js for haskell
+- [ ] reset password
 
 * * * * *
 

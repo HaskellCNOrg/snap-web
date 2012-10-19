@@ -40,6 +40,9 @@ p:
 bp: build-dev p
 rp: clean build-dev p
 
+migrate: build-dev
+	./dist/build/migrate/migrate
+
 ###########################
 ## PRODUCTION
 ##
