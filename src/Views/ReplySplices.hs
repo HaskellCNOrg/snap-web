@@ -41,7 +41,7 @@ replySpliceWithChildren (r, rs) = do
     usrName <- findReplyAuthor r
     runChildrenWith $ [ ("replyToReply", mapSplices replySplice rs)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
-                      ]                        
+                      ]
                       ++ map (second textSplice) (replySpliceImpl r usrName)
 
 
