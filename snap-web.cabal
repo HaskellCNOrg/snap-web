@@ -56,6 +56,7 @@ Executable snap-web
     time                         >= 1.1   && < 1.5,
     unordered-containers         >= 0.2   && < 0.3,
     utf8-string                  >= 0.3.7 && < 0.4,
+    xss-sanitize                 >= 0.3   && < 0.4,
     xmlhtml                      == 0.2.0
 
 
