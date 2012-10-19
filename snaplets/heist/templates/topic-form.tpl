@@ -25,8 +25,12 @@
         <div class="wmd-panel">
           <div id="wmd-button-bar"></div>
           <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" />
+          <a class="markdown-helper" href="http://johnmacfarlane.net/pandoc/README.html" target="_blank">
+            <span class="label label-info">Markdown help</span>
+          </a>
         </div>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+        
       </div>
     </div>
 

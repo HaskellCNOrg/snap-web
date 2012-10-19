@@ -40,7 +40,7 @@ markdownToHtmlString = xss . BS.pack . writeDoc . readDoc . tabFilter4 . T.unpac
 readDoc :: String -> Pandoc
 readDoc = readMarkdown parserOptions
 
-parserOptions :: ParseState
+parserOptions :: ParserState
 parserOptions = defaultParserState { stateLiterateHaskell = True
                                   }
 
