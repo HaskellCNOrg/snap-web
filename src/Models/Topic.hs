@@ -65,12 +65,12 @@ topicToDocument topic = case _topicId topic of
                           Nothing -> docs
                           Just x  -> ("_id" .= x) : docs
                         where docs =
-                                [  "title"   .= _title topic
-                                , "content"  .= _content topic
-                                , "author"   .= _author topic
-                                , "createAt" .= _createAt topic
-                                , "updateAt" .= _updateAt topic
-                                , "tags"     .= _topicTags topic
+                                [  "title"    .= _title topic
+                                , "content"   .= _content topic
+                                , "author_id" .= _author topic
+                                , "create_at" .= _createAt topic
+                                , "update_at" .= _updateAt topic
+                                , "tags"      .= _topicTags topic
                                 ]
 
 -- | Transform mongo Document to be a Topic parser.
@@ -80,9 +80,9 @@ documentToTopic d = Topic
                     <$> d .: "_id"
                     <*> d .: "title"
                     <*> d .: "content"
-                    <*> d .: "author"
-                    <*> d .: "createAt"
-                    <*> d .: "updateAt"
+                    <*> d .: "author_id"
+                    <*> d .: "create_at"
+                    <*> d .: "update_at"
                     <*> d .: "tags"
 
 -- | Parse the topic document

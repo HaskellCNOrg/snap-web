@@ -27,7 +27,6 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Auth                  hiding (loginUser, saveUser)
 import           Snap.Snaplet.Auth.Backends.MongoDB as SM
 import           Snap.Snaplet.MongoDB
---import Snap.Snaplet.Environments
 import           Data.Function
 
 import           Application
@@ -157,10 +156,10 @@ saveUser lu = do
 --   Assume "_id" already exists because AuthUser should be created before.
 --
 userToDocument :: User -> Document
-userToDocument user =  [ "_id"          .= userId (fromJust $ _authUser user)
-                        , "userEmail"   .= _userEmail user
-                        , "displayName" .= _userDisplayName user
-                        , "userSite"    .= _userSite user
+userToDocument user =  [ "_id"    .= userId (fromJust $ _authUser user)
+                        , "email" .= _userEmail user
+                        , "display_name"  .= _userDisplayName user
+                        , "url"   .= _userSite user
                         ]
 
 
@@ -169,9 +168,9 @@ userToDocument user =  [ "_id"          .= userId (fromJust $ _authUser user)
 userToTopic :: Maybe AuthUser -> Document -> Parser User
 userToTopic au d = User
                    <$> pure au
-                   <*> d .: "userEmail"
-                   <*> d .: "displayName"
-                   <*> d .: "userSite"
+                   <*> d .: "email"
+                   <*> d .: "display_name"
+                   <*> d .: "url"
 
 
 userFromDocumentOrThrow :: (Document -> Parser User) -> Document -> IO User

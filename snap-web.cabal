@@ -90,7 +90,6 @@ Test-suite hcn-tests
     base                 >= 4    && < 5
 
 Executable migrate
-  Type:           exitcode-stdio-1.0
   Hs-source-dirs: scripts
   Main-is:        migrate.hs
   Ghc-options:    -Wall -isrc
