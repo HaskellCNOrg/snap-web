@@ -43,7 +43,7 @@ Executable snap-web
     mongoDB                      >= 1.2   && < 2.0,
     mtl                          >= 2     && < 3,
     old-locale                   >= 1.0   && < 1.1,
-    pandoc                       >= 1.9   && < 2.0,
+    pandoc                       >= 1.9   && < 1.9.4,
     resource-pool                >= 0.2   && < 0.3,
     snap                         == 0.9.*,
     snap-core                    == 0.9.*,

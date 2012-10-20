@@ -25,19 +25,23 @@ init:
 	cabal update
 	$(CBD) install
 
-conf-dev:
-	$(CBD) --flags="development" --enable-tests configure
+init-test:
+	$(CBD) install --enable-tests
 
-build-dev: conf-dev
+build-dev:
+	$(CBD) --flags="development" configure
 	$(CBD) build
 
-test: build-dev
+test:
+	$(CBD) --flags="development" --enable-tests configure
+	$(CBD) build
 	$(CBD) test
 
 p:
 	$(PROG_PREV) -p 9900
 
 bp: build-dev p
+
 rp: clean build-dev p
 
 migrate: build-dev

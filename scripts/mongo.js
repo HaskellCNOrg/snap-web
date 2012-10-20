@@ -11,4 +11,10 @@ db.topics.find().forEach(function(data) {
     db.topics.update({_id:data._id}, {$set: {tags: []}});
 });
 
+
+db.users.find().forEach(function(data) {
+    db.users.update({_id:data._id}, {$set: {active: true}});
+});
+
+
 db.topics.remove(...)
