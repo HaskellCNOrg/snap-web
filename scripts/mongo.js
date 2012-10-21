@@ -20,4 +20,6 @@ db.users.find().forEach(function(data) {
 db.topics.remove(...)
 
 mongo <dbname> --eval "db.dropDatabase()"
+mongo haskellcn-mongodb --eval "db.dropDatabase()"
+
 

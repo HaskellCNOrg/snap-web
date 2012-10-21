@@ -9,19 +9,24 @@ import qualified Data.Text             as T
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
 import qualified Text.XmlHtml          as X
-
+import Snap.Snaplet.Environments
+import Snap
 import           Application
 import           Models.User
 
 
 ----------------------------------------------------------------------------
-
+{-
 currentEnv :: T.Text
 #ifdef DEVELOPMENT
 currentEnv = "devel"
 #else
 currentEnv = "prod"
 #endif
+-}
+
+currentEnv :: AppHandler T.Text
+currentEnv = lookupConfigDefault "env" "devel"
 
 ----------------------------------------------------------------------------
 
@@ -53,6 +58,7 @@ isCurrentUserAdminSplice = do
 showOnEnvSplice :: Splice AppHandler
 showOnEnvSplice = do
     node <- getParamNode
-    if getOnAttr node == currentEnv then return $ X.elementChildren node else return []
+    v <- lift currentEnv
+    if getOnAttr node == v then return $ X.elementChildren node else return []
     where getOnAttr n = fromMaybe "" (X.getAttribute "on" n)
 

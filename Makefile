@@ -94,7 +94,7 @@ create-site: rebuild
 
 
 prod:
-	cd $(SITE) && $(PROG_NAME) -p 9900 @prod
+	cd $(SITE) && $(PROG_NAME) -p 9900 -e prod
 
 ####################### Doc
 
