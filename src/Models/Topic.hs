@@ -141,7 +141,7 @@ findTopicGeneric se = do
 -- | Order by CreateAt column DESC.
 --
 sortByCreateAtDesc :: Order
-sortByCreateAtDesc = [ "createAt" =: -1 ]
+sortByCreateAtDesc = [ "create_at" =: -1 ]
 
 ------------------------------------------------------------------------------
 
