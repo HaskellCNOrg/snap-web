@@ -105,9 +105,6 @@ createAuthUser' usr = do
 
 loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 loginUser lu = do
-              exists <- usernameExists (loginName lu)
-              liftIO $ print (loginName lu)
-              liftIO $ print exists
               res <- loginByUsername (username' lu) (password' lu) True
               either throwUE return res
               where username' = textToBS . loginName
