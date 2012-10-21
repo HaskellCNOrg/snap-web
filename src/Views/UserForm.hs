@@ -3,6 +3,7 @@ module Views.UserForm where
 
 import           Control.Applicative    ((<$>), (<*>))
 import           Data.Text              (Text)
+import           Data.Maybe (fromMaybe)
 import           Text.Digestive
 import           Text.Digestive.FormExt
 
@@ -43,7 +44,7 @@ userDetailForm :: Monad m => User -> Form Text m UserVo
 userDetailForm u = UserVo
     <$> "userEmail"       .: text (Just $ _userEmail u)
     <*> "userDisplayName" .: text (Just $ _userDisplayName u)
-    <*> "userSite"        .: text (Just $ _userSite u)
+    <*> "userSite"        .: text (Just $ fromMaybe "" $ _userSite u)
 
 -- |
 --

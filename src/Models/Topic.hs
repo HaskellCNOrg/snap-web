@@ -83,7 +83,7 @@ documentToTopic d = Topic
                     <*> d .: "author_id"
                     <*> d .: "create_at"
                     <*> d .: "update_at"
-                    <*> d .: "tags"
+                    <*> d .:? "tags"
 
 -- | Parse the topic document
 --

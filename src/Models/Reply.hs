@@ -96,7 +96,7 @@ documentToreply :: Document -> Parser Reply
 documentToreply d = Reply
                     <$> d .: "_id"
                     <*> d .: "topic_id"
-                    <*> d .: "reply_id"
+                    <*> d .:? "reply_id"
                     <*> d .: "content"
                     <*> d .: "author_id"
                     <*> d .: "create_at"

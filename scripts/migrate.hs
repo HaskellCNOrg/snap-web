@@ -8,67 +8,84 @@ import Database.MongoDB
 import Data.Text (Text)
 import Control.Monad.Trans (liftIO)
 import Data.Bson
+import qualified Data.Bson as BSON
+import Data.Baeson.Types
 import Control.Applicative
 import Models.User
 import           Data.Baeson.Types
 import           Data.Bson
+import           Crypto.PasswordStore
+import System.IO.Unsafe
 
 main = run
 
 run = do
     pipe <- runIOE $ connect (host "127.0.0.1")
-    e <- access pipe slaveOk "node_club" run2
-    case e of
-      Left x -> close pipe >> print x
-      Right usr -> access pipe slaveOk "test-haskell" (run1 usr) >> close pipe >> print ""
+    u <- access pipe slaveOk "node_club" findNodeUser
+    t <- access pipe slaveOk "node_club" findNodeTopic
+    r <- access pipe slaveOk "node_club" findNodeReply
+    access pipe slaveOk "test-haskell" clearAll
+    let datas = ( either (const []) id u
+                , either (const []) id t
+                , either (const []) id r)                          
+    access pipe slaveOk "test-haskell" (doMigrate datas)
+    close pipe >> print "done"
 
+doMigrate (usr, t, r) = do
+    let (xs, ys) = migUsers usr
+    insertMany "users" xs
+    insertMany "auth_user" ys
+    insertMany "topics" t
+    insertMany "replies" r
+    where ts = map (merge ["tags" := Null]) t
 
-run1 docs = do
-    clearUsers
-    let users = map (map tr . include ["_id", "pass", "loginname", "email", "url"]) docs
-    insertMany "users" users
-  where tr field = case field of
-                     ("pass" := v) -> ("password" := v)
-                     ("name" := v) -> ("display_name" := v)
-                     x -> x
-  
-run2 :: Action IO [Document]
-run2 = do
-    users
-    -- >>= liftIO . migrateUser
-
-users :: Action IO [Document]
-users = rest =<< find (select [] "users")
-
-clearUsers :: Action IO ()
-clearUsers =
+clearAll :: Action IO ()
+clearAll =
     delete (select [] "users")
     >> delete (select [] "auth_user")
+    >> delete (select [] "topics")
+    >> delete (select [] "replies")
 
-printDocs :: String -> [Document] -> Action IO ()
-printDocs title docs = liftIO $
-                       putStrLn title
-                       -- >> mapM_ (print . exclude ["_id"]) docs
-                       >> migrateUser docs
-                       >>= print
+migUsers :: [Document] -> ([Document], [Document])
+migUsers docs = (xs, ys)
+    where xs = map (merge xsOthers . map m1 . include ["_id", "name", "email", "url"]) docs
+          ys = map (mergeys . map m2 . include ["_id", "email", "create_at", "update_at"]) docs
+          m1 field = case field of
+                     ("name" := v) -> ("display_name" := v)
+                     x -> x
+          m2 field = case field of
+                     ("email" := v) -> ("login" := v)
+                     ("create_at" := v) -> ("createdAt" := v)
+                     ("update_at" := v) -> ("updatedAt" := v)
+                     x -> x
+          xsOthers = [ "active" := Bool False ]
+          mergeys = merge ysOthers
+          ysOthers = [ "activatedAt" := Null
+                     , "suspendedAt" := Null
+                     , "rememberToken" := Null
+                     , "loginCount" .=  (0 :: Int)
+                     , "userFailedLoginCount" .= (0 :: Int)
+                     , "lockedOutUntil" := Null
+                     , "currentLoginAt" := Null
+                     , "lastLoginAt" := Null
+                     , "currentLoginIp" := Null
+                     , "lastLoginIp" := Null
+                     , "roles" := Array []
+                     , "password" := (Bin $ Binary $ mkp)
+                  ]
 
--- | haskellcn has two coll for user: auth-user, users
---
+mkp= unsafePerformIO $ do
+    makePassword "12345678" 12
+  
 
-data NCUser = NCUser { __email :: Text
-                     , __passwd :: Text
-                     , __loginname :: Text                                   
-                     } deriving (Show)
+----------------------------------------------------------------------
 
-ncUserDocParser' d = NCUser
-                    <$> d .: "email"
-                    <*> d .: "pass"
-                    <*> d .: "loginname"
-ncUserDocParser f d = case parseEither f d of
-    Left e  -> throw $ ErrorCall "parser NC User Error"
-    Right r -> return r
+findNodeUser :: Action IO [Document]
+findNodeUser = rest =<< find (select [] "users")
 
-migrateUser :: [Document] -> IO [NCUser]
-migrateUser doc = do
-                  usrs <- mapM (ncUserDocParser ncUserDocParser') doc
-                  return usrs
+findNodeTopic :: Action IO [Document]
+findNodeTopic = rest =<< find (select [] "topics")
+
+findNodeReply :: Action IO [Document]
+findNodeReply = rest =<< find (select [] "replies")
+

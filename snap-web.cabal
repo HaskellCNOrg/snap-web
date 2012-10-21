@@ -95,4 +95,5 @@ Executable migrate
   Ghc-options:    -Wall -isrc
   Build-depends:
     base                 >= 4    && < 5,
-    bson                         >= 0.1.7 && < 0.2
+    bson                         >= 0.1.7 && < 0.2,
+    pwstore-fast == 2.2

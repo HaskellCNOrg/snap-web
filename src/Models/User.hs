@@ -58,7 +58,7 @@ data User = User
     { _authUser        :: Maybe AuthUser  -- ^ Maybe type because dont need te fetch sometime.
     , _userEmail       :: Email
     , _userDisplayName :: T.Text
-    , _userSite        :: T.Text  -- ^ User personal site.
+    , _userSite        :: Maybe T.Text  -- ^ User personal site.
     } deriving (Show)
 
 
@@ -76,7 +76,7 @@ authUserCollection = u "users"
 createNewUser :: LoginUser -> AppHandler User
 createNewUser lu = do
     authUser <- with appAuth $ createAuthUser' lu
-    user <- saveUser $ User (Just authUser) (loginName lu) (extractUserName lu) ""
+    user <- saveUser $ User (Just authUser) (loginName lu) (extractUserName lu) (Just "")
     with appAuth $ loginUser lu
     return user
     where extractUserName = T.takeWhile (/= '@') . loginName
@@ -105,6 +105,9 @@ createAuthUser' usr = do
 
 loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 loginUser lu = do
+              exists <- usernameExists (loginName lu)
+              liftIO $ print (loginName lu)
+              liftIO $ print exists
               res <- loginByUsername (username' lu) (password' lu) True
               either throwUE return res
               where username' = textToBS . loginName
@@ -170,7 +173,7 @@ userToTopic au d = User
                    <$> pure au
                    <*> d .: "email"
                    <*> d .: "display_name"
-                   <*> d .: "url"
+                   <*> d .:? "url"
 
 
 userFromDocumentOrThrow :: (Document -> Parser User) -> Document -> IO User

@@ -5,6 +5,7 @@ module Views.UserSplices where
 
 import           Control.Arrow         (second)
 import           Control.Monad.Trans
+import Data.Maybe (fromMaybe)
 import qualified Data.Text             as T
 import           Snap.Snaplet.Auth
 import           Text.Templating.Heist
@@ -45,7 +46,7 @@ renderUser user = runChildrenWith $
                      , ("userCreatedAt",   maybe "" (formatUTCTimeMaybe . userCreatedAt) $ _authUser user)
                      , ("userEmail",       _userEmail user)
                      , ("userDisplayName", _userDisplayName user)
-                     , ("userSite", _userSite user)
+                     , ("userSite", fromMaybe "" $ _userSite user)
                      ]
 
 formatUTCTimeMaybe Nothing  = ""
