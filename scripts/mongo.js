@@ -23,3 +23,9 @@ mongo <dbname> --eval "db.dropDatabase()"
 mongo haskellcn-mongodb --eval "db.dropDatabase()"
 
 
+// ========================================
+// mongo dump
+// TODO: JS APIs ??
+var coll = ["users", "auth_user", "topics", "replies"];
+
+// lets do it is shell;

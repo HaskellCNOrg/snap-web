@@ -44,7 +44,7 @@ bp: build-dev p
 
 rp: clean build-dev p
 
-migrate: build-dev
+migrate:
 	./dist/build/migrate/migrate
 
 ###########################
