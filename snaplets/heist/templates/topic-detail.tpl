@@ -17,15 +17,12 @@
       <h2><topicTitle /></h2>
       <p><topicContent/></p>
 
-      <div class="small-font">
-        <a href="/user/${topicAuthorId}"><topicAuthor/></a> 
-        <span><topicCreateAt/></span>
-        <ul class="tags">
-          <topicTagList>
-            <li><a href="/tag/${tagId}"><tagName/></a></li>
-          </topicTagList>
-        </ul>
-      </div>
+      <apply template="topic-author" />
+      <ul class="tags">
+        <topicTagList>
+          <li><a href="/tag/${tagId}"><tagName/></a></li>
+        </topicTagList>
+      </ul>
       <!-- <p><topicUpdateAt/></p> -->
     </article>
 
