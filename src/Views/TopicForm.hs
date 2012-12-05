@@ -52,7 +52,9 @@ tagsToText = text . Just . T.intercalate " " . map _tagName
 -- | Topic Title Validation. (Required + minlength 5)
 --
 titleValidation :: Monad m => Form Text m Text -> Form Text m Text
-titleValidation = checkMinLength 5 . checkRequired "title is required"
+titleValidation = checkMaxLengthWith 30 "Title"
+                  . checkMinLengthWith 5 "Title"
+                  . checkRequired "title is required"
 
 
 -- | Topic Content Validation. (Required + minlength 10)

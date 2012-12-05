@@ -7,7 +7,7 @@
 
 module Text.Digestive.FormExt where
 
-import           Data.Maybe     (isJust)
+import           Data.Maybe     (isJust, fromMaybe)
 import           Data.Text      (Text)
 import qualified Data.Text      as T
 import           Text.Digestive
@@ -52,7 +52,13 @@ checkValidEmail = check "Please input valid email address." emailValidator
 -- | Check for min length reqirued.
 --
 checkMinLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
-checkMinLength l = check ("Content is too simple. min length " `T.append` intToText) minLength
+checkMinLength l = checkMinLengthWith l "Content"
+                      
+checkMinLengthWith :: Monad m
+                      => Int
+                      -> Text
+                      -> Form Text m Text -> Form Text m Text
+checkMinLengthWith l msg = check (msg `T.append` " is too simple. min length " `T.append` intToText) minLength
                       where minLength = (>= l) . T.length
                             intToText = T.pack (show l)
 
@@ -60,6 +66,12 @@ checkMinLength l = check ("Content is too simple. min length " `T.append` intToT
 -- | Check for max length reqirued.
 --
 checkMaxLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
-checkMaxLength l = check ("Content exceeds max length " `T.append` intToText) maxLength
+checkMaxLength l = checkMaxLengthWith l "Content"
+
+checkMaxLengthWith :: Monad m
+                      => Int
+                      -> Text
+                      -> Form Text m Text -> Form Text m Text
+checkMaxLengthWith l msg = check (msg `T.append` " exceeds max length " `T.append` intToText) maxLength
                       where maxLength = (<= l) . T.length
                             intToText = T.pack (show l)
