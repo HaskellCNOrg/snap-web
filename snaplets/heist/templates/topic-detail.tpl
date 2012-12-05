@@ -17,20 +17,21 @@
       <h2><topicTitle /></h2>
       <p><topicContent/></p>
 
-      <p class="author"><a href="/user/${topicAuthorId}"><topicAuthor/></a> <topicCreateAt/></p>
+      <div class="small-font">
+        <a href="/user/${topicAuthorId}"><topicAuthor/></a> 
+        <span><topicCreateAt/></span>
+        <ul class="tags">
+          <topicTagList>
+            <li><a href="/tag/${tagId}"><tagName/></a></li>
+          </topicTagList>
+        </ul>
+      </div>
       <!-- <p><topicUpdateAt/></p> -->
-
-      <ul class="tags">
-        <topicTagList>
-          <li><a href="/tag/${tagId}"><tagName/></a></li>
-        </topicTagList>
-      </ul>
-
     </article>
 
     <ifLoggedIn>
       <topicEditable>
-        <div name="topicToolbar" class="clear">
+        <div name="topicToolbar" class="topic-toolbar">
             <a href="/topicput/${topicId}"><i18n name="site.edit" /></a>
         </div>
       </topicEditable>

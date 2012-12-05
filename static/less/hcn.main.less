@@ -2,15 +2,17 @@
 // 
 @largeWidth: 500px;
 @mdEditorHeight: 80px;
-
 @authorFontSize: 11px;
 
 // ----- Mixins
 
-.author {
+.small-font {
     color: @grayLight;
     font-size: @authorFontSize;
-    margin: 5px 0;
+}
+
+.clear {
+    clear: both;
 }
 
 /* background color change on hover */
@@ -73,6 +75,7 @@ body {
 
 .replyPerTopic {
     margin: 10px 0;
+    .clear;
 
     .reply {
        border-top: 1px solid @grayLight;
@@ -104,8 +107,6 @@ body {
          cursor: pointer;
        }
     }
-
-    
     
 }
 
@@ -122,22 +123,18 @@ body {
 
 .tags {
   list-style: none;
-  display: block;
-  float: left;
-  margin: 0 0 5px 0;
+  display: inline-block;
+  margin: 0 0 0 5px;
 
   & > li {
-      display: block;
-      float: left;
-  }
-  & a {
-      margin-right: 5px;
+      display: inline-block;
   }
 
 }
 
-.clear {
-    clear: both;
+.topic-toolbar {
+    margin: 5px 0;
+    .clear;
 }
 
 .error {
