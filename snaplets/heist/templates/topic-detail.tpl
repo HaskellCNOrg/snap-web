@@ -42,7 +42,10 @@
       <replyPerTopic>
         <section class="reply">
           <p><replyContentMD/></p>
-          <p class="author"><a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/></p>
+          <p class="small-font">
+            <a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/>
+            <a href="/topic/${replyToTopicId}/${replyId}/delete/" id="delete-ror-${replyId}"><i18n name="site.delete" /></a>
+          </p>
 
           <div class="replyOfReply">
             <apply template="reply-to-reply-detail" />

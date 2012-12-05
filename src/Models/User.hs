@@ -8,7 +8,6 @@ module Models.User
     , loginUser
     , findCurrentUser
     , findCurrentUserId
-    , findCurrentAuthUser
     , findOneUser
     , saveUser
     , hasUpdatePermission
