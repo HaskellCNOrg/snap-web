@@ -84,6 +84,7 @@ create-site: rebuild
 	done
 	## Generate CSS from LESS files
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
+	cp -f $(SITE)/snaplets/heist/templates/layout-css-prod.tpl $(SITE)/snaplets/heist/templates/layout-css.tpl
 	## compress TPL files
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
 		perl -i -p -e  's/[\r\n]+|[ ]{2}|<!--(.|\s)*?--.*>//gs' $$x ; \

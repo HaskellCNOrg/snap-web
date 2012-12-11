@@ -35,9 +35,10 @@ online demo: <http://demo.haskellcn.org>
 ## Production Deployment
 
   0. Assume have done all steps in Installation section
-  1. install `nodejs`; install `less` and `ugilify-js` package
-  2. cd snap-web and `make create-site`
-  4. (**Important**) update `_site/prod.cfg` per your env.
+  1. install `nodejs`; 
+  2. `npm -g install less ugilifyjs`
+  3. cd snap-web and `make create-site`
+  4. **Important** update `_site/prod.cfg` per your env.
 
 *All required files will be copy into _site folder, read make task for detail*
 
