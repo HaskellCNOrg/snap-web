@@ -56,14 +56,16 @@
     - http://cnodejs.org/?q=xss
 - [X] pretty js for haskell
 - [ ] reset password
+      - also allow admin reset pass via web.
 
 * * * * *
 
+- [ ] Message to user when new comments
+
+- [ ] add 'like/dislike' for topic
 - [ ] i18n for Digestive-Form validation message.
 - [ ] User be able to save a topic as favoriate.
-- [ ] Message to user when new comments
 - [ ] Snaplet-Admin
-- [ ] add 'like/dislike' for topic
 - [ ] Delete topic
 
 * * * * *
