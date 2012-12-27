@@ -72,7 +72,8 @@ initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
     key <- liftIO $ getKey (fromMaybe (asSiteKey authSettings) sk)
     let
       lens' = getL snapletValue db
-      manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens')
+      --manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens')
+      manager = MongoBackend authTable (SM.mongoDatabase lens')
                 (SM.mongoPool lens')
     rng <- liftIO mkRNG
     return AuthManager

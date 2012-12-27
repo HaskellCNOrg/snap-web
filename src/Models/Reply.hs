@@ -36,7 +36,7 @@ data Reply = Reply
     } deriving (Show, Eq)
 
 replyCollection :: Collection
-replyCollection = u "replies"
+replyCollection = "replies"
 
 -----------------------------------------------------------------------
 
