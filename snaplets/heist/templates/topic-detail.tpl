@@ -17,20 +17,18 @@
       <h2><topicTitle /></h2>
       <p><topicContent/></p>
 
-      <p class="author"><a href="/user/${topicAuthorId}"><topicAuthor/></a> <topicCreateAt/></p>
-      <!-- <p><topicUpdateAt/></p> -->
-
+      <apply template="topic-author" />
       <ul class="tags">
         <topicTagList>
           <li><a href="/tag/${tagId}"><tagName/></a></li>
         </topicTagList>
       </ul>
-
+      <!-- <p><topicUpdateAt/></p> -->
     </article>
 
     <ifLoggedIn>
       <topicEditable>
-        <div name="topicToolbar" class="clear">
+        <div name="topicToolbar" class="topic-toolbar">
             <a href="/topicput/${topicId}"><i18n name="site.edit" /></a>
         </div>
       </topicEditable>
@@ -41,7 +39,10 @@
       <replyPerTopic>
         <section class="reply">
           <p><replyContentMD/></p>
-          <p class="author"><a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/></p>
+          <p class="small-font">
+            <a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/>
+            <a href="/topic/${replyToTopicId}/${replyId}/delete/" id="delete-ror-${replyId}"><i18n name="site.delete" /></a>
+          </p>
 
           <div class="replyOfReply">
             <apply template="reply-to-reply-detail" />

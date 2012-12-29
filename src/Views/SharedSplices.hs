@@ -25,6 +25,8 @@ currentEnv = "prod"
 #endif
 -}
 
+-- | DEPRECATED a seprated layout-css.tpl is created and do replacement at prod build.
+-- 
 currentEnv :: AppHandler T.Text
 currentEnv = lookupConfigDefault "env" "devel"
 

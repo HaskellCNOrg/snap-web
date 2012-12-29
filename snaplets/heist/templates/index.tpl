@@ -17,7 +17,10 @@
         <homeTopics>
           <ol start="${startIndex}">
             <allTopics>
-              <li><a href="/topic/${topicId}"><topicTitle/></a> <p class="author">Submited by <topicAuthor/> at <topicCreateAt /></p></li>
+              <li>
+                <a href="/topic/${topicId}"><topicTitle/></a> 
+                <apply template="topic-author" />
+              </li>
             </allTopics>
           </ol>
           <div class="pagination">

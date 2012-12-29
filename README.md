@@ -13,32 +13,32 @@ online demo: <http://demo.haskellcn.org>
  - i18n support
 
 ### 0.2
+  - Add tag per topic
+  - Literature Haskell
+  - XSS
 
 ## Installation
 
 **Assume OS is \*inux with make otherwise figure out yourself by reading Makefile**
 
-0. Install MongoDB
-   
-1. Install snap-web
-
-  ```
-  git clone git://github.com/HaskellCNOrg/snap-web.git
-  cd snap-web
-  make init bp
-  ```
-
-2. Open browser to <http://localhost:9900>
+  0. Install MongoDB
+  1. Install snap-web
+  
+    ```
+    git clone git://github.com/HaskellCNOrg/snap-web.git
+    cd snap-web
+    make init bp
+    ```
+    
+  2. Open browser to <http://localhost:9900>
 
 ## Production Deployment
 
-0. Assume have done all steps in Installation section
-
-1. cd snap-web
-
-2. make create-site 
-
-3. (Important) update _site/prod.cfg per your env.
+  0. Assume have done all steps in Installation section
+  1. install `nodejs`; 
+  2. `npm -g install less ugilifyjs`
+  3. cd snap-web and `make create-site`
+  4. **Important** update `_site/prod.cfg` per your env.
 
 *All required files will be copy into _site folder, read make task for detail*
 

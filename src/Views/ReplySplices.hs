@@ -53,8 +53,10 @@ replySpliceWithChildren (r, rs) = do
 replySplice :: Reply -> Splice AppHandler
 replySplice r = do
     user <- findReplyAuthor r
-    runChildrenWith $ ("replyEditable", hasEditPermissionSplice user)
-                      : map (second textSplice) (replySpliceImpl r user)
+    runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
+                      , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
+                      ]
+                      ++  map (second textSplice) (replySpliceImpl r user)
 
 
 replySpliceImpl :: Reply
@@ -66,8 +68,8 @@ replySpliceImpl r user =
                     , ("replyId", getReplyId r)
                     , ("replyToTopicId", sToText $ _replyToTopicId r)
                     , ("replyToReplyId", objectIdToText $ _replyToReplyId r)
-                    , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)
-                    , ("replyContent",  _replyContent r) ]
+                    , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)]
+--                    , ("replyContent",  _replyContent r) ]
 
 
 ------------------------------------------------------------------------------
