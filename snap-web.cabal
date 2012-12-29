@@ -28,6 +28,7 @@ Executable snap-web
     MonadCatchIO-transformers    >= 0.3   && < 0.4,
     aeson                        >= 0.6   && < 0.7,
     base                         >= 4     && < 5,
+    blaze-builder                >= 0.3,
     bson                         >= 0.1.7 && < 0.2.2,
     bytestring                   >= 0.9.1 && < 0.12,
     clientsession                >= 0.7.4 && < 0.9,
