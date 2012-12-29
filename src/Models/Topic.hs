@@ -35,7 +35,7 @@ data Topic = Topic
     } deriving (Show, Eq)
 
 topicCollection :: Collection
-topicCollection = u "topics"
+topicCollection = "topics"
 
 getTopicId :: Topic -> T.Text
 getTopicId = objectIdToText . _topicId
