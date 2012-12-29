@@ -32,7 +32,7 @@ emptyTag = Tag Nothing "" Nothing
 -- | Schema name
 --
 tagCollection :: Collection
-tagCollection = u "tags"
+tagCollection = "tags"
 
 
 --------------------------------------------------------------------------------

@@ -14,7 +14,6 @@ import           Data.Configurator
 import           Data.Configurator.Types
 import           Data.Maybe              (fromMaybe)
 import qualified Data.Text               as T
-import qualified Data.UString            as U
 import           Snap.Snaplet
 
 
@@ -37,10 +36,3 @@ lookupConfigDefault :: (MonadIO (m b v), MonadSnaplet m, Configured a)
                           -> m b v a
 lookupConfigDefault name def = liftM (fromMaybe def) (lookupConfig name)
 
------------------------------------------------------------
-
--- | This is required for `mongoDBInit` from Snaplet.MongoDB
---
-instance Configured U.UString where
-  convert (String t) = Just $ U.u $ T.unpack t
-  convert _ = Nothing

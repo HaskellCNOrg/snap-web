@@ -182,12 +182,12 @@ class ToBSONDoc a where
   toBSONDoc :: a -> BSON.Document
 
 class (Ord a) => BSONKey a where
-  toBSONKey :: a -> CS.CompactString
-  fromBSONKey :: CS.CompactString -> a
+  toBSONKey :: a -> T.Text
+  fromBSONKey :: T.Text -> a
 
 instance BSONKey T.Text where
-  toBSONKey = textToCompactString
-  fromBSONKey = compactStringToText
+  toBSONKey = id
+  fromBSONKey = id
 
 instance ToBSON a => ToBSONDoc (Map T.Text a) where
   toBSONDoc = Map.foldrWithKey (\k v -> (:)(k.=v)) []
@@ -216,7 +216,7 @@ instance ToBSON UTCTime where
 
 
 instance ToBSON String where
-  toBSON = BSON.String . CS.pack
+  toBSON = BSON.String . T.pack
   {-# INLINE toBSON #-}
 
 instance ToBSON [BSON.Value] where
@@ -228,11 +228,11 @@ instance (ToBSON a) => ToBSON [a] where
   {-# INLINE toBSON #-}
 
 instance ToBSON T.Text where
-  toBSON = BSON.String . textToCompactString
+  toBSON = BSON.String  
   {-# INLINE toBSON #-}
 
 instance ToBSON LT.Text where
-  toBSON = BSON.String . lazyTextToCompactString
+  toBSON = BSON.String . LT.toStrict 
   {-# INLINE toBSON #-}
 
 instance ToBSON BS.ByteString where
@@ -300,17 +300,17 @@ instance FromBSON UTCTime where
   fromBSON b = typeMismatch "UTC" b
 
 instance FromBSON String where
-  fromBSON (BSON.String x )= pure $! CS.unpack x
+  fromBSON (BSON.String x )= pure $! T.unpack x
   fromBSON b = typeMismatch "String" b
   {-# INLINE fromBSON #-}
 
 instance FromBSON T.Text where
-  fromBSON (BSON.String x) = pure $! compactStringToText x
+  fromBSON (BSON.String x) = pure $! x
   fromBSON b = typeMismatch "String" b
   {-# INLINE fromBSON #-}
 
 instance FromBSON LT.Text where
-  fromBSON (BSON.String x) = pure $! compactStringToLazyText x
+  fromBSON (BSON.String x) = pure $! LT.fromStrict x
   fromBSON b = typeMismatch "String" b
   {-# INLINE fromBSON #-}
 
@@ -360,7 +360,7 @@ instance FromBSONDoc a => FromBSON a where
 
 instance FromBSON a => FromBSONDoc (Map T.Text a) where
   fromBSONDoc d = Map.fromList <$> mapM go d
-    where go (k BSON.:= v) = (,) <$> pure (compactStringToText k) <*> fromBSON v
+    where go (k BSON.:= v) = (,) <$> pure k <*> fromBSON v
 
 instance (FromBSON a, BSONKey k) => FromBSONDoc (Map k a) where
   fromBSONDoc d = Map.fromList <$> mapM go d
@@ -408,7 +408,7 @@ typeMismatch what was =
 
 
 (.:) :: (FromBSON a) => BSON.Document -> T.Text -> Parser a
-obj .: key = case BSON.look (textToCompactString key) obj of
+obj .: key = case BSON.look key obj of
                Nothing -> fail $ "key " ++ show key ++ " not present"
                Just v  -> fromBSON v
 {-# INLINE (.:) #-}
@@ -421,13 +421,13 @@ obj .: key = case BSON.look (textToCompactString key) obj of
 -- from an object without affecting its validity.  If the key and
 -- value are mandatory, use '(.:)' instead.
 (.:?) :: (FromBSON a) => BSON.Document -> T.Text -> Parser (Maybe a)
-obj .:? key = case BSON.look (textToCompactString key) obj of
+obj .:? key = case BSON.look key obj of
                Nothing -> pure Nothing
                Just v  -> fromBSON v
 
 -- | Construct a 'Pair' from a key and a value.
 (.=) :: ToBSON a => T.Text -> a -> BSON.Field
-name .= value = textToCompactString name BSON.:= toBSON value
+name .= value = name BSON.:= toBSON value
 {-# INLINE (.=) #-}
 
 (.!=) :: Parser (Maybe a) -> a -> Parser a

@@ -64,7 +64,7 @@ data User = User
 -- | This is where User extra information saved, making diff wih AuthUser.
 --
 authUserCollection :: DB.Collection
-authUserCollection = u "users"
+authUserCollection = "users"
 
 ------------------------------------------------------------------------------
 
