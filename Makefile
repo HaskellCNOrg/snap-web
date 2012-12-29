@@ -19,11 +19,11 @@ hlint:
 
 ###########################
 ## DEVELOPMENT
-## 
+##
 ###########################
 init:
 	cabal update
-	$(CBD) install
+	$(CBD) install --only-dependencies
 
 init-test:
 	$(CBD) install --enable-tests
@@ -52,7 +52,7 @@ migrate:
 ##
 ###########################
 
-build: 
+build:
 	$(CBD) configure
 	$(CBD) build 1>./log/build.log 2>&1
 
@@ -64,7 +64,7 @@ rebuild: clean build
 ##       3. combine & compress JS; replace related links in templates.
 ##       4. generate main.css via lessc; replace related links in templates.
 ##       5. [ ] md5sum
-## 
+##
 
 #markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js markdown.js
 #markdownMergeJS=markdown.min.js
