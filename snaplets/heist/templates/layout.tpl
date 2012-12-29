@@ -5,6 +5,8 @@
     <meta name="author" content="freizl"/>
     <meta name="description" content="haskell chinese community"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="feed/topic" type="application/atom+xml" rel="alternate" title="Topics Feed">
+    <link href="feed/comment" type="application/atom+xml" rel="alternate" title="Comments Feed">
 
     <apply template="layout-css" />
     <apply template="google-a" />

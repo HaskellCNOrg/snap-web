@@ -62,7 +62,7 @@ Executable snap-web
 
   if flag(development)
     build-depends:
-      snap-loader-dynamic == 0.9.*
+      snap-loader-dynamic >= 0.9
     cpp-options: -DDEVELOPMENT
     ghc-options: -threaded -w
   else
