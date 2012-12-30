@@ -14,19 +14,21 @@
     <returnToHome />
   </ifUserError> -->
 
-  <ifFound>
+<ifFound>
+    
+  <form class="form-horizontal">
 
-    <form class="form-horizontal">
+    <fieldset>
+      <legend><userDisplayName/></legend>
 
-      <fieldset>
-        <legend><userDisplayName/></legend>
-
+      <isCurrentUserAdmin>
       <div class="control-group">
         <label class="control-label"><i18n name="user.email" /></label>
         <div class="controls">
           <span class="input-xlarge uneditable-input"><userEmail/></span>
         </div>
       </div>
+      </isCurrentUserAdmin>
 
       <div class="control-group">
         <label class="control-label"><i18n name="user.displayName" /></label>
