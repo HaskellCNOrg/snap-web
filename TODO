@@ -51,20 +51,22 @@
 - [X] XSS
     - http://cnodejs.org/?q=xss
 - [X] pretty js for haskell
-- [ ] reset password
-- [ ] oauth
 - [ ] Data Migration.
 - [ ] upgrade snap-0.10 and heist-0.10
+- [ ] reset password
 - [ ] Improve Tag functionality
     - [ ] list all Tag 
     - [ ] Batch Creation?
     - [ ] suggesstion for tag input box
 - [ ] some notes at demo site.
+- [ ] oauth
 
 * * * * *
 
 - [ ] i18n for Digestive-Form validation message.
-- [ ] Message to user when new comments
+- [ ] Message to user
+  - at by user
+  - when new comments
 - [ ] User be able to save a topic as favoriate.
 - [ ] Snaplet-Admin
 - [ ] add 'like/dislike' for topic

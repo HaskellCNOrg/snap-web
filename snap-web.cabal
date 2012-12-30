@@ -52,12 +52,13 @@ Executable snap-web
     snap-server                  == 0.9.*,
     snaplet-i18n                 >= 0.0.3 && < 0.0.4,
     snaplet-mongodb-minimalistic >= 0.0.6 && < 0.0.7,
+    snaplet-oauth                >= 0.0.6 && < 0.0.7,
     text                         >= 0.11  && < 0.12,
     time                         >= 1.1   && < 1.5,
     unordered-containers         >= 0.2   && < 0.3,
     utf8-string                  >= 0.3.7 && < 0.4,
-    xss-sanitize                 >= 0.3   && < 0.4,
-    xmlhtml                      >= 0.2   && < 0.3
+    xmlhtml                      >= 0.2   && < 0.3,
+    xss-sanitize                 >= 0.3   && < 0.4
 
 
   if flag(development)
