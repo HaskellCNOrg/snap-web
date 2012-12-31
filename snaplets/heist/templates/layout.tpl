@@ -2,8 +2,10 @@
 <html>
   <head>
     <title><i18n name="site.name" /></title>
-    <meta name="author" content="freizl"/>
-    <meta name="description" content="haskell chinese community"/>
+    <meta name="author" content="haskellcn.org"/>
+    <i18n name="site.description">
+      <meta name="description" content="${i18nValue}"/>
+    </i18n>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <apply template="layout-css" />

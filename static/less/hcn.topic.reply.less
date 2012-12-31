@@ -1,6 +1,10 @@
+.container > div {
+  margin-right: 280px;
+}
+
 // -------------------------------------- Topic
 
-.topicList {
+.topic-list {
     > ul {
         list-style-type: none;
         margin-left: 1px;
@@ -16,17 +20,18 @@
     }
 }
 
-.topic {
-}
+.topic-content .btn-link {
+    padding: 0px 5px 0 0;
+    font-size: 11px;
+  }
 
 .topic-toolbar {
-    margin: 5px 0;
-    .clear;
+
 }
 
 // ---------------------------------------- Reply
 
-.replyPerTopic {
+.reply-per-topic {
     margin: 10px 0;
     .clear;
 
@@ -35,7 +40,7 @@
        padding: 20px 0 10px 20px ;
        margin: 5px 0;
        
-       .replyOfReply {
+       .reply-of-reply {
           margin: 10px 0 10px 15px;
 
           section {
@@ -64,11 +69,7 @@
     
 }
 
-.replyEditor {
-    border-top: 1px solid #000 ;
-    padding-top: 15px;
-    margin-top: 30px;
-
+.reply-editor {
     input.btn {
         margin-top: 15px;
     }
