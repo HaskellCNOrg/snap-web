@@ -13,9 +13,11 @@ import qualified Data.Text       as T
 import           Snap.Core
 import qualified Snap.Core       as Snap
 import           Snap.Snaplet
-
+import Snap.Snaplet.Heist
+import           Text.Templating.Heist
 import           Application
 import           Models.Tag
+import           Views.TagSplices
 import           Views.Utils
 
 ------------------------------------------------------------------------------
@@ -34,8 +36,10 @@ routes =  [ ("/tags",  Snap.method GET getTagsH)
 -- MAYBE: 1. if content-tye is not json, return empty
 --
 getTagsH :: AppHandler ()
-getTagsH = findAllTags
-           >>= toJSONResponse
+getTagsH = do
+           tags <- findAllTags
+           heistLocal (bindSplice "tags" $ tagsSplice tags) $ render "tag-list"
+          -- >>= toJSONResponse
 
 ------------------------------------------------------------------------------
 

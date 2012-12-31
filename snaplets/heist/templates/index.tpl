@@ -2,7 +2,9 @@
 
     <div id="content">
 
-      <a class="btn btn-large pull-right" href="/topic"><i18n name="topic.new" /></a>
+        <!--
+            <a class="btn btn-large pull-right" href="/topic"><i18n name="topic.new" /></a>
+        -->
 
       <!-- if count of topics > 0 -->
       <section class="topic-list">

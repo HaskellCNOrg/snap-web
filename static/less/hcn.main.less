@@ -43,13 +43,10 @@ body {
   .small-font;        
 }
 
-.tags {
-  list-style: none;
-  display: inline-block;
-  margin: 0 0 0 5px;
+@tag-column-count: 3;
 
-  & > li {
-      display: inline-block;
-  }
-
+.all-tags-list {
+  column-count: @tag-column-count;
+  -webkit-column-count: @tag-column-count;
+  -moz-column-count: @tag-column-count;
 }

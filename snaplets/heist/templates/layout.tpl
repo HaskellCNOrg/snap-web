@@ -14,7 +14,7 @@
   </head>
   
   <body>
-      <apply template="layout-nav"/>
+      <apply template="_layout-nav"/>
 
       <div class="container">
           <content />
