@@ -9,7 +9,7 @@ module Controllers.Tag
 
 import           Application
 import qualified Data.ByteString       as BS
-import           Data.List             (deleteFirstsBy)
+import           Data.List             (deleteFirstsBy, nub)
 import qualified Data.Text             as T
 import           Models.Tag
 import           Snap
@@ -51,12 +51,14 @@ getTagsH = do
 -- | Save a list of tags and return them getting ID has been insert.
 --   Perform save if is new otherwise ignore.
 --
+--
 saveTags :: [T.Text] -> AppHandler [Tag]
 saveTags input = do
-  xs <- findSomeTagsName input
-  ys <- mapM insertTag $ filterExistsTags maybeNewTags xs
+  let input' = nub input
+  xs <- findSomeTagsName input'
+  ys <- mapM insertTag $ filterExistsTags (maybeNewTags input') xs
   return (xs ++ ys)
-  where maybeNewTags = map textToTag input
+  where maybeNewTags = map textToTag
         textToTag name = emptyTag { _tagName = name }
 
 filterExistsTags :: [Tag]    -- ^ Tags input from web
