@@ -21,7 +21,8 @@
           <apply template="layout-footer" />
       </div>
 
-      <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
+      <script type="text/javascript" src="/js/libs/jquery.js"></script>
+      <script type="text/javascript" src="/js/libs/bootstrap-button.js"></script>
       <bottom-scripts />
 
   </body>

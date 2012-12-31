@@ -16,7 +16,7 @@
   <dfInputHidden ref="replyToReplyId" value="${replyid}"/>
 
   <i18n name="reply.reply.add">
-    <dfInputSubmit value="${i18nValue}"></dfInputSubmit>
+    <dfInputSubmit class="btn" value="${i18nValue}"></dfInputSubmit>
   </i18n>
 
 </dfForm>

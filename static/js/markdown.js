@@ -3,9 +3,12 @@ var markdown = (function ($) {
        contentS = '#wmd-input',
        previewPanelS = '#wmd-preview',
        prevCallback = function (res) {
+          $(previewS).button('reset');
           $(previewPanelS).html(res);
        },
        previewHandler = function (e) {
+          var that = this;
+          $(that).button('loading');
           $.post('/topic/preview',
                  { 'content': $(contentS).val() })
            .then(prevCallback, prevCallback);
