@@ -30,6 +30,7 @@ Executable snap-web
     base                         >= 4     && < 5,
     bson                         >= 0.1.7 && < 0.2.2,
     bytestring                   >= 0.9.1 && < 0.12,
+    case-insensitive             >= 0.4.0.4 && < 0.5,
     clientsession                >= 0.7.4 && < 0.9,
     compact-string-fix           >= 0.3   && < 0.4,
     configurator                 >= 0.2   && < 0.3,

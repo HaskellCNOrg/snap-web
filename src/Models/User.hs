@@ -19,6 +19,7 @@ import           Control.Monad.CatchIO              (throw)
 import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
+import           Data.Function
 import           Data.Maybe
 import qualified Data.Text                          as T
 import qualified Database.MongoDB                   as DB
@@ -26,7 +27,6 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Auth                  hiding (loginUser, saveUser)
 import           Snap.Snaplet.Auth.Backends.MongoDB as SM
 import           Snap.Snaplet.MongoDB
-import           Data.Function
 
 import           Application
 import           Models.Exception

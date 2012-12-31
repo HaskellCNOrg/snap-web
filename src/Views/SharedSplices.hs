@@ -4,15 +4,15 @@
 
 module Views.SharedSplices where
 
-import           Data.Maybe            (fromMaybe)
-import qualified Data.Text             as T
+import           Application
+import           Data.Maybe                (fromMaybe)
+import qualified Data.Text                 as T
+import           Models.User
+import           Snap
+import           Snap.Snaplet.Environments
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
-import qualified Text.XmlHtml          as X
-import Snap.Snaplet.Environments
-import Snap
-import           Application
-import           Models.User
+import qualified Text.XmlHtml              as X
 
 
 ----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ currentEnv = "prod"
 -}
 
 -- | DEPRECATED a seprated layout-css.tpl is created and do replacement at prod build.
--- 
+--
 currentEnv :: AppHandler T.Text
 currentEnv = lookupConfigDefault "env" "devel"
 
@@ -61,6 +61,5 @@ showOnEnvSplice :: Splice AppHandler
 showOnEnvSplice = do
     node <- getParamNode
     v <- lift currentEnv
-    if getOnAttr node == v then return $ X.elementChildren node else return []
+    return (if getOnAttr node == v then X.elementChildren node else [])
     where getOnAttr n = fromMaybe "" (X.getAttribute "on" n)
-

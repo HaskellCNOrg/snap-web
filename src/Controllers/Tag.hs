@@ -7,16 +7,17 @@ module Controllers.Tag
        , filterExistsTags
        ) where
 
-import qualified Data.ByteString as BS
-import           Data.List       (deleteFirstsBy)
-import qualified Data.Text       as T
-import           Snap.Core
-import qualified Snap.Core       as Snap
-import           Snap.Snaplet
-import Snap.Snaplet.Heist
-import           Text.Templating.Heist
 import           Application
+import qualified Data.ByteString       as BS
+import           Data.List             (deleteFirstsBy)
+import qualified Data.Text             as T
 import           Models.Tag
+import           Snap
+import           Snap.Core
+import qualified Snap.Core             as Snap
+import           Snap.Snaplet
+import           Snap.Snaplet.Heist
+import           Text.Templating.Heist
 import           Views.TagSplices
 import           Views.Utils
 
@@ -29,6 +30,8 @@ routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/tags",  Snap.method GET getTagsH)
           ]
 
+tplTagList = "tag-list"
+
 ------------------------------------------------------------------------------
 
 -- | Fetch all tags
@@ -37,9 +40,11 @@ routes =  [ ("/tags",  Snap.method GET getTagsH)
 --
 getTagsH :: AppHandler ()
 getTagsH = do
-           tags <- findAllTags
-           heistLocal (bindSplice "tags" $ tagsSplice tags) $ render "tag-list"
-          -- >>= toJSONResponse
+  req <- getRequest
+  tags <- findAllTags
+  let acceptJSON = hasAcceptHeaderJSON $ headers req
+  if acceptJSON then toJSONResponse tags else
+    heistLocal (bindSplice "tags" $ tagsSplice tags) $ render tplTagList
 
 ------------------------------------------------------------------------------
 
