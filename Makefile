@@ -66,9 +66,6 @@ rebuild: clean build
 ##       5. [ ] md5sum
 ##
 
-#markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js markdown.js
-#markdownMergeJS=markdown.min.js
-
 create-site: rebuild
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
@@ -77,8 +74,12 @@ create-site: rebuild
 	cp -r snaplets data $(SITE)
 	cp -r static/img $(SITE)/static/img
 	cp -r static/js $(SITE)/static/js
-	## Uglify JavaScripts
+	## Uglify JavaScripts; TODO: grunt or r.js?
 	cd $(SITE)/static/js && for x in *.js ; do \
+		uglifyjs $$x > $$x.min.js ; \
+		mv -f $$x.min.js $$x ; \
+	done
+	cd $(SITE)/static/libs/js && for x in *.js ; do \
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
 	done
