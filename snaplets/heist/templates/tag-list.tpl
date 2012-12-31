@@ -3,7 +3,7 @@
     <ul class="all-tags-list">
         <tags>
             <li>
-            <a href="/tag/${tagId}"><span class="label"><tagName/></span></a>
+                <apply template="_single-tag" />
             </li>
         </tags>
     </ul>

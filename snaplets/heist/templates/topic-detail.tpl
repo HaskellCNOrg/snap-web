@@ -30,7 +30,7 @@
 
     <p>
         <topicTagList>
-            <a href="/tag/${tagId}"><span class="label"><tagName/></span></a>
+            <apply template="_single-tag" />
         </topicTagList>
     </p>
 

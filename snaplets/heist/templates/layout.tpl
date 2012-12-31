@@ -8,8 +8,8 @@
     </i18n>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <apply template="layout-css" />
-    <apply template="google-a" />
+    <apply template="_layout-css" />
+    <apply template="_google-a" />
 
   </head>
   
@@ -18,7 +18,7 @@
 
       <div class="container">
           <content />
-          <apply template="layout-footer" />
+          <apply template="_layout-footer" />
       </div>
 
       <script type="text/javascript" src="/js/libs/jquery.js"></script>
