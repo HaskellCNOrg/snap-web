@@ -23,8 +23,9 @@ main = run
 run = do
     args <- getArgs
     let target = if null args then "test-migrate-nodeclub" else head args
+        from = "node_club_production"
     pipe <- runIOE $ connect (host "127.0.0.1")
-    let dbNodeClub = accessNodeClub pipe
+    let dbNodeClub = accessNodeClub pipe from
         dbTarget = accessHaskellCN pipe (T.pack target)
     u <- dbNodeClub findNodeUser
     t <- dbNodeClub findNodeTopic
@@ -36,7 +37,7 @@ run = do
     dbTarget (doMigrate datas)
     close pipe >> print "done"
 
-accessNodeClub pipe = access pipe slaveOk "node_club"
+accessNodeClub pipe = access pipe slaveOk
 accessHaskellCN pipe = access pipe slaveOk
 
 doMigrate (usr, t, r) = do
