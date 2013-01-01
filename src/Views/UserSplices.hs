@@ -5,7 +5,7 @@ module Views.UserSplices where
 
 import           Control.Arrow         (second)
 import           Control.Monad.Trans
-import Data.Maybe (fromMaybe)
+import           Data.Maybe            (fromMaybe)
 import qualified Data.Text             as T
 import           Snap.Snaplet.Auth
 import           Text.Templating.Heist

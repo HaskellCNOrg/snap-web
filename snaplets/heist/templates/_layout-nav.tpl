@@ -4,6 +4,15 @@
 
       <a class="brand" href="/"><i18n name="site.name" /></a>
 
+      <ul class="nav">
+          <li>
+              <a href="/topic"><i18n name="topic.new" /></a>
+          </li>
+          <li>
+              <a href="/tags"><i18n name="tag.list" /></a>
+          </li>
+      </ul>
+
       <ul class="nav pull-right">
           <ifLoggedOut>
           <li><a href="/signin"><i18n name="user.signin" /></a></li>

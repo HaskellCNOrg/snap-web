@@ -42,11 +42,15 @@ readDoc = readMarkdown parserOptions
 
 parserOptions :: ParserState
 parserOptions = defaultParserState { stateLiterateHaskell = True
-                                  }
+                                   }
 
 writeDoc :: Pandoc -> String
 writeDoc = UTF8.encodeString . writeHtmlString writerOptions
 
 writerOptions :: WriterOptions
 writerOptions = defaultWriterOptions { writerHighlight = True
+                                     , writerHTMLMathMethod = googleApiMathMethod
                                      }
+
+googleApiMathMethod :: HTMLMathMethod
+googleApiMathMethod = WebTeX "http://chart.apis.google.com/chart?cht=tx&chl="

@@ -2,7 +2,7 @@ online demo: <http://demo.haskellcn.org>
 
 ## Travis CI
 
-- [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.2)](http://travis-ci.org/HaskellCNOrg/snap-web)
+- branch/0.2 [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.2)](http://travis-ci.org/HaskellCNOrg/snap-web)
 
 ## Features
 ### 0.1
