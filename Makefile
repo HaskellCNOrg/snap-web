@@ -66,7 +66,7 @@ rebuild: clean build
 ##       5. [ ] md5sum
 ##
 
-create-site: rebuild
+create-site:
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
 	mkdir -p $(SITE)/static/css
@@ -79,13 +79,13 @@ create-site: rebuild
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
 	done
-	cd $(SITE)/static/libs/js && for x in *.js ; do \
+	cd $(SITE)/static/js/libs && for x in *.js ; do \
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
 	done
 	## Generate CSS from LESS files
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
-	cp -f $(SITE)/snaplets/heist/templates/layout-css-prod.tpl $(SITE)/snaplets/heist/templates/layout-css.tpl
+	cp -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
 	## compress TPL files
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
 		perl -i -p -e  's/[\r\n]+|[ ]{2}|<!--(.|\s)*?--.*>//gs' $$x ; \
