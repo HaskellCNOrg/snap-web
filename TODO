@@ -57,6 +57,7 @@
 - [ ] upgrade snap-0.10 and heist-0.10
 - [ ] reset password
 - [X] some notes at demo site.
+- [ ] update `updateAt` of topic when reply added
 
 - [ ] oauth
 
