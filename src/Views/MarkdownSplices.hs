@@ -5,7 +5,9 @@
 --
 --
 module Views.MarkdownSplices
-       ( markdownToHtmlSplice, markdownToHtmlString ) where
+       ( markdownToHtmlSplice
+       , markdownToHtmlText
+       ) where
 
 import qualified Codec.Binary.UTF8.String as UTF8
 import           Control.Monad.Trans
@@ -36,6 +38,9 @@ tabFilter4 = tabFilter 4
 
 markdownToHtmlString :: T.Text -> BS.ByteString
 markdownToHtmlString = xss . BS.pack . writeDoc . readDoc . tabFilter4 . T.unpack
+
+markdownToHtmlText :: T.Text -> T.Text
+markdownToHtmlText = bsToText . markdownToHtmlString
 
 readDoc :: String -> Pandoc
 readDoc = readMarkdown parserOptions

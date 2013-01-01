@@ -114,7 +114,7 @@ acceptHeaderName :: CI BS.ByteString
 acceptHeaderName = "Accept"
 
 hasAcceptHeaderJSON :: Headers -> Bool
-hasAcceptHeaderJSON headers = do
+hasAcceptHeaderJSON headers =
   case lookup acceptHeaderName headers of
     Just (x:_) -> contentTypeJSON `BS.isPrefixOf` x
     _ -> False

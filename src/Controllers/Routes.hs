@@ -13,12 +13,12 @@ import           Snap.Util.FileServe
 
 import           Application
 import qualified Controllers.Exception as Ex
+import qualified Controllers.Feed      as Feed
 import           Controllers.Home
 import qualified Controllers.Reply     as Reply
 import qualified Controllers.Tag       as Tag
 import qualified Controllers.Topic     as Topic
 import qualified Controllers.User      as User
-import qualified Controllers.Feed      as Feed
 
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/",             index)
