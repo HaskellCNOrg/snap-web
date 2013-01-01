@@ -10,7 +10,7 @@ $.hcn.initReplyToReply = function () {
      */
     $('a[id^=add-comment-]').click(function (x) {
         var target = $(x.currentTarget),
-            replySection = target.parent().prev('.reply-of-reply'),
+            replySection = target.prev('.reply-of-reply'),
             form = replySection.find('form');
 
         if (form.length > 0) {

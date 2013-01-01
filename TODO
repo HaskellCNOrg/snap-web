@@ -53,11 +53,11 @@
 - [X] pretty js for haskell
 - [X] Page of listing all Tag 
 - [X] Data Migration.
-    - [ ] test agaist production data
 - [ ] upgrade snap-0.10 and heist-0.10
 - [ ] reset password
 - [X] some notes at demo site.
-- [ ] update `updateAt` of topic when reply added
+- [ ] test agaist production data
+    - [ ] update `updateAt` of topic when reply added
 
 - [ ] oauth
 

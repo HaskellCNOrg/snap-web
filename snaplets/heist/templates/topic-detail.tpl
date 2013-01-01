@@ -39,10 +39,7 @@
       <replyPerTopic>
         <section class="reply">
           <p><replyContentMD/></p>
-          <p class="author">
-            <a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/>
-            <apply template="_delete-reply" />
-          </p>
+          <apply template="_reply-author" />
 
           <div class="reply-of-reply">
             <apply template="reply-to-reply-detail" />
@@ -50,9 +47,7 @@
 
           <ifLoggedIn>
             <!-- JS impl in @initReplyToReplyBtn@ -->
-            <p>
-              <a class="btn btn-link" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
-            </p>
+            <a class="btn btn-link invisible" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
           </ifLoggedIn>
           
         </section>

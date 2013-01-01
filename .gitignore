@@ -1,7 +1,8 @@
 dist
 log/*.log
 tmp*
-_*
+_backup
+_site
 log
 data/*.txt
 data/auth.json

@@ -31,6 +31,7 @@
        border-top: 1px solid @grayLight;
        padding: 20px 0 10px 20px ;
        margin: 5px 0;
+       color: #666;
        
        .reply-of-reply {
           margin: 10px 0 10px 30px;
@@ -41,13 +42,14 @@
             .author {
                 margin-right: 5px;
             }
-            p { display: inline; }
           }
           section:last-child {
               .grayBorderDotted;             
           }
           section:hover {
-              .grayHover;
+            a.btn-link {
+              visibility: visible;
+            }
           }
           .wmd-input {
                height: @mdEditorHeight;
@@ -56,6 +58,13 @@
 
        a {
          cursor: pointer;
+       }
+
+       &:hover {
+         color: @grayDark;
+         > a.btn-link {
+           visibility: visible;
+         }
        }
     }
     
