@@ -6,11 +6,9 @@ where
 
 import           Blaze.ByteString.Builder (Builder)
 import qualified Data.Text                as T
-import           Text.Pandoc
 import           Text.XmlHtml
 
 import           Models.Topic
-import           Models.Utils
 import           Views.MarkdownSplices    (markdownToHtmlText)
 import           Views.Utils
 

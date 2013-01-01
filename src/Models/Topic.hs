@@ -5,19 +5,14 @@ module Models.Topic where
 
 import           Control.Applicative   ((<$>), (<*>))
 import           Control.Monad.CatchIO (throw)
-import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
-import qualified Data.Bson             as BSON
 import qualified Data.Text             as T
 import           Data.Time             (UTCTime)
 import           Database.MongoDB
-import qualified Database.MongoDB      as DB
 import           Snap.Snaplet.Auth
-import           Snap.Snaplet.MongoDB
 
 import           Application
-import           Models.Exception
 import           Models.Internal.Types
 import           Models.Utils
 
@@ -144,4 +139,3 @@ sortByCreateAtDesc :: Order
 sortByCreateAtDesc = [ "create_at" =: -1 ]
 
 ------------------------------------------------------------------------------
-

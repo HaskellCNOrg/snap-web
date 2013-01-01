@@ -7,7 +7,7 @@
 
 module Text.Digestive.FormExt where
 
-import           Data.Maybe     (isJust, fromMaybe)
+import           Data.Maybe     (isJust)
 import           Data.Text      (Text)
 import qualified Data.Text      as T
 import           Text.Digestive
@@ -53,7 +53,7 @@ checkValidEmail = check "Please input valid email address." emailValidator
 --
 checkMinLength :: Monad m => Int -> Form Text m Text -> Form Text m Text
 checkMinLength l = checkMinLengthWith l "Content"
-                      
+
 checkMinLengthWith :: Monad m
                       => Int
                       -> Text

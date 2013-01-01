@@ -5,24 +5,18 @@
 module Views.SharedSplices where
 
 import           Application
-import           Data.Maybe                (fromMaybe)
-import qualified Data.Text                 as T
+import qualified Data.Text             as T
 import           Models.User
-import           Snap
-import           Snap.Snaplet.Environments
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
-import qualified Text.XmlHtml              as X
 
 
 ----------------------------------------------------------------------------
-
 
 sharedSplices :: [(T.Text, SnapletSplice App App)]
 sharedSplices = [ ("currentUser", currentUserSplice)
                 , ("isCurrentUserAdmin", isCurrentUserAdminSplice)
                 ]
-
 
 ----------------------------------------------------------------------------
 

@@ -13,9 +13,6 @@ import           Data.List             (deleteFirstsBy, nub)
 import qualified Data.Text             as T
 import           Models.Tag
 import           Snap
-import           Snap.Core
-import qualified Snap.Core             as Snap
-import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Templating.Heist
 import           Views.TagSplices
@@ -30,6 +27,7 @@ routes :: [(BS.ByteString, Handler App App ())]
 routes =  [ ("/tags",  Snap.method GET getTagsH)
           ]
 
+tplTagList :: BS.ByteString
 tplTagList = "tag-list"
 
 ------------------------------------------------------------------------------

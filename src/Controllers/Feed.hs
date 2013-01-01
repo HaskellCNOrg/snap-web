@@ -5,7 +5,6 @@ module Controllers.Feed
 where
 
 import qualified Data.ByteString as BS
-import qualified Data.Text       as T
 import           Snap.Core       (writeBS, writeBuilder)
 import           Snap.Snaplet    (Handler)
 

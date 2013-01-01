@@ -3,7 +3,6 @@
 
 module Controllers.Exception where
 
-import           Control.Monad.Trans
 import           Data.ByteString       (ByteString)
 import qualified Data.ByteString       as BS
 import           Data.Text             (Text)
@@ -15,7 +14,6 @@ import           Text.Templating.Heist
 import           Application
 import           Models.Exception
 import           Models.Utils
-import           Views.Utils
 
 ------------------------------------------------------------------------------
 
