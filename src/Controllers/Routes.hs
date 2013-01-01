@@ -18,6 +18,7 @@ import qualified Controllers.Reply     as Reply
 import qualified Controllers.Tag       as Tag
 import qualified Controllers.Topic     as Topic
 import qualified Controllers.User      as User
+import qualified Controllers.Feed      as Feed
 
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/",             index)
@@ -31,6 +32,8 @@ routes = [ ("/",             index)
          Reply.routes
          <|>
          Tag.routes
+         <|>
+         Feed.routes
          <|>
          [ ("", with heist heistServe)
          , ("", serveDirectory "static")
