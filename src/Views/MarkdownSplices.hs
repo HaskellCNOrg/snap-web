@@ -5,7 +5,7 @@
 --
 --
 module Views.MarkdownSplices
-       ( markdownToHtmlSplice ) where
+       ( markdownToHtmlSplice, markdownToHtmlString ) where
 
 import qualified Codec.Binary.UTF8.String as UTF8
 import           Control.Monad.Trans
