@@ -14,7 +14,8 @@ import qualified Data.Text             as T
 import           Models.Tag
 import           Snap
 import           Snap.Snaplet.Heist
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 import           Views.TagSplices
 import           Views.Utils
 
@@ -42,7 +43,7 @@ getTagsH = do
   tags <- findAllTags
   let acceptJSON = hasAcceptHeaderJSON $ headers req
   if acceptJSON then toJSONResponse tags else
-    heistLocal (bindSplice "tags" $ tagsSplice tags) $ render tplTagList
+    heistLocal (I.bindSplice "tags" $ tagsSplice tags) $ render tplTagList
 
 ------------------------------------------------------------------------------
 

@@ -26,7 +26,8 @@ import           Snap.Types.Headers      (lookup)
 import           System.Locale
 import           Text.Digestive
 import           Text.Digestive.Heist
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 ----------------------------------------------------------------
 
 import           Application
@@ -42,7 +43,7 @@ updateViewErrors v e = v { viewErrors = viewErrors v ++ [([], e)]}
 -- | shortcut for render a page with binding DigestiveSplices
 --
 renderDfPage :: BS.ByteString -> View T.Text -> AppHandler ()
-renderDfPage p v = renderDfPageSplices p v (bindSplice "dfChildErrorListRef" $ dfChildErrorListRef v)
+renderDfPage p v = renderDfPageSplices p v (I.bindSplice "dfChildErrorListRef" $ dfChildErrorListRef v)
     --heistLocal ( . bindDigestiveSplices v) $
                    --render p
 

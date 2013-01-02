@@ -9,8 +9,8 @@ import           Control.Arrow           (second)
 import           Control.Monad.Trans
 import           Data.Maybe              (isJust)
 import qualified Data.Text               as T
-import           Text.Templating.Heist
-
+import           Heist
+import qualified Heist.Interpreted as I
 import           Application
 import           Models.Exception
 import           Models.Reply
@@ -41,14 +41,14 @@ instance SpliceRenderable Topic where
 topicSplices :: Integral a
                 => [Topic]
                 -> Maybe a
-                -> [(T.Text, Splice AppHandler)]
+                -> [(T.Text, I.Splice AppHandler)]
 topicSplices topics page = [ ("homeTopics", allTopicsSplice topics page)
                            , ("ifNoTopics", ifNoTopicsSplice (length topics)) ]
 
 allTopicsSplice :: Integral a
                    => [Topic]
                    -> Maybe a
-                   -> Splice AppHandler
+                   -> I.Splice AppHandler
 allTopicsSplice topics page = do
     let t = filter (isJust . _topicId) topics
     (i, xs, splice) <- lift $ paginationHandler currentPage' t
@@ -59,7 +59,7 @@ allTopicsSplice topics page = do
     where currentPage' :: Integral a => a
           currentPage' = maybe 1 fromIntegral page
 
-ifNoTopicsSplice :: Int -> Splice AppHandler
+ifNoTopicsSplice :: Int -> I.Splice AppHandler
 ifNoTopicsSplice n = if n <= 0 then runChildren else return []
 
 ------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ ifNoTopicsSplice n = if n <= 0 then runChildren else return []
 -- | Splices used at Topic Detail page.
 --   Display either a topic or error msg.
 --
-topicDetailSplices :: Either UserException Topic -> [(T.Text, Splice AppHandler)]
+topicDetailSplices :: Either UserException Topic -> [(T.Text, I.Splice AppHandler)]
 topicDetailSplices = eitherToSplices
 
 
@@ -75,14 +75,14 @@ topicDetailSplices = eitherToSplices
 
 -- | Single Topic to Splice
 --
-renderTopicSimple :: Topic -> Splice AppHandler
+renderTopicSimple :: Topic -> I.Splice AppHandler
 renderTopicSimple tag = do
     usr <- findTopicAuthor tag
     runChildrenWithText (topicToSpliceContent tag usr)
 
 -- | Render a Topic with its replies.
 --
-renderTopic :: Topic -> Splice AppHandler
+renderTopic :: Topic -> I.Splice AppHandler
 renderTopic topic = do
     rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId topic)
     user <- findTopicAuthor topic

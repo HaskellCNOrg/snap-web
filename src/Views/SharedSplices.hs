@@ -8,8 +8,8 @@ import           Application
 import qualified Data.Text             as T
 import           Models.User
 import           Snap.Snaplet.Heist
-import           Text.Templating.Heist
-
+import           Heist
+import qualified Heist.Interpreted as I
 
 ----------------------------------------------------------------------------
 

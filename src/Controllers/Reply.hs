@@ -12,7 +12,7 @@ import           Data.Time
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
-import           Text.Templating.Heist
+import           Heist
 
 import           Application
 import           Controllers.Topic     hiding (routes)

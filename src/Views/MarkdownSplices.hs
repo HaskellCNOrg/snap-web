@@ -18,12 +18,13 @@ import           Models.Utils
 import           Text.HTML.SanitizeXSS
 import           Text.Pandoc
 import           Text.Pandoc.Shared       (tabFilter)
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 import qualified Text.XmlHtml             as X
 
 ----------------------------------------------------------------------
 
-markdownToHtmlSplice :: MonadIO m => T.Text -> Splice m
+markdownToHtmlSplice :: MonadIO m => T.Text -> I.Splice m
 markdownToHtmlSplice markup =
     either throwError toDoc $ X.parseHTML "" $ markdownToHtmlBS markup
     where throwError e = return [X.TextNode $ T.pack ("Error parsing markdown output: " ++ e)]

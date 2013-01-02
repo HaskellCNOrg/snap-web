@@ -10,8 +10,8 @@ import           Data.Function         (on)
 import           Data.List
 import qualified Data.Map              as MP
 import qualified Data.Text             as T
-import           Text.Templating.Heist
-
+import           Heist
+import qualified Heist.Interpreted as I
 
 import           Application
 import           Models.Reply
@@ -30,13 +30,13 @@ type ReplyWithReply = (Reply, [Reply])
 
 -- | Reply with all children
 --
-allReplyPerTopicSplice :: [Reply] -> Splice AppHandler
+allReplyPerTopicSplice :: [Reply] -> I.Splice AppHandler
 allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
 
 -- | Display content of a reply as markdown.
 --   Display content of a comment (reply of reply) as plain content.
 --
-replySpliceWithChildren :: ReplyWithReply -> Splice AppHandler
+replySpliceWithChildren :: ReplyWithReply -> I.Splice AppHandler
 replySpliceWithChildren (r, rs) = do
     user <- findReplyAuthor r
     runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
@@ -51,7 +51,7 @@ replySpliceWithChildren (r, rs) = do
 
 -- | Just a Reply without any children
 --
-replyToReplySplice :: Reply -> Splice AppHandler
+replyToReplySplice :: Reply -> I.Splice AppHandler
 replyToReplySplice r = do
     user <- findReplyAuthor r
     runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)

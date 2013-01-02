@@ -19,7 +19,7 @@ import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Text.Digestive
 import           Text.Digestive.Snap   hiding (method)
-import           Text.Templating.Heist
+import           Heist
 
 import           Application
 import           Controllers.Home

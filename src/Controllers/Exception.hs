@@ -9,7 +9,8 @@ import           Data.Text             (Text)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 
 import           Application
 import           Models.Exception
@@ -38,4 +39,4 @@ exceptionH = toErrorPage . showUE
 
 toErrorPage :: Text           -- ^ Errors
                -> AppHandler ()
-toErrorPage err = heistLocal (bindSplice "error" (textSplice err)) $ render "error-page"
+toErrorPage err = heistLocal (I.bindSplice "error" (I.textSplice err)) $ render "error-page"

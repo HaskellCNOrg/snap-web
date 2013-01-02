@@ -15,7 +15,7 @@ import qualified Data.Text             as T
 import           Data.Time             (UTCTime)
 import           Database.MongoDB
 import qualified Database.MongoDB      as DB
-import           Models.Exception
+import           Models.Internal.Exception
 import           Models.Utils
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
@@ -105,7 +105,7 @@ documentToreply d = Reply
 ----
 replyFromDocumentOrThrow :: Document -> IO Reply
 replyFromDocumentOrThrow d = case parseEither documentToreply d of
-    Left e  -> throw $ BackendError $ show e
+    Left e  -> throw $ UserException e
     Right r -> return r
 
 ------------------------------------------------------------------------------
@@ -122,4 +122,3 @@ firstLevelReply = filter (isNothing . _replyToReplyId)
 --
 nonFirstLevelReply :: [Reply] -> [Reply]
 nonFirstLevelReply = filter (isJust . _replyToReplyId)
-

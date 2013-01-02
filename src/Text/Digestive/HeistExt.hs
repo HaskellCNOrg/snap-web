@@ -5,11 +5,12 @@ module Text.Digestive.HeistExt where
 
 import           Data.Text             (Text)
 import           Text.Digestive
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 import qualified Text.XmlHtml          as X
 
 
-dfChildErrorListRef :: Monad m => View Text -> Splice m
+dfChildErrorListRef :: Monad m => View Text -> I.Splice m
 dfChildErrorListRef view =
     return $ errorList (viewErrors view)
   where errorList :: [(Path, Text)] -> [X.Node]

@@ -6,7 +6,8 @@ import qualified Data.ByteString           as BS
 import qualified Data.Text                 as T
 import           Snap
 import           Snap.Snaplet.Environments
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 import qualified Text.XmlHtml              as X
 
 import           Application
@@ -18,7 +19,7 @@ import           Models.Utils
 paginationHandler :: (Eq b, Integral a, Show a)
                      => a        -- ^ Current Page
                      -> [b]      -- ^ Total items
-                     -> AppHandler (Int, [b], Splice AppHandler) -- ^ items for current page and page splice
+                     -> AppHandler (Int, [b], I.Splice AppHandler) -- ^ items for current page and page splice
 paginationHandler cp xs = do
   pageSize <- getPageSize
   req <- getRequest

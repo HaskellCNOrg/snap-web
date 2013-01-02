@@ -14,6 +14,7 @@ import           Snap.Snaplet.Auth
 
 import           Application
 import           Models.Internal.Types
+import           Models.Internal.Exception
 import           Models.Utils
 
 
@@ -84,7 +85,7 @@ documentToTopic d = Topic
 --
 topicFromDocumentOrThrow :: Document -> IO Topic
 topicFromDocumentOrThrow d = case parseEither documentToTopic d of
-    Left e  -> throw $ BackendError $ show e
+    Left e  -> throw $ UserException e
     Right r -> return r
 
 

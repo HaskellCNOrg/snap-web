@@ -19,7 +19,7 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
-import           Text.Templating.Heist
+import           Heist
 
 import           Application
 import           Controllers.Exception (exceptionH)

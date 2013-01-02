@@ -7,7 +7,7 @@ import           Data.ByteString       (ByteString)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Text.Templating.Heist
+import           Heist
 
 import           Application
 

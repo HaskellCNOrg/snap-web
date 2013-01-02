@@ -16,7 +16,7 @@ import           Data.Baeson.Types
 import qualified Data.Bson                   as BSON
 import qualified Data.Configurator           as C
 import qualified Data.HashMap.Lazy           as HM
-import           Data.Lens.Lazy
+import Control.Lens hiding ((.=), Action)
 import           Data.Maybe
 import           Data.Text                   (Text)
 import qualified Data.Text                   as T
@@ -61,7 +61,7 @@ settingsFromConfig = do
 ------------------------------------------------------------------------------
 -- | Initializer for the MongoDB backend to the auth snaplet.
 --
-initMongoAuth :: Lens b (Snaplet SessionManager)
+initMongoAuth :: SnapletLens b (Snaplet SessionManager)
                  -> Snaplet SM.MongoDB
                  -> Maybe String    -- ^ Site Key path
                  -> SnapletInit b (AuthManager b)
@@ -71,7 +71,7 @@ initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
     authSettings <- settingsFromConfig
     key <- liftIO $ getKey (fromMaybe (asSiteKey authSettings) sk)
     let
-      lens' = getL snapletValue db
+      lens' = (^$ (db snapletValue))
       --manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens')
       manager = MongoBackend authTable (SM.mongoDatabase lens')
                 (SM.mongoPool lens')

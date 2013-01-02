@@ -8,7 +8,8 @@ import           Control.Monad.Trans
 import           Data.Maybe            (fromMaybe)
 import qualified Data.Text             as T
 import           Snap.Snaplet.Auth
-import           Text.Templating.Heist
+import           Heist
+import qualified Heist.Interpreted as I
 
 import           Application
 import           Models.Exception
@@ -27,7 +28,7 @@ instance SpliceRenderable User where
 --   Display either a user or error msg.
 --
 
-userDetailSplices :: Either UserException User -> [(T.Text, Splice AppHandler)]
+userDetailSplices :: Either UserException User -> [(T.Text, I.Splice AppHandler)]
 userDetailSplices = eitherToSplices
 
 
@@ -35,7 +36,7 @@ userDetailSplices = eitherToSplices
 
 -- | Single user to Splice.
 --
-renderUser :: User -> Splice AppHandler
+renderUser :: User -> I.Splice AppHandler
 renderUser user = runChildrenWith $
                      [ ("userEditable", hasEditPermissionSplice user)
                      , ("userLastLoginAt", userLastLoginAtSplice $ _authUser user)
@@ -55,7 +56,7 @@ formatUTCTimeMaybe (Just x) = formatUTCTime x
 -- | Display User Last Login time if it has.
 --
 userLastLoginAtSplice :: Maybe AuthUser   -- ^ Author of some.
-                        -> Splice AppHandler
+                        -> I.Splice AppHandler
 userLastLoginAtSplice Nothing = return []
 userLastLoginAtSplice (Just authusr) =
     case userLastLoginAt authusr of
@@ -67,7 +68,7 @@ userLastLoginAtSplice (Just authusr) =
 -- | Has Edit premission when either current user is Admin or Author.
 --
 hasEditPermissionSplice :: User   -- ^ Author of some.
-                        -> Splice AppHandler
+                        -> I.Splice AppHandler
 hasEditPermissionSplice author = do
     has <- lift $ hasUpdatePermission author
     if has then runChildren else return []

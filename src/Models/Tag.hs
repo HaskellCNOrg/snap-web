@@ -15,6 +15,7 @@ import           Data.Text             (Text)
 import qualified Data.Text             as T
 import           Database.MongoDB
 import           Models.Internal.Types
+import           Models.Internal.Exception
 import           Models.Utils
 import           Snap.Snaplet.Auth
 
@@ -84,7 +85,7 @@ documentToTag d = Tag
 --
 tagFromDocumentOrThrow :: Document -> IO Tag
 tagFromDocumentOrThrow d = case parseEither documentToTag d of
-    Left e  -> throw $ BackendError $ show e
+    Left e  -> throw $ UserException e
     Right r -> return r
 
 --------------------------------------------------------------------------------

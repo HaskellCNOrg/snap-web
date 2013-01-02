@@ -7,10 +7,7 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import           Control.Category          ((.))
-import           Data.Lens.Common
-import           Data.Lens.Template
-import           Prelude                   hiding ((.))
+import           Control.Lens
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Heist
@@ -21,14 +18,14 @@ import           Snap.Snaplet.Session
 ------------------------------------------------------------------------------
 data App = App
     { _heist      :: Snaplet (Heist App)
-    , _i18n       :: Snaplet I18NSnaplet
+    , _i18n       :: Snaplet I18N
     , _appSession :: Snaplet SessionManager
     , _appMongoDB :: Snaplet MongoDB
     , _appAuth    :: Snaplet (AuthManager App)
     , _adminRole  :: Role                       -- ^ Role for admin user. keep it simple for now.
     }
 
-makeLens ''App
+makeLenses ''App
 
 instance HasHeist App where
     heistLens = subSnaplet heist
@@ -37,8 +34,8 @@ instance HasI18N App where
    i18nLens = i18n
 
 instance HasMongoDB App where
-    getMongoDB = getL (snapletValue . appMongoDB)
+    getMongoDB app = app ^. (appMongoDB . snapletValue)
+--      getMongoDB = (^& (appMongoDB . snapletValue))
 
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
-

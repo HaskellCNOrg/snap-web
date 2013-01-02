@@ -1,12 +1,11 @@
+CBD=cabal-dev
+STYLE=stylish-haskell
+
 PROG_PREV = ./dist/build/snap-web/snap-web
 PROG_NAME = ./snap-web
-#EXTRA_TEST_LIB = ./dist/build/snap-web/snap-web-tmp
-STYLE=stylish-haskell
 
 DIST=dist
 SITE=_site
-
-CBD=cabal-dev
 
 default: build-dev
 
@@ -21,6 +20,9 @@ hlint:
 ## DEVELOPMENT
 ##
 ###########################
+
+dryrun:
+	$(CBD) install --only-dependencies --dry-run
 
 init:
 	cabal update
