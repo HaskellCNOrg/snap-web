@@ -2,24 +2,19 @@
 
 module Main where
 
-import           Control.Monad.CatchIO              (throw)
-import Control.Exception (ErrorCall(..))
+import Data.ByteString (ByteString)
 import Database.MongoDB
-import Data.Text (Text)
-import qualified Data.Text.Encoding   as T
 import qualified Data.Text as T
-import Control.Monad.Trans (liftIO)
-import qualified Data.Bson as BSON
-import Control.Applicative
-import Models.User
+import qualified Data.Text.Encoding as T
 import           Data.Baeson.Types
-import           Data.Bson
 import           Crypto.PasswordStore
 import System.IO.Unsafe
 import System.Environment
 
+main :: IO ()
 main = run
 
+run :: IO ()
 run = do
     args <- getArgs
     let target = if null args then "test-migrate-nodeclub" else head args
@@ -35,7 +30,7 @@ run = do
                 , either (const []) id t
                 , either (const []) id r)
     dbTarget (doMigrate datas)
-    close pipe >> print "done"
+    close pipe >> putStrLn "done"
 
 accessNodeClub pipe = access pipe slaveOk
 accessHaskellCN pipe = access pipe slaveOk
@@ -88,14 +83,13 @@ migUsers docs = (xs, ys)
                              fields ++ [pass]
 
 
+mkp :: ByteString -> ByteString
 mkp passwd = unsafePerformIO $ makePassword passwd 12
 
 -- | use email as default password
 --
 mkp2 :: Field -> Field
-mkp2 (_ := String v) = "password" := (Bin $ Binary $ mkp $ textToBS v)
-
-textToBS = T.encodeUtf8
+mkp2 (_ := String v) = "password" := (Bin $ Binary $ mkp $ T.encodeUtf8 v)
 
 ----------------------------------------------------------------------
 

@@ -21,16 +21,16 @@ hlint:
 ## DEVELOPMENT
 ##
 ###########################
+
 init:
 	cabal update
 	$(CBD) install --only-dependencies
 
-init-test:
-	$(CBD) install --enable-tests
-
 build-dev:
 	$(CBD) --flags="development" configure
 	$(CBD) build
+
+install-dev: build-dev
 
 test:
 	$(CBD) --flags="development" --enable-tests configure
@@ -43,9 +43,6 @@ p:
 bp: build-dev p
 
 rp: clean build-dev p
-
-migrate:
-	./dist/build/migrate/migrate
 
 ###########################
 ## PRODUCTION

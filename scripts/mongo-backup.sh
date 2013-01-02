@@ -19,7 +19,7 @@ mongoexport --db node_club --collection replies -out $backfold/nc-replies.json
 ## TODO Fixme
 doimport ()
 {
-   mongoimport --db node_club --collection users   -out nc-users.json
-   mongoimport --db node_club --collection topics  -out nc-topics.json
-   mongoimport --db node_club --collection replies -out nc-replies.json
+   mongoimport --db node_club --collection users   -file  nc-users.json
+   mongoimport --db node_club --collection topics  -file  nc-topics.json
+   mongoimport --db node_club --collection replies -file  nc-replies.json
 }

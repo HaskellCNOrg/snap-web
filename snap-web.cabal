@@ -2,7 +2,8 @@ Name:                Snap-Web
 Version:             0.2
 Synopsis:            snap web
 Description:         A light weight forum
-License:             AllRightsReserved
+License:             BSD3
+license-file:        LICENSE
 Author:              Haisheng,Wu
 Maintainer:          freizl@gmail.com
 Stability:           Experimental
@@ -10,7 +11,7 @@ Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.2
 tested-with:         GHC == 7.4.1
-Homepage:            https://github.com/HaskellCNOrg
+Homepage:            https://github.com/HaskellCNOrg/snap-web
 
 Source-Repository head
   Type:     git
@@ -54,7 +55,7 @@ Executable snap-web
     snap-server                  == 0.9.*,
     snaplet-i18n                 >= 0.0.3 && < 0.0.4,
     snaplet-mongodb-minimalistic >= 0.0.6 && < 0.0.7,
-    snaplet-oauth                >= 0.0.6 && < 0.0.7,
+    -- snaplet-oauth                >= 0.0.6 && < 0.0.7,
     text                         >= 0.11  && < 0.12,
     time                         >= 1.1   && < 1.5,
     unordered-containers         >= 0.2   && < 0.3,
@@ -91,12 +92,3 @@ Test-suite hcn-tests
     test-framework-hunit >= 0.2  && < 0.3,
     -- Copied from regular dependencies:
     base                 >= 4    && < 5
-
-Executable migrate
-  Hs-source-dirs: scripts
-  Main-is:        migrate.hs
-  Ghc-options:    -Wall -isrc -fno-warn-unused-do-bind
-  Build-depends:
-    base                 >= 4    && < 5,
-    bson                         >= 0.1.7 && < 0.2.2,
-    pwstore-fast >= 2.2
