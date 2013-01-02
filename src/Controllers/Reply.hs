@@ -92,7 +92,7 @@ replyToReplyH = withAuthUser $ do
     case result of
       Just req -> do
                   reply <- MR.createReplyToTopic =<< replyVoToReply req
-                  heistLocal (bindSplice "replyToReply" $ replySplice reply) $ render tplReplyToReplyDetail
+                  heistLocal (bindSplice "replyToReply" $ replyToReplySplice reply) $ render tplReplyToReplyDetail
       Nothing  -> renderDfPageSplices tplReplyToReplyForm view $
                                       bindSplices [ ("topicid", textSplice tid)
                                                   , ("replyid", textSplice rid) ]

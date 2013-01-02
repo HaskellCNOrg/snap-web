@@ -38,11 +38,12 @@ allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
 --
 replySpliceWithChildren :: ReplyWithReply -> Splice AppHandler
 replySpliceWithChildren (r, rs) = do
-    usrName <- findReplyAuthor r
-    runChildrenWith $ [ ("replyToReply", mapSplices replySplice rs)
+    user <- findReplyAuthor r
+    runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
+                      , ("replyToReply", mapSplices replyToReplySplice rs)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
                       ]
-                      ++ map (second textSplice) (replySpliceImpl r usrName)
+                      ++ map (second textSplice) (replySpliceImpl r user)
 
 
 ------------------------------------------------------------------------------
@@ -50,8 +51,8 @@ replySpliceWithChildren (r, rs) = do
 
 -- | Just a Reply without any children
 --
-replySplice :: Reply -> Splice AppHandler
-replySplice r = do
+replyToReplySplice :: Reply -> Splice AppHandler
+replyToReplySplice r = do
     user <- findReplyAuthor r
     runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)

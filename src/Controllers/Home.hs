@@ -3,7 +3,7 @@
 
 module Controllers.Home where
 
-import           Control.Monad.Trans
+import           Data.ByteString       (ByteString)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
@@ -28,4 +28,5 @@ index = ifTop $ do
 redirectToHome :: Handler App App ()
 redirectToHome = redirect303 "/"
 
+redirect303 :: ByteString -> Handler App App ()
 redirect303 url = redirect' url 303

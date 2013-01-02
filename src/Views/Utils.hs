@@ -13,18 +13,20 @@ module Views.Utils where
 import           Control.Applicative
 import           Data.Aeson
 import qualified Data.ByteString         as BS
+import           Data.CaseInsensitive    (CI)
 import           Data.Maybe              (fromMaybe)
 import qualified Data.Text               as T
 import qualified Data.Text.Encoding      as T
 import           Data.Text.Read
 import           Data.Time
+import           Prelude                 hiding (lookup)
 import           Snap.Core
 import           Snap.Snaplet.Heist
+import           Snap.Types.Headers      (lookup)
 import           System.Locale
 import           Text.Digestive
 import           Text.Digestive.Heist
 import           Text.Templating.Heist
-
 ----------------------------------------------------------------
 
 import           Application
@@ -95,13 +97,24 @@ formatUTCTimePerTZ tz tm = T.pack . formatTime defaultTimeLocale "%F %H:%M" $ ut
 ------------------------------------------------------------------------------
 -- JSON Response
 
-contenTypeJSON :: BS.ByteString
-contenTypeJSON = "application/json"
+contentTypeJSON :: BS.ByteString
+contentTypeJSON = "application/json"
 
 setJSONContentType :: Response -> Response
-setJSONContentType = setContentType contenTypeJSON
+setJSONContentType = setContentType contentTypeJSON
 
 toJSONResponse :: ToJSON a => a -> AppHandler ()
 toJSONResponse a = do
   modifyResponse setJSONContentType
   writeLBS . encode . toJSON $ a
+
+------------------------------------------------------------------------------
+-- Headers
+acceptHeaderName :: CI BS.ByteString
+acceptHeaderName = "Accept"
+
+hasAcceptHeaderJSON :: Headers -> Bool
+hasAcceptHeaderJSON xs =
+  case lookup acceptHeaderName xs of
+    Just (x:_) -> contentTypeJSON `BS.isPrefixOf` x
+    _ -> False

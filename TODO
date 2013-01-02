@@ -38,11 +38,7 @@
     - [X] Instead of relationship collection, how about just a array field of Topic collection.
     - [X] save tags at create / edit topic
     - [X] list topics per tag
-    - [ ] Batch Creation?
-    - [ ] suggesstion for tag input box
     - [X] pagination at "topics list per tag" page
-- [ ] oauth
-- [ ] Data Migration.
 - [X] 404 page
 - [X] update i18n msg file: use nested config
 - [X] full pandoc support?
@@ -55,18 +51,35 @@
 - [X] XSS
     - http://cnodejs.org/?q=xss
 - [X] pretty js for haskell
+- [X] Page of listing all Tag 
+- [X] Data Migration.
+- [ ] upgrade snap-0.10 and heist-0.10
 - [ ] reset password
-      - also allow admin reset pass via web.
+- [X] some notes at demo site.
+- [X] test agaist production data
+
+- [ ] oauth
 
 * * * * *
+- [ ] Web security
+    - CAPTCHA
 
 - [ ] Message to user when new comments
 
 - [ ] add 'like/dislike' for topic
 - [ ] i18n for Digestive-Form validation message.
+- [ ] Message to user
+  - at by user
+  - when new comments
 - [ ] User be able to save a topic as favoriate.
 - [ ] Snaplet-Admin
 - [ ] Delete topic
+- [ ] Improve Tag functionality
+    - [ ] Batch Creation?
+    - [ ] suggesstion for tag input box
+- [ ] Improve pagination
+  - ellipse page number list when page number list is too long.
+    (set pagesize to 2 to re-play such problem.)
 
 * * * * *
 
@@ -133,3 +146,4 @@
 - [X] allow user add tag?
 - [X] mv tags to sidebar.
 - [X] do not display click count.
+

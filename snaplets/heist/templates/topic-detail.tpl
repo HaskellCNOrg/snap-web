@@ -11,51 +11,43 @@
 
 <ifFound>
 
-  <div class="topicMain">
+  <div class="topic-content">
 
     <article class="topic">
       <h2><topicTitle /></h2>
       <p><topicContent/></p>
-
-      <apply template="topic-author" />
-      <ul class="tags">
-        <topicTagList>
-          <li><a href="/tag/${tagId}"><tagName/></a></li>
-        </topicTagList>
-      </ul>
-      <!-- <p><topicUpdateAt/></p> -->
     </article>
+
+    <apply template="_topic-author" />
 
     <ifLoggedIn>
       <topicEditable>
-        <div name="topicToolbar" class="topic-toolbar">
-            <a href="/topicput/${topicId}"><i18n name="site.edit" /></a>
+        <div class="btn-group topic-toolbar">
+            <a class="btn btn-link" href="/topicput/${topicId}"><i18n name="site.edit" /></a>
         </div>
       </topicEditable>
     </ifLoggedIn>
 
-    <div class="replyPerTopic">
+    <p>
+        <topicTagList>
+            <apply template="_single-tag" />
+        </topicTagList>
+    </p>
+
+    <div class="reply-per-topic">
       <h3><i18n name="topic.answers" /></h3>
       <replyPerTopic>
         <section class="reply">
           <p><replyContentMD/></p>
-          <p class="small-font">
-            <a href="/user/${replyAuthorId}"><replyAuthor/></a> <replyCreateAt/>
-            <a href="/topic/${replyToTopicId}/${replyId}/delete/" id="delete-ror-${replyId}"><i18n name="site.delete" /></a>
-          </p>
+          <apply template="_reply-author" />
 
-          <div class="replyOfReply">
+          <div class="reply-of-reply">
             <apply template="reply-to-reply-detail" />
           </div>
 
           <ifLoggedIn>
             <!-- JS impl in @initReplyToReplyBtn@ -->
-            <p>
-              <a id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
-            </p>
-            <isCurrentUserAdmin>
-              <a href="/topic/${topicId}/${replyId}/delete/">Delete</a>
-            </isCurrentUserAdmin>
+            <a class="btn btn-link invisible" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
           </ifLoggedIn>
           
         </section>
@@ -66,9 +58,11 @@
   </div>
   
   <ifLoggedIn>
-    <div class="replyEditor">
-       <apply template="reply-to-form" />
-    </div>
+      <hr />
+      <div class="reply-editor">
+          <h3>Add Reply</h3>
+          <apply template="reply-to-form" />
+      </div>
   </ifLoggedIn>
 
 </ifFound>

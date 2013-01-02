@@ -13,6 +13,7 @@ import           Snap.Util.FileServe
 
 import           Application
 import qualified Controllers.Exception as Ex
+import qualified Controllers.Feed      as Feed
 import           Controllers.Home
 import qualified Controllers.Reply     as Reply
 import qualified Controllers.Tag       as Tag
@@ -31,6 +32,8 @@ routes = [ ("/",             index)
          Reply.routes
          <|>
          Tag.routes
+         <|>
+         Feed.routes
          <|>
          [ ("", with heist heistServe)
          , ("", serveDirectory "static")

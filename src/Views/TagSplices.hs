@@ -20,8 +20,8 @@ import           Models.Utils
 topicTagSplice :: Maybe [ObjectId] -> Splice AppHandler
 topicTagSplice ids =
     lift (findSomeTags $ fromMaybe [] ids)
-    >>= mapSplices tagSplice
-
+    -- >>= mapSplices tagSplice
+    >>= tagsSplice
 
 tagSplice :: Tag -> Splice AppHandler
 tagSplice = runChildrenWithText . tagSpliceImpl
@@ -30,3 +30,6 @@ tagSplice = runChildrenWithText . tagSpliceImpl
 tagSpliceImpl :: Tag -> [(T.Text, T.Text)]
 tagSpliceImpl (Tag tid name _) = [ ("tagId", objectIdToText tid)
                                 , ("tagName", name) ]
+
+tagsSplice :: [Tag] -> Splice AppHandler
+tagsSplice = mapSplices tagSplice

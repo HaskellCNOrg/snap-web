@@ -1,42 +1,42 @@
+.container > div {
+  margin-right: 280px;
+}
+
 // -------------------------------------- Topic
 
-.topicList {
-    > ul {
-        list-style-type: none;
-        margin-left: 1px;
-        
-        li {
-            //margin:  0;
-            padding: 5px 10px;
-            font-size: 18px;
-            &:hover {
-                .grayHover;
-            }
-        }
+.topic-list {
+  ol {
+    li {
+      font-size: 15px;
     }
+  }
 }
 
-.topic {
-}
+.topic-content {
+  .btn-link {
+    padding: 0px 5px 0 0;
+    font-size: 11px;
+  }
 
-.topic-toolbar {
-    margin: 5px 0;
-    .clear;
+  p > code {
+    white-space : pre-line;
+  }
 }
 
 // ---------------------------------------- Reply
 
-.replyPerTopic {
+.reply-per-topic {
     margin: 10px 0;
     .clear;
 
     .reply {
        border-top: 1px solid @grayLight;
-       padding: 20px 0 10px 20px ;
+       padding: 10px 0 0 20px ;
        margin: 5px 0;
+       color: #666;
        
-       .replyOfReply {
-          margin: 10px 0 10px 15px;
+       .reply-of-reply {
+          margin: 10px 0 0 30px;
 
           section {
             .grayBorderDotted;
@@ -44,31 +44,40 @@
             .author {
                 margin-right: 5px;
             }
-            p { display: inline; }
           }
           section:last-child {
               .grayBorderDotted;             
           }
           section:hover {
-              .grayHover;
+            a.btn-link {
+              visibility: visible;
+            }
           }
           .wmd-input {
                height: @mdEditorHeight;
+          }
+          .author {
+            margin-bottom: 0;
           }
        }
 
        a {
          cursor: pointer;
        }
+
+       &:hover {
+         color: @grayDark;
+         > a.btn-link {
+           visibility: visible;
+         }
+       }
+
+
     }
     
 }
 
-.replyEditor {
-    border-top: 1px solid #000 ;
-    padding-top: 15px;
-    margin-top: 30px;
-
+.reply-editor {
     input.btn {
         margin-top: 15px;
     }

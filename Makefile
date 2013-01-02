@@ -19,18 +19,18 @@ hlint:
 
 ###########################
 ## DEVELOPMENT
-## 
+##
 ###########################
+
 init:
 	cabal update
-	$(CBD) install
-
-init-test:
-	$(CBD) install --enable-tests
+	$(CBD) install --only-dependencies
 
 build-dev:
 	$(CBD) --flags="development" configure
 	$(CBD) build
+
+install-dev: build-dev
 
 test:
 	$(CBD) --flags="development" --enable-tests configure
@@ -44,15 +44,12 @@ bp: build-dev p
 
 rp: clean build-dev p
 
-migrate:
-	./dist/build/migrate/migrate
-
 ###########################
 ## PRODUCTION
 ##
 ###########################
 
-build: 
+build:
 	$(CBD) configure
 	$(CBD) build 1>./log/build.log 2>&1
 
@@ -64,12 +61,9 @@ rebuild: clean build
 ##       3. combine & compress JS; replace related links in templates.
 ##       4. generate main.css via lessc; replace related links in templates.
 ##       5. [ ] md5sum
-## 
+##
 
-#markdownJS=Markdown.Converter.js Markdown.Sanitizer.js Markdown.Editor.js markdown.js
-#markdownMergeJS=markdown.min.js
-
-create-site: rebuild
+create-site:
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
 	mkdir -p $(SITE)/static/css
@@ -77,14 +71,18 @@ create-site: rebuild
 	cp -r snaplets data $(SITE)
 	cp -r static/img $(SITE)/static/img
 	cp -r static/js $(SITE)/static/js
-	## Uglify JavaScripts
+	## Uglify JavaScripts; TODO: grunt or r.js?
 	cd $(SITE)/static/js && for x in *.js ; do \
+		uglifyjs $$x > $$x.min.js ; \
+		mv -f $$x.min.js $$x ; \
+	done
+	cd $(SITE)/static/js/libs && for x in *.js ; do \
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
 	done
 	## Generate CSS from LESS files
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
-	cp -f $(SITE)/snaplets/heist/templates/layout-css-prod.tpl $(SITE)/snaplets/heist/templates/layout-css.tpl
+	cp -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
 	## compress TPL files
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
 		perl -i -p -e  's/[\r\n]+|[ ]{2}|<!--(.|\s)*?--.*>//gs' $$x ; \

@@ -2,8 +2,8 @@
 module Views.UserForm where
 
 import           Control.Applicative    ((<$>), (<*>))
+import           Data.Maybe             (fromMaybe)
 import           Data.Text              (Text)
-import           Data.Maybe (fromMaybe)
 import           Text.Digestive
 import           Text.Digestive.FormExt
 

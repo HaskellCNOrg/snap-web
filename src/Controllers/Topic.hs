@@ -9,7 +9,6 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.CatchIO (throw, try)
 import           Control.Monad.Trans
-import           Data.Bson             (ObjectId)
 import qualified Data.ByteString       as BS
 import           Data.Maybe            (fromJust, fromMaybe, isNothing)
 import qualified Data.Text             as T
@@ -238,5 +237,5 @@ topicVoToTopic tv tags topic = do
 --
 previewTopicH :: AppHandler ()
 previewTopicH = do
-  content <- decodedParamText "content"
-  heistLocal (bindSplice "topicContent" $ markdownToHtmlSplice content) $ render "topic-preview"
+  mdContent <- decodedParamText "content"
+  heistLocal (bindSplice "topicContent" $ markdownToHtmlSplice mdContent) $ render "topic-preview"

@@ -6,7 +6,6 @@ module Views.TopicSplices
        , topicDetailSplices ) where
 
 import           Control.Arrow           (second)
-import           Control.Monad
 import           Control.Monad.Trans
 import           Data.Maybe              (isJust)
 import qualified Data.Text               as T
@@ -57,8 +56,7 @@ allTopicsSplice topics page = do
       [ ("allTopics", mapSplices renderTopicSimple xs)
       , ("pagination", splice)
       , ("startIndex", textSplice $ sToText i) ]
-    where total' = fromIntegral . length
-          currentPage' :: Integral a => a
+    where currentPage' :: Integral a => a
           currentPage' = maybe 1 fromIntegral page
 
 ifNoTopicsSplice :: Int -> Splice AppHandler

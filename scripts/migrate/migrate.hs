@@ -2,34 +2,38 @@
 
 module Main where
 
-import           Control.Monad.CatchIO              (throw)
-import Control.Exception (ErrorCall(..))
+import Data.ByteString (ByteString)
 import Database.MongoDB
-import Data.Text (Text)
-import Control.Monad.Trans (liftIO)
-import Data.Bson
-import qualified Data.Bson as BSON
-import Data.Baeson.Types
-import Control.Applicative
-import Models.User
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import           Data.Baeson.Types
-import           Data.Bson
 import           Crypto.PasswordStore
 import System.IO.Unsafe
+import System.Environment
 
+main :: IO ()
 main = run
 
+run :: IO ()
 run = do
+    args <- getArgs
+    let target = if null args then "test-migrate-nodeclub" else head args
+        from = "node_club_production"
     pipe <- runIOE $ connect (host "127.0.0.1")
-    u <- access pipe slaveOk "node_club" findNodeUser
-    t <- access pipe slaveOk "node_club" findNodeTopic
-    r <- access pipe slaveOk "node_club" findNodeReply
-    access pipe slaveOk "test-haskell" clearAll
+    let dbNodeClub = accessNodeClub pipe from
+        dbTarget = accessHaskellCN pipe (T.pack target)
+    u <- dbNodeClub findNodeUser
+    t <- dbNodeClub findNodeTopic
+    r <- dbNodeClub findNodeReply
+    dbTarget clearAll
     let datas = ( either (const []) id u
                 , either (const []) id t
-                , either (const []) id r)                          
-    access pipe slaveOk "test-haskell" (doMigrate datas)
-    close pipe >> print "done"
+                , either (const []) id r)
+    dbTarget (doMigrate datas)
+    close pipe >> putStrLn "done"
+
+accessNodeClub pipe = access pipe slaveOk
+accessHaskellCN pipe = access pipe slaveOk
 
 doMigrate (usr, t, r) = do
     let (xs, ys) = migUsers usr
@@ -37,7 +41,7 @@ doMigrate (usr, t, r) = do
     insertMany "auth_user" ys
     insertMany "topics" t
     insertMany "replies" r
-    where ts = map (merge ["tags" := Null]) t
+    --where ts = map (merge ["tags" := Null]) t
 
 clearAll :: Action IO ()
 clearAll =
@@ -48,17 +52,18 @@ clearAll =
 
 migUsers :: [Document] -> ([Document], [Document])
 migUsers docs = (xs, ys)
-    where xs = map (merge xsOthers . map m1 . include ["_id", "name", "email", "url"]) docs
-          ys = map (mergeys . map m2 . include ["_id", "email", "create_at", "update_at"]) docs
+    where xs = map (map m1 . include ["_id", "name", "email", "url"]) docs
+          ys = map (mergeys . map m2 . password' . include ["_id", "email", "create_at", "update_at"]) docs
+               -- ++
+               -- (map (map password' . include ["email"]) docs)
           m1 field = case field of
-                     ("name" := v) -> ("display_name" := v)
+                     ("name" := v) -> "display_name" := v
                      x -> x
           m2 field = case field of
                      ("email" := v) -> ("login" := v)
                      ("create_at" := v) -> ("createdAt" := v)
                      ("update_at" := v) -> ("updatedAt" := v)
                      x -> x
-          xsOthers = [ "active" := Bool False ]
           mergeys = merge ysOthers
           ysOthers = [ "activatedAt" := Null
                      , "suspendedAt" := Null
@@ -71,12 +76,20 @@ migUsers docs = (xs, ys)
                      , "currentLoginIp" := Null
                      , "lastLoginIp" := Null
                      , "roles" := Array []
-                     , "password" := (Bin $ Binary $ mkp)
                   ]
+          password' fields = let email = head $ include ["email"] fields
+                                 pass = mkp2 email
+                             in
+                             fields ++ [pass]
 
-mkp= unsafePerformIO $ do
-    makePassword "12345678" 12
-  
+
+mkp :: ByteString -> ByteString
+mkp passwd = unsafePerformIO $ makePassword passwd 12
+
+-- | use email as default password
+--
+mkp2 :: Field -> Field
+mkp2 (_ := String v) = "password" := (Bin $ Binary $ mkp $ T.encodeUtf8 v)
 
 ----------------------------------------------------------------------
 
@@ -88,4 +101,3 @@ findNodeTopic = rest =<< find (select [] "topics")
 
 findNodeReply :: Action IO [Document]
 findNodeReply = rest =<< find (select [] "replies")
-

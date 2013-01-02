@@ -12,7 +12,6 @@ module Controllers.Site
 ------------------------------------------------------------------------------
 
 import           Control.Applicative                         ((<$>))
-import           Control.Monad.Trans
 import           Database.MongoDB                            (host)
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth

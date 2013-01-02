@@ -14,7 +14,7 @@
     <div class="control-group">
       <dfLabel class="control-label" ref="title"><i18n name="topic.title"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-xylarge" ref="title" autofocus />
+        <dfInputText class="input-xylarge" ref="title" autofocus required />
       </div>
     </div>
 
@@ -24,10 +24,8 @@
       <div class="controls">
         <div class="wmd-panel">
           <div id="wmd-button-bar"></div>
-          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" />
-          <a class="markdown-helper" href="http://johnmacfarlane.net/pandoc/README.html" target="_blank">
-            <span class="label label-info">Markdown help</span>
-          </a>
+          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" required />
+          <apply template="_markdown-helper" />
         </div>
         <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
         
