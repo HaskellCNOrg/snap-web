@@ -56,8 +56,7 @@
 - [ ] upgrade snap-0.10 and heist-0.10
 - [ ] reset password
 - [X] some notes at demo site.
-- [ ] test agaist production data
-    - [ ] update `updateAt` of topic when reply added
+- [X] test agaist production data
 
 - [ ] oauth
 
@@ -76,6 +75,9 @@
 - [ ] Improve Tag functionality
     - [ ] Batch Creation?
     - [ ] suggesstion for tag input box
+- [ ] Improve pagination
+  - ellipse page number list when page number list is too long.
+    (set pagesize to 2 to re-play such problem.)
 
 * * * * *
 
