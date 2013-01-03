@@ -217,21 +217,24 @@ usrToMong usr = case userId usr of
                     Nothing -> docs
                     Just x  -> ("_id" .= x ) : docs
                 where docs = [ "login" .= userLogin usr
-                              , "password" .= userPassword usr
-                              , "activatedAt" .= userActivatedAt usr
-                              , "suspendedAt" .= userSuspendedAt usr
-                              , "rememberToken" .= userRememberToken usr
-                              , "loginCount" .= userLoginCount usr
-                              , "userFailedLoginCount" .= userFailedLoginCount usr
-                              , "lockedOutUntil" .= userLockedOutUntil usr
-                              , "currentLoginAt" .= userCurrentLoginAt usr
-                              , "lastLoginAt" .= userLastLoginAt usr
-                              , "currentLoginIp" .= userCurrentLoginIp usr
-                              , "lastLoginIp" .= userLastLoginIp usr
-                              , "createdAt" .= userCreatedAt usr
-                              , "updatedAt" .= userUpdatedAt usr
-                              , "roles" .= userRoles usr
-                              ]
+                             , "email" .= userEmail usr
+                             , "password" .= userPassword usr
+                             , "activatedAt" .= userActivatedAt usr
+                             , "suspendedAt" .= userSuspendedAt usr
+                             , "rememberToken" .= userRememberToken usr
+                             , "loginCount" .= userLoginCount usr
+                             , "userFailedLoginCount" .= userFailedLoginCount usr
+                             , "lockedOutUntil" .= userLockedOutUntil usr
+                             , "currentLoginAt" .= userCurrentLoginAt usr
+                             , "lastLoginAt" .= userLastLoginAt usr
+                             , "currentLoginIp" .= userCurrentLoginIp usr
+                             , "lastLoginIp" .= userLastLoginIp usr
+                             , "createdAt" .= userCreatedAt usr
+                             , "updatedAt" .= userUpdatedAt usr
+                             , "resetToken" .= userResetToken usr
+                             , "resetRequestedAt" .= userResetRequestedAt usr
+                             , "roles" .= userRoles usr
+                             ]
 
 usrFromMong :: M.Document -> Parser AuthUser
 usrFromMong d = AuthUser
