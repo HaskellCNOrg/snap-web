@@ -6,6 +6,9 @@
     <i18n name="site.description">
       <meta name="description" content="${i18nValue}"/>
     </i18n>
+    <i18n name="site.keywords">
+      <meta name="keywords" content="${i18nValue}"/>
+    </i18n>
     <title><i18n name="site.name" /></title>
 
     <link href="/feed/topic" type="application/atom+xml" rel="alternate" title="Topics Feed" />
