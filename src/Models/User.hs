@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types                #-}
 
 module Models.User
     ( LoginUser(..)
@@ -6,6 +7,7 @@ module Models.User
     , UserObjId
     , createNewUser
     , loginUser
+    , resetPassword
     , findCurrentUser
     , findCurrentUserId
     , findOneUser
@@ -89,8 +91,8 @@ createNewUser lu = do
 --
 createAuthUser' :: LoginUser -> Handler b (AuthManager b) AuthUser
 createAuthUser' usr = do
-    mp <- gets minPasswdLen
-    when (passLength usr < mp) (throw $ PasswordTooShort mp)
+    --mp <- gets minPasswdLen
+    --when (passLength usr < mp) (throw $ PasswordTooShort mp)
     exists <- usernameExists (loginName usr)
     when exists (throw UserAlreadyExists)
     result <- createUser (loginName usr) (password' usr)
@@ -102,6 +104,23 @@ createAuthUser' usr = do
 
 -- http://hpaste.org/69009, failure piece of code about `withBackend`.
 
+
+------------------------------------------------------------------------------
+resetPassword' :: IAuthBackend r
+                  => LoginUser
+                  -> r
+                  -> IO AuthUser
+resetPassword' (LoginUser login passwd _) backend = do
+  result <- lookupByLogin backend login
+  case result of
+    Nothing -> throwUE UserNotFound
+    Just u' -> do
+      authuser <- setPassword u' $ textToBS passwd
+      saved <- save backend authuser
+      either throwUE return saved
+
+resetPassword :: LoginUser -> AppHandler AuthUser
+resetPassword user = with appAuth $ withBackend $ \r -> liftIO (resetPassword' user r)
 
 ------------------------------------------------------------------------------
 

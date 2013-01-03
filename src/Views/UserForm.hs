@@ -18,22 +18,34 @@ data UserVo = UserVo
 
 ------------------------------------------------------------------
 --
-
-signinForm :: Monad m => (Text,Text) -> Form Text m LoginUser
-signinForm (a,b) = LoginUser
-    <$> "loginName"      .: check a requiredValidator (text Nothing)
-    <*> "password"       .: check b requiredValidator (text Nothing)
+signinForm :: Monad m => Form Text m LoginUser
+signinForm = LoginUser
+    <$> "loginName"      .: checkRequired loginNameRequired (text Nothing)
+    <*> "password"       .: checkRequired passwordRequired (text Nothing)
     <*> "repeatPassword" .: text Nothing
 
-signupForm :: Monad m => (Text,Text) -> Form Text m LoginUser
-signupForm (a,b) = check "Two Input password must be same" samePasswordValidator $
+signupForm :: Monad m => Form Text m LoginUser
+signupForm = check "Two Input password must be same" samePasswordValidator $
     LoginUser
-    <$> "loginName"       .: (checkValidEmail . checkRequired a) (text Nothing)
-    <*> "password"        .: checkRequired b (text Nothing)
+    <$> "loginName"       .: (checkValidEmail . checkRequired loginNameRequired) (text Nothing)
+    <*> "password"        .: passwordValidator (text Nothing)
     <*> "repeatPassword"  .: checkRequired "Please input the password again" (text Nothing)
 
 samePasswordValidator :: LoginUser -> Bool
 samePasswordValidator x = password x == repeatPassword x
+
+passwordValidator :: Monad m => Form Text m Text -> Form Text m Text
+passwordValidator = checkMaxLengthWith 20 "Password"
+                    . checkMinLengthWith 8 "Password"
+                    . checkRequired passwordRequired
+
+resetPasswordForm :: Monad m => Form Text m LoginUser
+resetPasswordForm = signupForm
+
+loginNameRequired, passwordRequired :: Text
+loginNameRequired = "Login Name is required"
+passwordRequired = "Password is required"
+
 
 ------------------------------------------------------------------
 --

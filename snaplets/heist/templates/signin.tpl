@@ -33,6 +33,7 @@
         <i18n name="user.login">
           <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
         </i18n>
+        <a class="btn btn-link" href="/forgotPassword"><i18n name="user.forgotPassword" /></a>
       </div>
     </fieldset>
 

@@ -11,8 +11,10 @@ module Controllers.User
 import           Control.Applicative   ((<$>), (<*>))
 import           Control.Monad.CatchIO (try)
 import qualified Data.ByteString       as BS
+import Data.Maybe (isNothing, fromJust)
 import           Data.Text             (Text)
 import           Snap.Core
+import Snap
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Heist
@@ -23,6 +25,7 @@ import qualified Heist.Interpreted as I
 
 import           Application
 import           Controllers.Home
+import           Controllers.Exception (toErrorPage)
 import           Models.Exception
 import qualified Models.User           as USER
 import           Models.Utils
@@ -37,6 +40,7 @@ routes =  [
             ("/signup",  signup)
           , ("/signin",  signin)
           , ("/signout", method GET signout)
+          , ("/forgotPassword", forgotPassword)
           ----
           , ("/user",      method GET viewUserH)
           , ("/user/:uid", method GET viewUserH)
@@ -72,9 +76,7 @@ redirectToSignin = redirect303 "/signin"
 --
 signup :: AppHandler ()
 signup = do
-          errorMsg       <- (,) <$> lookupI18NValue "user-requiredLoginname"
-                                <*> lookupI18NValue "user-requiredPassword"
-          (view, result) <- runForm "form" $ signupForm errorMsg
+          (view, result) <- runForm "form" $ signupForm
           case result of
               Just u -> do
                         result' <- try (USER.createNewUser u)
@@ -97,9 +99,7 @@ signup = do
 --
 signin :: AppHandler ()
 signin = do
-    errorMsg       <- (,) <$> lookupI18NValue "user-requiredLoginname"
-                          <*> lookupI18NValue "user-requiredPassword"
-    (view, result) <- runForm "form" $ signinForm errorMsg
+    (view, result) <- runForm "form" $ signinForm
     case result of
         Just usr -> do
                   result' <- try (with appAuth $ USER.loginUser usr)
@@ -109,7 +109,30 @@ signin = do
           toHome = const redirectToHome
 
 
+
 ------------------------------------------------------------------------------
+
+
+-- | Reset password
+-- MAYBE: improve it to leverage setPasswordResetToken from snap.
+--
+forgotPassword :: AppHandler ()
+forgotPassword = do
+  (view, result) <- runForm "form" $ resetPasswordForm
+  case result of
+    Nothing -> toPage view
+    Just u -> do
+      result' <- try (USER.resetPassword u)
+      either (toPage . updateViewErrors view . showUE)
+              toLoginPage
+              result'
+  where toPage = renderDfPage "forgot-password"
+        -- TODO: show successful message.
+        toLoginPage = (const $ redirect "/signin")
+
+
+------------------------------------------------------------------------------
+
 
 -- | log out
 --
@@ -153,7 +176,6 @@ saveUserH = withAuthUser $ do
     case result of
       Just usrVo -> doUpdateUser usrVo
       Nothing    -> editUserH  -- return to detail view page.
-
     where doUpdateUser vo    = userVoToUser' vo >>= (try . USER.saveUser) >>= eitherSuccess'
           eitherSuccess' res = case res of
                                  Left _  -> toUserDetailPage res
