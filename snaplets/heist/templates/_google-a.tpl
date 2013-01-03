@@ -1,6 +1,3 @@
-<static>
-
-
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -14,5 +11,3 @@
   })();
 
 </script>
-
-</static>
