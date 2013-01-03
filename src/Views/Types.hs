@@ -3,10 +3,10 @@
 module Views.Types where
 
 import           Application
-import qualified Data.Text             as T
-import           Models.Exception
+import qualified Data.Text         as T
 import           Heist
 import qualified Heist.Interpreted as I
+import           Models.Exception
 
 -- | This class is born because when do MonadIO.try with models functions,
 --   its return type is `Either exception data`. Hence make a generic render.

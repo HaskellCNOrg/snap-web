@@ -11,7 +11,7 @@ import           Data.List
 import qualified Data.Map              as MP
 import qualified Data.Text             as T
 import           Heist
-import qualified Heist.Interpreted as I
+import qualified Heist.Interpreted     as I
 
 import           Application
 import           Models.Reply

@@ -3,17 +3,17 @@
 
 module Models.Topic where
 
-import           Control.Applicative   ((<$>), (<*>))
-import           Control.Monad.CatchIO (throw)
+import           Control.Applicative       ((<$>), (<*>))
+import           Control.Monad.CatchIO     (throw)
 import           Data.Baeson.Types
 import           Data.Bson
-import qualified Data.Text             as T
-import           Data.Time             (UTCTime)
+import qualified Data.Text                 as T
+import           Data.Time                 (UTCTime)
 import           Database.MongoDB
 
 import           Application
-import           Models.Internal.Types
 import           Models.Internal.Exception
+import           Models.Internal.Types
 import           Models.Utils
 
 

@@ -4,18 +4,18 @@
 module Models.Tag where
 
 import           Application
-import           Control.Applicative   ((<$>), (<*>))
-import           Control.Monad.CatchIO (throw)
-import           Data.Aeson            (ToJSON (..))
-import qualified Data.Aeson            as A
+import           Control.Applicative       ((<$>), (<*>))
+import           Control.Monad.CatchIO     (throw)
+import           Data.Aeson                (ToJSON (..))
+import qualified Data.Aeson                as A
 import           Data.Baeson.Types
 import           Data.Bson
-import           Data.Maybe            (catMaybes)
-import           Data.Text             (Text)
-import qualified Data.Text             as T
+import           Data.Maybe                (catMaybes)
+import           Data.Text                 (Text)
+import qualified Data.Text                 as T
 import           Database.MongoDB
-import           Models.Internal.Types
 import           Models.Internal.Exception
+import           Models.Internal.Types
 import           Models.Utils
 
 -- | Tag model

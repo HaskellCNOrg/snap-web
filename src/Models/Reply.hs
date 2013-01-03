@@ -5,16 +5,16 @@ module Models.Reply where
 
 
 import           Application
-import           Control.Applicative   ((<$>), (<*>))
-import           Control.Monad.CatchIO (throw)
+import           Control.Applicative       ((<$>), (<*>))
+import           Control.Monad.CatchIO     (throw)
 import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
-import           Data.Maybe            (isJust, isNothing)
-import qualified Data.Text             as T
-import           Data.Time             (UTCTime)
+import           Data.Maybe                (isJust, isNothing)
+import qualified Data.Text                 as T
+import           Data.Time                 (UTCTime)
 import           Database.MongoDB
-import qualified Database.MongoDB      as DB
+import qualified Database.MongoDB          as DB
 import           Models.Internal.Exception
 import           Models.Utils
 import           Snap.Snaplet.MongoDB

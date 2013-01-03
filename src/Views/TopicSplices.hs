@@ -5,13 +5,13 @@ module Views.TopicSplices
        ( topicSplices
        , topicDetailSplices ) where
 
+import           Application
 import           Control.Arrow           (second)
 import           Control.Monad.Trans
 import           Data.Maybe              (isJust)
 import qualified Data.Text               as T
 import           Heist
-import qualified Heist.Interpreted as I
-import           Application
+import qualified Heist.Interpreted       as I
 import           Models.Exception
 import           Models.Reply
 import           Models.Topic

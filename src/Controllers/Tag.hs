@@ -8,13 +8,13 @@ module Controllers.Tag
        ) where
 
 import           Application
-import qualified Data.ByteString       as BS
-import           Data.List             (deleteFirstsBy, nub)
-import qualified Data.Text             as T
+import qualified Data.ByteString    as BS
+import           Data.List          (deleteFirstsBy, nub)
+import qualified Data.Text          as T
+import qualified Heist.Interpreted  as I
 import           Models.Tag
 import           Snap
 import           Snap.Snaplet.Heist
-import qualified Heist.Interpreted as I
 import           Views.TagSplices
 import           Views.Utils
 

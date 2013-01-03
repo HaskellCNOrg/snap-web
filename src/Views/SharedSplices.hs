@@ -5,11 +5,11 @@
 module Views.SharedSplices where
 
 import           Application
-import qualified Data.Text             as T
+import qualified Data.Text          as T
+import qualified Heist.Interpreted  as I
 import           Models.User
+import           Snap
 import           Snap.Snaplet.Heist
-import Snap
-import qualified Heist.Interpreted as I
 
 ----------------------------------------------------------------------------
 

@@ -3,13 +3,13 @@
 
 module Controllers.Exception where
 
-import           Data.ByteString       (ByteString)
-import qualified Data.ByteString       as BS
-import           Data.Text             (Text)
+import           Data.ByteString    (ByteString)
+import qualified Data.ByteString    as BS
+import           Data.Text          (Text)
+import qualified Heist.Interpreted  as I
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import qualified Heist.Interpreted as I
 
 import           Application
 import           Models.Exception

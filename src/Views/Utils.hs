@@ -19,6 +19,8 @@ import qualified Data.Text               as T
 import qualified Data.Text.Encoding      as T
 import           Data.Text.Read
 import           Data.Time
+import           Heist
+import qualified Heist.Interpreted       as I
 import           Prelude                 hiding (lookup)
 import           Snap.Core
 import           Snap.Snaplet.Heist
@@ -26,8 +28,6 @@ import           Snap.Types.Headers      (lookup)
 import           System.Locale
 import           Text.Digestive
 import           Text.Digestive.Heist
-import           Heist
-import qualified Heist.Interpreted as I
 ----------------------------------------------------------------
 
 import           Application

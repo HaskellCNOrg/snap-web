@@ -4,9 +4,9 @@ module Views.PaginationSplices where
 
 import qualified Data.ByteString           as BS
 import qualified Data.Text                 as T
+import qualified Heist.Interpreted         as I
 import           Snap
 import           Snap.Snaplet.Environments
-import qualified Heist.Interpreted as I
 import qualified Text.XmlHtml              as X
 
 import           Application

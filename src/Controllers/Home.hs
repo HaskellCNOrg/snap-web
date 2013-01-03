@@ -3,14 +3,14 @@
 
 module Controllers.Home where
 
-import           Data.ByteString       (ByteString)
+import           Application
+import           Data.ByteString    (ByteString)
+import qualified Heist.Interpreted  as I
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import qualified Heist.Interpreted as I
-import           Application
 
-import           Models.Topic          (findAllTopic)
+import           Models.Topic       (findAllTopic)
 import           Views.TopicSplices
 import           Views.Utils
 

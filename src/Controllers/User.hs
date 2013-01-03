@@ -11,21 +11,21 @@ module Controllers.User
 import           Control.Applicative   ((<$>), (<*>))
 import           Control.Monad.CatchIO (try)
 import qualified Data.ByteString       as BS
-import Data.Maybe (isNothing, fromJust)
+import           Data.Maybe            (fromJust, isNothing)
 import           Data.Text             (Text)
+import qualified Heist.Interpreted     as I
+import           Snap
 import           Snap.Core
-import Snap
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Text.Digestive
 import           Text.Digestive.Snap   hiding (method)
-import qualified Heist.Interpreted as I
 
 import           Application
-import           Controllers.Home
 import           Controllers.Exception (toErrorPage)
+import           Controllers.Home
 import           Models.Exception
 import qualified Models.User           as USER
 import           Models.Utils
@@ -76,7 +76,7 @@ redirectToSignin = redirect303 "/signin"
 --
 signup :: AppHandler ()
 signup = do
-          (view, result) <- runForm "form" $ signupForm
+          (view, result) <- runForm "form" signupForm
           case result of
               Just u -> do
                         result' <- try (USER.createNewUser u)
@@ -99,7 +99,7 @@ signup = do
 --
 signin :: AppHandler ()
 signin = do
-    (view, result) <- runForm "form" $ signinForm
+    (view, result) <- runForm "form" signinForm
     case result of
         Just usr -> do
                   result' <- try (with appAuth $ USER.loginUser usr)
@@ -118,7 +118,7 @@ signin = do
 --
 forgotPassword :: AppHandler ()
 forgotPassword = do
-  (view, result) <- runForm "form" $ resetPasswordForm
+  (view, result) <- runForm "form" resetPasswordForm
   case result of
     Nothing -> toPage view
     Just u -> do
@@ -128,7 +128,7 @@ forgotPassword = do
               result'
   where toPage = renderDfPage "forgot-password"
         -- TODO: show successful message.
-        toLoginPage = (const $ redirect "/signin")
+        toLoginPage = const $ redirect "/signin"
 
 
 ------------------------------------------------------------------------------

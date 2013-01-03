@@ -9,10 +9,10 @@ import           Control.Monad.Trans
 import qualified Data.ByteString       as BS
 import qualified Data.Text             as T
 import           Data.Time
+import qualified Heist.Interpreted     as I
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
-import qualified Heist.Interpreted as I
 
 import           Application
 import           Controllers.Topic     hiding (routes)

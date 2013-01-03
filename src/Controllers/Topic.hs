@@ -13,13 +13,13 @@ import qualified Data.ByteString       as BS
 import           Data.Maybe            (fromJust, fromMaybe, isNothing)
 import qualified Data.Text             as T
 import           Data.Time
+import qualified Heist.Interpreted     as I
 import           Snap.Core
 import qualified Snap.Core             as Snap
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
-import qualified Heist.Interpreted as I
 
 import           Application
 import           Controllers.Exception (exceptionH)

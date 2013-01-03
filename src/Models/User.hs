@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE Rank2Types                #-}
+{-# LANGUAGE Rank2Types        #-}
 
 module Models.User
     ( LoginUser(..)
