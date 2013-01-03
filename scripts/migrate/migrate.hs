@@ -18,7 +18,7 @@ run :: IO ()
 run = do
     args <- getArgs
     let target = if null args then "test-migrate-nodeclub" else head args
-        from = "node_club_production"
+        from = "node_club_backup"
     pipe <- runIOE $ connect (host "127.0.0.1")
     let dbNodeClub = accessNodeClub pipe from
         dbTarget = accessHaskellCN pipe (T.pack target)
