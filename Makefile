@@ -76,11 +76,12 @@ create-site:
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
 	mkdir -p $(SITE)/static/css
+	cp Makefile $(SITE)/
 	cp devel.cfg $(SITE)/prod.cfg
 	cp -r snaplets data $(SITE)
 	cp -r static/img $(SITE)/static/img
 	cp -r static/js $(SITE)/static/js
-	## Uglify JavaScripts; TODO: grunt or r.js?
+
 	cd $(SITE)/static/js && for x in *.js ; do \
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
@@ -89,10 +90,10 @@ create-site:
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
 	done
-	## Generate CSS from LESS files
+
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
 	cp -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
-	## compress TPL files
+
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
 		perl -i -p -e  's/[\r\n]+|[ ]{2}|<!--(.|\s)*?--.*>//gs' $$x ; \
 		perl -i -p -e  's/<!--(.|\s)*?-->//gs' $$x ; \
@@ -103,5 +104,10 @@ create-site:
 
 prod:
 	cd $(SITE) && $(PROG_NAME) -p 9900 -e prod
+
+## ?? TODO: use --address=a.haskellcn.org
+a.hcn:
+	$(PROG_NAME) -p 9900 -e prod --no-access-log
+
 
 #######################
