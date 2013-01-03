@@ -14,7 +14,6 @@ import qualified Data.Text             as T
 import           Models.Tag
 import           Snap
 import           Snap.Snaplet.Heist
-import           Heist
 import qualified Heist.Interpreted as I
 import           Views.TagSplices
 import           Views.Utils

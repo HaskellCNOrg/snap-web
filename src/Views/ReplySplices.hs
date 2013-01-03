@@ -31,7 +31,7 @@ type ReplyWithReply = (Reply, [Reply])
 -- | Reply with all children
 --
 allReplyPerTopicSplice :: [Reply] -> I.Splice AppHandler
-allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
+allReplyPerTopicSplice xs = I.mapSplices replySpliceWithChildren (splitReplies xs)
 
 -- | Display content of a reply as markdown.
 --   Display content of a comment (reply of reply) as plain content.
@@ -39,11 +39,11 @@ allReplyPerTopicSplice xs = mapSplices replySpliceWithChildren (splitReplies xs)
 replySpliceWithChildren :: ReplyWithReply -> I.Splice AppHandler
 replySpliceWithChildren (r, rs) = do
     user <- findReplyAuthor r
-    runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
-                      , ("replyToReply", mapSplices replyToReplySplice rs)
+    I.runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
+                      , ("replyToReply", I.mapSplices replyToReplySplice rs)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
                       ]
-                      ++ map (second textSplice) (replySpliceImpl r user)
+                      ++ map (second I.textSplice) (replySpliceImpl r user)
 
 
 ------------------------------------------------------------------------------
@@ -54,10 +54,10 @@ replySpliceWithChildren (r, rs) = do
 replyToReplySplice :: Reply -> I.Splice AppHandler
 replyToReplySplice r = do
     user <- findReplyAuthor r
-    runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
+    I.runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
                       ]
-                      ++  map (second textSplice) (replySpliceImpl r user)
+                      ++  map (second I.textSplice) (replySpliceImpl r user)
 
 
 replySpliceImpl :: Reply
@@ -96,9 +96,10 @@ splitReplies rs =
 
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 --
-findReplyAuthor :: Reply -> HeistT AppHandler User
+findReplyAuthor :: Reply ->  HeistT AppHandler AppHandler User
 findReplyAuthor reply = lift (findUser' reply)
                         where findUser' = findOneUser . _replyAuthor
 
-findReplyAuthorName :: Reply -> HeistT AppHandler T.Text
+findReplyAuthorName :: Reply
+                       -> HeistT AppHandler AppHandler T.Text
 findReplyAuthorName reply = liftM _userDisplayName (findReplyAuthor reply)

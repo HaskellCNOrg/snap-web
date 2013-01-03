@@ -19,7 +19,7 @@ import           Snap.Snaplet.Heist
 import           Snap.Snaplet.I18N
 import           Text.Digestive
 import           Text.Digestive.Snap   hiding (method)
-import           Heist
+import qualified Heist.Interpreted as I
 
 import           Application
 import           Controllers.Home
@@ -127,7 +127,7 @@ viewUserH = withAuthUser $ decodedParamTextMaybe uidP >>= try . findUserOrCurren
 
 
 toUserDetailPage :: Either UserException USER.User -> AppHandler ()
-toUserDetailPage user = heistLocal (bindSplices (userDetailSplices user)) $ render "user-detail"
+toUserDetailPage user = heistLocal (I.bindSplices (userDetailSplices user)) $ render "user-detail"
 
 
 ------------------------------------------------------------------------------
@@ -170,4 +170,3 @@ userVoToUser' vo = do
                                      (userDisplayName vo) (Just $ userSite vo)
 
 ------------------------------------------------------------------------------
-

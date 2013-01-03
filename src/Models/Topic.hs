@@ -10,7 +10,6 @@ import           Data.Bson
 import qualified Data.Text             as T
 import           Data.Time             (UTCTime)
 import           Database.MongoDB
-import           Snap.Snaplet.Auth
 
 import           Application
 import           Models.Internal.Types

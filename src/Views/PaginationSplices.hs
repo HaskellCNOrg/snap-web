@@ -6,7 +6,6 @@ import qualified Data.ByteString           as BS
 import qualified Data.Text                 as T
 import           Snap
 import           Snap.Snaplet.Environments
-import           Heist
 import qualified Heist.Interpreted as I
 import qualified Text.XmlHtml              as X
 

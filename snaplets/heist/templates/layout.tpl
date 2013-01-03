@@ -20,7 +20,7 @@
       <apply template="_layout-nav"/>
 
       <div class="container">
-          <content />
+          <apply-content />
           <apply template="_layout-footer" />
       </div>
 

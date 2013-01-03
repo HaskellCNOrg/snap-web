@@ -16,6 +16,10 @@ hlint:
 	hlint src/ tests/ --report=$(DIST)/hlint.html
 	$(STYLE) -i src/**/*.hs
 
+doc:
+	cabal haddock --executable
+
+
 ###########################
 ## DEVELOPMENT
 ##
@@ -33,6 +37,7 @@ build-dev:
 	$(CBD) build
 
 install-dev: build-dev
+	$(CBD) install
 
 test:
 	$(CBD) --flags="development" --enable-tests configure
@@ -41,6 +46,8 @@ test:
 
 p:
 	$(PROG_PREV) -p 9900
+
+cb: clean build-dev
 
 bp: build-dev p
 
@@ -97,7 +104,4 @@ create-site:
 prod:
 	cd $(SITE) && $(PROG_NAME) -p 9900 -e prod
 
-####################### Doc
-
-doc:
-	cabal haddock --executable
+#######################

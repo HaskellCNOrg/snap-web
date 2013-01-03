@@ -19,7 +19,7 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
 import           Text.Digestive.Snap
-import           Heist
+import qualified Heist.Interpreted as I
 
 import           Application
 import           Controllers.Exception (exceptionH)
@@ -127,7 +127,7 @@ renderTopicDetailPage :: Either UserException Topic -> View T.Text -> AppHandler
 renderTopicDetailPage result view = renderDfPageSplices
                                     tplTopicDetail
                                     view
-                                    (bindSplices (topicDetailSplices result))
+                                    (I.bindSplices (topicDetailSplices result))
 
 
 ------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ viewTopicsByTagH = do
   either exceptionH (toTopicListPerTagPage page) result
 
 toTopicListPerTagPage :: Integral a => Maybe a -> [Topic] -> AppHandler ()
-toTopicListPerTagPage page topics = heistLocal (bindSplices $ topicSplices topics page) $ render "index"
+toTopicListPerTagPage page topics = heistLocal (I.bindSplices $ topicSplices topics page) $ render "index"
 
 
 ------------------------------------------------------------------------------
@@ -238,4 +238,4 @@ topicVoToTopic tv tags topic = do
 previewTopicH :: AppHandler ()
 previewTopicH = do
   mdContent <- decodedParamText "content"
-  heistLocal (bindSplice "topicContent" $ markdownToHtmlSplice mdContent) $ render "topic-preview"
+  heistLocal (I.bindSplice "topicContent" $ markdownToHtmlSplice mdContent) $ render "topic-preview"

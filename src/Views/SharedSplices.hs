@@ -8,12 +8,12 @@ import           Application
 import qualified Data.Text             as T
 import           Models.User
 import           Snap.Snaplet.Heist
-import           Heist
+import Snap
 import qualified Heist.Interpreted as I
 
 ----------------------------------------------------------------------------
 
-sharedSplices :: [(T.Text, SnapletSplice App App)]
+sharedSplices :: [(T.Text, SnapletISplice App)]
 sharedSplices = [ ("currentUser", currentUserSplice)
                 , ("isCurrentUserAdmin", isCurrentUserAdminSplice)
                 ]
@@ -22,12 +22,13 @@ sharedSplices = [ ("currentUser", currentUserSplice)
 
 -- | Current @User@ splice. Diff with Snaplet-Auth.loggedInUser which return @AuthUser@
 --
-currentUserSplice :: SnapletSplice App App
-currentUserSplice = liftHandler findCurrentUser >>= liftHeist . textSplice . _userDisplayName
+currentUserSplice :: SnapletISplice App
+currentUserSplice = lift findCurrentUser
+                    >>= I.textSplice . _userDisplayName
 
 -- | Whether current user has admin role.
 --
-isCurrentUserAdminSplice :: SnapletSplice App App
+isCurrentUserAdminSplice :: SnapletISplice App
 isCurrentUserAdminSplice = do
-    tf <- liftHandler isCurrentUserAdmin
-    if tf then liftHeist runChildren else return []
+    tf <- lift isCurrentUserAdmin
+    if tf then I.runChildren else return []

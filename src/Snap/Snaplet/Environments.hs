@@ -13,7 +13,6 @@ import           Control.Monad.Reader
 import           Data.Configurator
 import           Data.Configurator.Types
 import           Data.Maybe              (fromMaybe)
-import qualified Data.Text               as T
 import           Snap.Snaplet
 
 
@@ -35,4 +34,3 @@ lookupConfigDefault :: (MonadIO (m b v), MonadSnaplet m, Configured a)
                           -> a       -- ^ default value
                           -> m b v a
 lookupConfigDefault name def = liftM (fromMaybe def) (lookupConfig name)
-

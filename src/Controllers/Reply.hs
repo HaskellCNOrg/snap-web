@@ -12,7 +12,7 @@ import           Data.Time
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Text.Digestive
-import           Heist
+import qualified Heist.Interpreted as I
 
 import           Application
 import           Controllers.Topic     hiding (routes)
@@ -92,10 +92,10 @@ replyToReplyH = withAuthUser $ do
     case result of
       Just req -> do
                   reply <- MR.createReplyToTopic =<< replyVoToReply req
-                  heistLocal (bindSplice "replyToReply" $ replyToReplySplice reply) $ render tplReplyToReplyDetail
+                  heistLocal (I.bindSplice "replyToReply" $ replyToReplySplice reply) $ render tplReplyToReplyDetail
       Nothing  -> renderDfPageSplices tplReplyToReplyForm view $
-                                      bindSplices [ ("topicid", textSplice tid)
-                                                  , ("replyid", textSplice rid) ]
+                                      I.bindSplices [ ("topicid", I.textSplice tid)
+                                                  , ("replyid", I.textSplice rid) ]
 
 
 ------------------------------------------------------------------------------

@@ -7,7 +7,6 @@ import           Control.Monad.Trans
 import           Data.Bson             (ObjectId)
 import           Data.Maybe            (fromMaybe)
 import qualified Data.Text             as T
-import           Heist
 import qualified Heist.Interpreted as I
 import           Application
 import           Models.Tag

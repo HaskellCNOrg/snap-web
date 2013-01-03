@@ -55,9 +55,9 @@ data LoginUser = LoginUser
 --
 data User = User
     { _authUser        :: Maybe AuthUser  -- ^ Maybe type because dont need te fetch sometime.
-    , _userEmail       :: Email
+    , _userEmail       :: Email           -- ^ TODO: deprecated as duplicated with AuthUSer.email
     , _userDisplayName :: T.Text
-    , _userSite        :: Maybe T.Text  -- ^ User personal site.
+    , _userSite        :: Maybe T.Text    -- ^ User personal site.
     } deriving (Show)
 
 
@@ -93,7 +93,10 @@ createAuthUser' usr = do
     when (passLength usr < mp) (throw $ PasswordTooShort mp)
     exists <- usernameExists (loginName usr)
     when exists (throw UserAlreadyExists)
-    createUser (loginName usr) (password' usr)
+    result <- createUser (loginName usr) (password' usr)
+    case result of
+      Left l -> throw $ UserException $ show l
+      Right r -> return r
   where passLength = T.length . password
         password'  = textToBS . password
 
@@ -174,7 +177,7 @@ userToTopic au d = User
 
 userFromDocumentOrThrow :: (Document -> Parser User) -> Document -> IO User
 userFromDocumentOrThrow f d = case parseEither f d of
-    Left e  -> throw $ BackendError $ show e
+    Left e  -> throw $ UserException e
     Right r -> return r
 
 

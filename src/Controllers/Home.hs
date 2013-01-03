@@ -7,8 +7,7 @@ import           Data.ByteString       (ByteString)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Heist
-
+import qualified Heist.Interpreted as I
 import           Application
 
 import           Models.Topic          (findAllTopic)
@@ -23,7 +22,7 @@ index :: Handler App App ()
 index = ifTop $ do
     page <- decodedParamNum "pagenum"
     topics <- findAllTopic
-    heistLocal (bindSplices $ topicSplices topics page) $ render "index"
+    heistLocal (I.bindSplices $ topicSplices topics page) $ render "index"
 
 redirectToHome :: Handler App App ()
 redirectToHome = redirect303 "/"

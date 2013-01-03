@@ -9,7 +9,6 @@ import           Data.Text             (Text)
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
-import           Heist
 import qualified Heist.Interpreted as I
 
 import           Application

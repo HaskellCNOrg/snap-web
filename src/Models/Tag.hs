@@ -17,7 +17,6 @@ import           Database.MongoDB
 import           Models.Internal.Types
 import           Models.Internal.Exception
 import           Models.Utils
-import           Snap.Snaplet.Auth
 
 -- | Tag model
 --

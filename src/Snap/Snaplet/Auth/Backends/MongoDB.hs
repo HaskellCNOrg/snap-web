@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-
+{-# LANGUAGE DeriveDataTypeable #-}
 -- | The work is mainly steal from https://gist.github.com/2725402
 --
 --
@@ -7,6 +7,8 @@
 module Snap.Snaplet.Auth.Backends.MongoDB where
 
 
+import Control.Exception (Exception)
+import Data.Typeable (Typeable)
 import           Control.Applicative
 import           Control.Arrow
 import           Control.Monad
@@ -26,7 +28,6 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import qualified Snap.Snaplet.MongoDB        as SM
 import           Snap.Snaplet.Session
-import           Snap.Snaplet.Session.Common
 import           System.IO.Pool              (Pool, aResource)
 import           Web.ClientSession
 
@@ -61,7 +62,7 @@ settingsFromConfig = do
 ------------------------------------------------------------------------------
 -- | Initializer for the MongoDB backend to the auth snaplet.
 --
-initMongoAuth :: SnapletLens b (Snaplet SessionManager)
+initMongoAuth :: SnapletLens b SessionManager
                  -> Snaplet SM.MongoDB
                  -> Maybe String    -- ^ Site Key path
                  -> SnapletInit b (AuthManager b)
@@ -71,8 +72,7 @@ initMongoAuth sess db sk = makeSnaplet "mongodb-auth" desc Nothing $ do
     authSettings <- settingsFromConfig
     key <- liftIO $ getKey (fromMaybe (asSiteKey authSettings) sk)
     let
-      lens' = (^$ (db snapletValue))
-      --manager = MongoBackend (M.u authTable) (SM.mongoDatabase lens')
+      lens' = db ^. snapletValue
       manager = MongoBackend authTable (SM.mongoDatabase lens')
                 (SM.mongoPool lens')
     rng <- liftIO mkRNG
@@ -103,7 +103,7 @@ accessMode = UnconfirmedWrites
 
 -- | default UserId is Nothing thus set to same as UserLogin
 --
-mongoSave :: MongoBackend -> AuthUser -> IO AuthUser
+mongoSave :: MongoBackend -> AuthUser -> IO (Either AuthFailure AuthUser)
 mongoSave mong usr =
   case userId usr of
       Nothing -> insertUser' usr
@@ -111,31 +111,31 @@ mongoSave mong usr =
   where  insertUser' u = do
                         res <- dbQuery mong $ M.insert (mongoCollection mong) $ usrToMong u
                         case res of
-                            Left (WriteFailure 11000 _) -> throw DuplicateLogin
+                            Left (WriteFailure 11000 _) -> return $ Left DuplicateLogin
                             Left v  -> throwBE v
-                            Right r -> return (insertId' r)
+                            Right r -> return $ Right (insertId' r)
          insertId' x = usr { userId = fmap objectIdToUserId $ BSON.cast' x}
          saveUser' u = do
                        res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong u
                        case res of
-                           Left (WriteFailure 11000 _) -> throw DuplicateLogin
+                           Left (WriteFailure 11000 _) -> return $ Left DuplicateLogin
                            Left v  -> throwBE v
-                           Right _ -> return u
-         throwBE = throw . BackendError . show
+                           _ -> return $ Right u
+         throwBE = return . Left . AuthError . show
 
 
-mongoAct :: MongoBackend -> Action IO a -> (a ->IO b) -> IO b
-mongoAct mong act conv = do
-  res <- dbQuery mong act
+mongoAct :: MongoBackend -> Action IO a -> (a -> IO b) -> IO b
+mongoAct mong act' conv = do
+  res <- dbQuery mong act'
   case res of
-    Left e -> throw $ BackendError $ show e
+    Left e -> throw $ AuthMongoException $ show e
     Right r -> conv r
 
 mongoLookup :: MongoBackend -> M.Document -> IO (Maybe AuthUser)
 mongoLookup mong doc =
-  mongoAct mong act conv
+  mongoAct mong act' conv
   where
-    act = M.findOne $ M.select doc (mongoCollection mong)
+    act' = M.findOne $ M.select doc (mongoCollection mong)
     conv = maybe (return Nothing) parseUsr
     parseUsr = liftM Just . usrFromMongThrow
 
@@ -153,8 +153,8 @@ mongoDestroy mong usr =
   maybe (return ()) actonid $ userId usr
   where
     coll = mongoCollection mong
-    actonid uid = mongoAct mong (act uid) return
-    act uid =  M.deleteOne (M.select ["_id" .= uid] coll)
+    actonid uid = mongoAct mong (act' uid) return
+    act' uid =  M.deleteOne (M.select ["_id" .= uid] coll)
 
 instance IAuthBackend MongoBackend where
   save = mongoSave
@@ -235,25 +235,35 @@ usrToMong usr = case userId usr of
 
 usrFromMong :: M.Document -> Parser AuthUser
 usrFromMong d = AuthUser
-                <$> d .: "_id"
+                <$> d .:? "_id"
                 <*> d .: "login"
+                <*> d .:? "email"
                 <*> d .:? "password"
-                <*> d .: "activatedAt"
-                <*> d .: "suspendedAt"
-                <*> d .: "rememberToken"
+                <*> d .:? "activatedAt"
+                <*> d .:? "suspendedAt"
+                <*> d .:? "rememberToken"
                 <*> d .: "loginCount"
                 <*> d .: "userFailedLoginCount"
-                <*> d .: "lockedOutUntil"
-                <*> d .: "currentLoginAt"
-                <*> d .: "lastLoginAt"
-                <*> d .: "currentLoginIp"
-                <*> d .: "lastLoginIp"
-                <*> d .: "createdAt"
-                <*> d .: "updatedAt"
+                <*> d .:? "lockedOutUntil"
+                <*> d .:? "currentLoginAt"
+                <*> d .:? "lastLoginAt"
+                <*> d .:? "currentLoginIp"
+                <*> d .:? "lastLoginIp"
+                <*> d .:? "createdAt"
+                <*> d .:? "updatedAt"
+                <*> d .:? "resetToken"
+                <*> d .:? "resetRequestedAt"
                 <*> d .: "roles" .!= []
                 <*> pure HM.empty
 
 usrFromMongThrow :: M.Document -> IO AuthUser
-usrFromMongThrow d =  case parseEither usrFromMong d of
-  Left e -> throw $ BackendError $ show e
-  Right r -> return r
+usrFromMongThrow d =
+  case parseEither usrFromMong d of
+    Left e -> throw $ ParseDocumentException e
+    Right r -> return r
+
+data AuthMongoException = ParseDocumentException String
+                          | AuthMongoException String
+                        deriving (Show, Typeable)
+
+instance Exception AuthMongoException

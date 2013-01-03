@@ -37,12 +37,11 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     sk     <- lookupConfigDefault "snaplet.session-key" "data/session-sitekey.txt"
     dbkey  <- lookupConfigDefault "auth.siteKey" "data/auth-sitekey.txt"
     ar     <- Role <$> lookupConfigDefault "auth.admin-role" "administrator"
-
     dbhost <- lookupConfigDefault "db.host" "127.0.0.1"
     dbc    <- lookupConfigDefault "db.collection" "haskellcn-mongodb"
 
     h  <- nestSnaplet "heist" heist $ heistInit "templates"
-    i  <- nestSnaplet "i18n" i18n $ initI18NSnaplet ul
+    i  <- nestSnaplet "i18n" i18n $ initI18N ul
     s  <- nestSnaplet "session" appSession $ cookieSessionMgr' sk
     d  <- nestSnaplet "mongoDB" appMongoDB $ mongoDBInit 10 (host dbhost) dbc
     a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d (Just dbkey)
@@ -56,7 +55,3 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
 
 
 ------------------------------------------------------------------------------
-
-
---a  <- nestSnaplet "auth" appAuth $ initJsonFileAuthManager authSettings' appSession "data/auth.json"
---     authSettings'    = defAuthSettings { asSiteKey = "data/auth-sitekey.txt" }

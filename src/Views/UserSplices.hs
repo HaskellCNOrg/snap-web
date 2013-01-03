@@ -8,7 +8,6 @@ import           Control.Monad.Trans
 import           Data.Maybe            (fromMaybe)
 import qualified Data.Text             as T
 import           Snap.Snaplet.Auth
-import           Heist
 import qualified Heist.Interpreted as I
 
 import           Application
@@ -37,12 +36,12 @@ userDetailSplices = eitherToSplices
 -- | Single user to Splice.
 --
 renderUser :: User -> I.Splice AppHandler
-renderUser user = runChildrenWith $
+renderUser user = I.runChildrenWith $
                      [ ("userEditable", hasEditPermissionSplice user)
                      , ("userLastLoginAt", userLastLoginAtSplice $ _authUser user)
                      ]
                      ++
-                     map (second textSplice)
+                     map (second I.textSplice)
                      [ ("userLogin",       maybe "" userLogin $ _authUser user)
                      , ("userCreatedAt",   maybe "" (formatUTCTimeMaybe . userCreatedAt) $ _authUser user)
                      , ("userEmail",       _userEmail user)
@@ -61,7 +60,7 @@ userLastLoginAtSplice Nothing = return []
 userLastLoginAtSplice (Just authusr) =
     case userLastLoginAt authusr of
       Nothing -> return []
-      Just time -> runChildrenWithText [ ("lastLoginTime", formatUTCTime time) ]
+      Just time -> I.runChildrenWithText [ ("lastLoginTime", formatUTCTime time) ]
 
 ----------------------------------------------------------------------------
 
@@ -71,6 +70,6 @@ hasEditPermissionSplice :: User   -- ^ Author of some.
                         -> I.Splice AppHandler
 hasEditPermissionSplice author = do
     has <- lift $ hasUpdatePermission author
-    if has then runChildren else return []
+    if has then I.runChildren else return []
 
 ----------------------------------------------------------------------------

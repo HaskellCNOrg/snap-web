@@ -60,7 +60,7 @@ migUsers docs = (xs, ys)
                      ("name" := v) -> "display_name" := v
                      x -> x
           m2 field = case field of
-                     ("email" := v) -> ("login" := v)
+                     ("email" := v) -> ("email" := v)
                      ("create_at" := v) -> ("createdAt" := v)
                      ("update_at" := v) -> ("updatedAt" := v)
                      x -> x
@@ -79,9 +79,10 @@ migUsers docs = (xs, ys)
                   ]
           password' fields = let email = head $ include ["email"] fields
                                  pass = mkp2 email
+                                 login = makeLogin email
                              in
-                             fields ++ [pass]
-
+                             fields ++ [pass, login]
+          makeLogin ("email" := v) = ("login" := v)
 
 mkp :: ByteString -> ByteString
 mkp passwd = unsafePerformIO $ makePassword passwd 12

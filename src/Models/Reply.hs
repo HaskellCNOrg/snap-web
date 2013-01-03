@@ -17,7 +17,6 @@ import           Database.MongoDB
 import qualified Database.MongoDB      as DB
 import           Models.Internal.Exception
 import           Models.Utils
-import           Snap.Snaplet.Auth
 import           Snap.Snaplet.MongoDB
 
 

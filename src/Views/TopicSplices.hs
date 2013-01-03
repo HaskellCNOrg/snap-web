@@ -52,15 +52,15 @@ allTopicsSplice :: Integral a
 allTopicsSplice topics page = do
     let t = filter (isJust . _topicId) topics
     (i, xs, splice) <- lift $ paginationHandler currentPage' t
-    runChildrenWith
-      [ ("allTopics", mapSplices renderTopicSimple xs)
+    I.runChildrenWith
+      [ ("allTopics", I.mapSplices renderTopicSimple xs)
       , ("pagination", splice)
-      , ("startIndex", textSplice $ sToText i) ]
+      , ("startIndex", I.textSplice $ sToText i) ]
     where currentPage' :: Integral a => a
           currentPage' = maybe 1 fromIntegral page
 
 ifNoTopicsSplice :: Int -> I.Splice AppHandler
-ifNoTopicsSplice n = if n <= 0 then runChildren else return []
+ifNoTopicsSplice n = if n <= 0 then I.runChildren else return []
 
 ------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ topicDetailSplices = eitherToSplices
 renderTopicSimple :: Topic -> I.Splice AppHandler
 renderTopicSimple tag = do
     usr <- findTopicAuthor tag
-    runChildrenWithText (topicToSpliceContent tag usr)
+    I.runChildrenWithText (topicToSpliceContent tag usr)
 
 -- | Render a Topic with its replies.
 --
@@ -86,8 +86,8 @@ renderTopic :: Topic -> I.Splice AppHandler
 renderTopic topic = do
     rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId topic)
     user <- findTopicAuthor topic
-    runChildrenWith $
-      map (second textSplice) (topicToSpliceContent topic user)
+    I.runChildrenWith $
+      map (second I.textSplice) (topicToSpliceContent topic user)
       ++ [ ("topicContent", markdownToHtmlSplice $ _content topic)
          , ("replyPerTopic", allReplyPerTopicSplice rs)
          , ("topicEditable", hasEditPermissionSplice user)
@@ -97,7 +97,7 @@ renderTopic topic = do
 
 -- | @Splice@ is type synonium as @Splice m = HeistT m Template@
 --
-findTopicAuthor :: Topic -> HeistT AppHandler User
+findTopicAuthor :: Topic -> HeistT AppHandler AppHandler User
 findTopicAuthor topic = lift (findUser' topic)
                         where findUser' = findOneUser . _author
 
