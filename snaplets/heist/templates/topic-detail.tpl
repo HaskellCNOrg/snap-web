@@ -14,11 +14,17 @@
   <div class="topic-content">
 
     <article class="topic">
-      <h2><topicTitle /></h2>
+      <h1><topicTitle /></h1>
       <p><topicContent/></p>
     </article>
 
     <apply template="_topic-author" />
+
+    <p class="tag-list">
+        <topicTagList>
+            <apply template="_single-tag" />
+        </topicTagList>
+    </p>
 
     <ifLoggedIn>
       <topicEditable>
@@ -28,11 +34,6 @@
       </topicEditable>
     </ifLoggedIn>
 
-    <p>
-        <topicTagList>
-            <apply template="_single-tag" />
-        </topicTagList>
-    </p>
 
     <div class="reply-per-topic">
       <h3><i18n name="topic.answers" /></h3>
@@ -60,7 +61,7 @@
   <ifLoggedIn>
       <hr />
       <div class="reply-editor">
-          <h3>Add Reply</h3>
+          <h3><i18n name="reply.add" /></h3>
           <apply template="reply-to-form" />
       </div>
   </ifLoggedIn>
