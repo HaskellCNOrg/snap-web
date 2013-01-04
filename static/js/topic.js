@@ -32,24 +32,17 @@ $.hcn.initReplyToReply = function () {
      * Submit it in ajax way.
      */
     $('.topic-content').on("submit", 'form[id^=add-comment-form-]', function (event) {
-        event.preventDefault();
-        var t = $(event.currentTarget),
-            parent = t.parent();
+       event.preventDefault();
+       var t = $(event.currentTarget),
+           parent = t.parent();
 
-        $.post(t[0].action, t.serialize(), function (res) {
+       t.find('input:submit').button('loading');
+       $.post(t[0].action, t.serialize(), function (res) {
           t.remove();
           parent.append(res);
-        });
+       });
     });
-
   };
-
-// toggle loading status when submitting.
-$.hcn.toggleFormBtn = function () {
-   $('form').submit(function () {
-      $(this).find('input:submit').button('loading');
-   });
-};
 
 })(jQuery, $.hcn);
 
@@ -57,6 +50,7 @@ $.hcn.toggleFormBtn = function () {
    $.hcn.initReplyToReply();
 
    // toggle form submit button loading status
+   // TODO: this is duplicated something in topic-form.js
    $('form').submit(function () {
       $(this).find('input:submit').button('loading');
    });
