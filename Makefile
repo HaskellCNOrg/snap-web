@@ -92,6 +92,7 @@ create-site:
 	done
 
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
+	lessc --compress static/less/responsive.less > $(SITE)/static/css/responsive.css
 	cp -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
 
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
