@@ -6,10 +6,10 @@
   </dfIfChildErrors>
   
   <div class="controls">
-      <dfInputTextArea ref="replyContent" class="wmd-input input-xxlarge" id="wmd-input" required />
-      <apply template="_markdown-helper" />
-
-      <div id="wmd-preview" class="input-xxlarge wmd-preview"></div>
+      <apply template="_markdown-input" />
+      <!-- <dfInputTextArea ref="content" class="wmd-input input-xxlarge" id="wmd-input" required /> -->
+      <!-- <apply template="_markdown-helper" /> -->
+      <!-- <div id="wmd-preview" class="input-xxlarge wmd-preview"></div> -->
   </div>
   
   <dfInputHidden ref="replyToTopicId" value="${topicId}"/>

@@ -28,7 +28,7 @@ replyForm :: Monad m => Form Text m ReplyVo
 replyForm = ReplyVo
     <$> "replyToTopicId"  .: checkRequired "replyToTopicId is required" (text Nothing)
     <*> "replyToReplyId"  .: text Nothing
-    <*> "replyContent"    .: contentValidation (text Nothing)
+    <*> "content"         .: contentValidation (text Nothing)
 
 ------------------------------------------------------------
 
