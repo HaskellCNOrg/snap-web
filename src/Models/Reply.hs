@@ -16,6 +16,7 @@ import           Data.Time                 (UTCTime)
 import           Database.MongoDB
 import qualified Database.MongoDB          as DB
 import           Models.Internal.Exception
+import           Models.Internal.Types
 import           Models.Utils
 import           Snap.Snaplet.MongoDB
 
@@ -36,6 +37,14 @@ data Reply = Reply
 
 replyCollection :: Collection
 replyCollection = "replies"
+
+instance MongoDBPersistent Reply where
+  mongoColl _  = replyCollection
+  toMongoDoc   = replyToDocument
+  fromMongoDoc = replyFromDocumentOrThrow
+  mongoInsertId reply v = reply { _replyId = objectIdFromValue v }
+  mongoGetId = _replyId
+
 
 -----------------------------------------------------------------------
 
@@ -60,6 +69,13 @@ findReplyPerTopic tid = do
 sortByCreateAtDesc :: Order
 sortByCreateAtDesc = [ "create_at" =: 1, "reply_id" =: 1 ]
 
+emptyReply :: Reply
+emptyReply = Reply { _replyId = Nothing }
+
+findAllReply :: AppHandler [Reply]
+findAllReply = do
+    let replySelection = select [] replyCollection
+    mongoFindAllBy emptyReply (replySelection { sort = sortByCreateAtDesc})
 
 -----------------------------------------------------------------------
 
