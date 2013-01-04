@@ -14,7 +14,7 @@
     <div class="control-group">
       <dfLabel class="control-label" ref="title"><i18n name="topic.title"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-xylarge" ref="title" autofocus required />
+        <dfInputText class="input-xxlarge" ref="title" autofocus required />
       </div>
     </div>
 
@@ -22,20 +22,16 @@
       <dfLabel class="control-label" ref="content" for="wmd-input"><i18n name="topic.content"/></dfLabel>
 
       <div class="controls">
-        <div class="wmd-panel">
-          <div id="wmd-button-bar"></div>
-          <dfInputTextArea ref="content" class="wmd-input" id="wmd-input" required />
-          <apply template="_markdown-helper" />
-        </div>
-        <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-        
+        <dfInputTextArea ref="content" class="wmd-input input-xxlarge" id="wmd-input" required />
+        <apply template="_markdown-helper" />
+        <div id="wmd-preview" class="input-xxlarge wmd-preview"></div>
       </div>
     </div>
 
     <div class="control-group">
       <dfLabel class="control-label" ref="tags"><i18n name="topic.tag"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-xylarge" ref="tags" />
+        <dfInputText class="input-xxlarge" ref="tags" />
       </div>
     </div>
 

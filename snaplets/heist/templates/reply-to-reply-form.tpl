@@ -7,10 +7,9 @@
     </div>
   </dfIfChildErrors>
 
-  <div class="wmd-panel">
-    <dfInputTextArea ref="replyContent" class="wmd-input" />
+  <div>
+    <dfInputTextArea ref="replyContent" class="wmd-input input-xxlarge" />
   </div>
-  
 
   <dfInputHidden ref="replyToTopicId" value="${topicid}"/>
   <dfInputHidden ref="replyToReplyId" value="${replyid}"/>
