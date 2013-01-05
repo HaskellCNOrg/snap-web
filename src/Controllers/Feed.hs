@@ -6,12 +6,13 @@ where
 
 import           Control.Monad   (mapM)
 import qualified Data.ByteString as BS
-import           Snap.Core       (writeBS, writeBuilder)
+import           Snap.Core       (writeBuilder)
 import           Snap.Snaplet    (Handler)
 
 import           Application
 import           Models.Topic
 import           Models.Reply
+import           Models.Feed
 import           Views.Feed
 
 
@@ -26,7 +27,7 @@ routes =  [ ("/feed/topic", topicFeed)
 topicFeed :: AppHandler ()
 topicFeed = do
     topics <- findAllTopic
-    writeBuilder $ renderTopicFeed topics
+    writeBuilder $ renderFeed $ topicToFeed topics
 
 
 -- | Atom feed of comments.
@@ -34,7 +35,5 @@ topicFeed = do
 commentFeed :: AppHandler ()
 commentFeed = do
     replys <- findAllReply
-    --topics <- (findOneTopic . _replyToTopicId ) $ head replys 
     topics <- mapM (findOneTopic . _replyToTopicId) replys
-    --writeBS "comments feed"
-    writeBuilder $ renderReplyFeed replys topics
+    writeBuilder $ renderFeed $ replyToFeed replys topics
