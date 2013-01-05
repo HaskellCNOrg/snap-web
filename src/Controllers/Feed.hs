@@ -27,7 +27,8 @@ routes =  [ ("/feed/topic", topicFeed)
 topicFeed :: AppHandler ()
 topicFeed = do
     topics <- findAllTopic
-    writeBuilder $ renderFeed $ topicToFeed topics
+    feed <- topicToFeed topics
+    writeBuilder $ renderFeed feed
 
 
 -- | Atom feed of comments.
@@ -35,5 +36,5 @@ topicFeed = do
 commentFeed :: AppHandler ()
 commentFeed = do
     replys <- findAllReply
-    topics <- mapM (findOneTopic . _replyToTopicId) replys
-    writeBuilder $ renderFeed $ replyToFeed replys topics
+    feed <- replyToFeed replys
+    writeBuilder $ renderFeed feed
