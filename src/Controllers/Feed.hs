@@ -27,7 +27,8 @@ routes =  [ ("/feed/topic", topicFeed)
 topicFeed :: AppHandler ()
 topicFeed = do
     topics <- findAllTopic
-    feed <- topicToFeed topics
+    -- DOUBT: Do I need to define findTwentyTopic or the laziness will help?
+    feed <- topicToFeed $ take 20 topics
     writeBuilder $ renderFeed feed
 
 
@@ -36,5 +37,5 @@ topicFeed = do
 commentFeed :: AppHandler ()
 commentFeed = do
     replys <- findAllReply
-    feed <- replyToFeed replys
+    feed <- replyToFeed $ take 20 replys
     writeBuilder $ renderFeed feed
