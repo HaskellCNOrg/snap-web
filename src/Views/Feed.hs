@@ -1,8 +1,7 @@
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE OverloadedStrings    #-}
 
-module Views.Feed
-where
+module Views.Feed where
 
 import           Blaze.ByteString.Builder (Builder)
 import qualified Data.Text                as T
@@ -13,7 +12,7 @@ import           Views.MarkdownSplices    (markdownToHtmlText)
 import           Views.Utils              (formatUTCTime)
 
 renderFeed :: Feed -> Builder
-renderFeed f = 
+renderFeed f =
     render $ XmlDocument UTF8 Nothing [root]
   where
     namespace = "http://www.w3.org/2005/Atom"
@@ -25,7 +24,7 @@ renderFeed f =
          : map renderFeedEntry (feedEntries f)
 
 renderFeedEntry :: FeedEntry -> Node
-renderFeedEntry e = 
+renderFeedEntry e =
     Element "entry" []
     [ Element "title" [] [TextNode $ feedEntryTitle e]
     , Element "link" [("href", feedEntryLink e)] []
@@ -37,4 +36,3 @@ renderFeedEntry e =
     , Element "published" [] [TextNode $ formatUTCTime $ feedEntryPublished e]
     , Element "content" [("type","html")] [TextNode $ markdownToHtmlText $ feedEntryContent e]
     ]
-    

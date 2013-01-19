@@ -10,9 +10,9 @@ import           Snap.Core       (writeBuilder)
 import           Snap.Snaplet    (Handler)
 
 import           Application
-import           Models.Topic
-import           Models.Reply
 import           Models.Feed
+import           Models.Reply
+import           Models.Topic
 import           Views.Feed
 
 

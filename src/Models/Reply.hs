@@ -63,11 +63,11 @@ createReplyToTopic reply = do
 findReplyPerTopic :: ObjectId -> AppHandler [Reply]
 findReplyPerTopic tid = do
     let queryReply = select [ "topic_id" =: tid ] replyCollection
-    res <- eitherWithDB $ rest =<< find (queryReply { sort = sortByCreateAtDesc })
+    res <- eitherWithDB $ rest =<< find (queryReply { sort = sortByCreateAtAsc })
     liftIO $ mapM replyFromDocumentOrThrow $ either (const []) id res
 
-sortByCreateAtDesc :: Order
-sortByCreateAtDesc = [ "create_at" =: 1, "reply_id" =: 1 ]
+sortByCreateAtAsc :: Order
+sortByCreateAtAsc = [ "create_at" =: 1, "reply_id" =: 1 ]
 
 emptyReply :: Reply
 emptyReply = Reply { _replyId = Nothing }
@@ -75,7 +75,9 @@ emptyReply = Reply { _replyId = Nothing }
 findAllReply :: AppHandler [Reply]
 findAllReply = do
     let replySelection = select [] replyCollection
-    mongoFindAllBy emptyReply (replySelection { sort = sortByCreateAtDesc})
+    mongoFindAllBy
+      emptyReply
+      (replySelection { sort = [ "create_at" =: -1, "reply_id" =: -1 ] })
 
 -----------------------------------------------------------------------
 

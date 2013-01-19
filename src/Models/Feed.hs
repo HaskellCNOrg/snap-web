@@ -1,17 +1,17 @@
-{-# LANGUAGE OverloadedStrings    #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Models.Feed
 where
 
 import           Data.Maybe
-import qualified Data.Text              as T
-import           Data.Time              (UTCTime)
+import qualified Data.Text    as T
+import           Data.Time    (UTCTime)
 
 import           Application
-import           Models.Topic
 import           Models.Reply
+import           Models.Topic
 import           Models.User
-import           Models.Utils           (sToText)
+import           Models.Utils (sToText)
 
 
 data Feed = Feed
@@ -35,7 +35,7 @@ data FeedEntry = FeedEntry
 topicToFeed :: [Topic] -> AppHandler Feed
 topicToFeed ts = do
     entries <- mapM topicToFeedEntry ts
-    return $
+    return
         Feed { feedTitle = "HaskellCNOrg Topics"
              -- TODO: retrieve host address here
              , feedLinkSelf = "/feed/topic"
@@ -48,21 +48,20 @@ topicToFeedEntry :: Topic -> AppHandler FeedEntry
 topicToFeedEntry t = do
     u <- findOneUser $ _author t
     let authorId = sToText $ _author t
-    return $
+    return
         FeedEntry { feedEntryTitle = _title t
                   , feedEntryLink  = T.concat ["/topic/", getTopicId t]
                   , feedEntryId    = T.concat ["/topic/", getTopicId t]
                   , feedEntryPublished = _createAt t
                   , feedEntryContent = _content t
                   , feedEntryAuthorName = _userDisplayName u
-                  , feedEntryAuthorUri = T.concat ["/user/", authorId] 
+                  , feedEntryAuthorUri = T.concat ["/user/", authorId]
                   }
-    
+
 replyToFeed :: [Reply] -> AppHandler Feed
 replyToFeed rs = do
-    ts <- mapM (findOneTopic . _replyToTopicId) rs
     entries <- mapM replyToFeedEntry rs
-    return $
+    return
         Feed { feedTitle = "HaskellCNOrg Comments"
              , feedLinkSelf = "/feed/comment"
              , feedLinkHome = "/"
@@ -75,7 +74,7 @@ replyToFeedEntry r = do
     t <- findOneTopic $ _replyToTopicId r
     u <- findOneUser $ _replyAuthor r
     let authorId = sToText $ _replyAuthor r
-    return $
+    return
         FeedEntry { feedEntryTitle = T.concat ["Comment on ", _title t]
                   , feedEntryLink  = T.concat ["/topic/", getTopicId t]
                   , feedEntryId    = T.concat ["/topic/", getReplyId r]
