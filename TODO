@@ -58,7 +58,9 @@
 - [X] some notes at demo site.
 - [X] test agaist production data
 
-- [ ] practice responsive design
+- [X] practice responsive design
+- [ ] atom feed for reply
+- [ ] Improve the reset password feature
 - [ ] oauth
 
 * * * * *
