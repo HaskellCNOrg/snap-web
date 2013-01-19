@@ -8,6 +8,7 @@ import           Control.Monad   (mapM)
 import qualified Data.ByteString as BS
 import           Snap.Core       (writeBuilder)
 import           Snap.Snaplet    (Handler)
+import           Snap.Snaplet.Environments
 
 import           Application
 import           Models.Feed
@@ -26,9 +27,9 @@ routes =  [ ("/feed/topic", topicFeed)
 --
 topicFeed :: AppHandler ()
 topicFeed = do
+    count <- lookupConfigDefault "feed.topicMax" 20
     topics <- findAllTopic
-    -- DOUBT: Do I need to define findTwentyTopic or the laziness will help?
-    feed <- topicToFeed $ take 20 topics
+    feed <- topicToFeed $ take count topics
     writeBuilder $ renderFeed feed
 
 
@@ -36,6 +37,7 @@ topicFeed = do
 --
 commentFeed :: AppHandler ()
 commentFeed = do
+    count <- lookupConfigDefault "feed.commentMax" 20
     replys <- findAllReply
-    feed <- replyToFeed $ take 20 replys
+    feed <- replyToFeed $ take count replys
     writeBuilder $ renderFeed feed

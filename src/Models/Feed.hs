@@ -8,6 +8,7 @@ import qualified Data.Text    as T
 import           Data.Time    (UTCTime)
 
 import           Application
+import Snap.Snaplet.I18N
 import           Models.Reply
 import           Models.Topic
 import           Models.User
@@ -35,8 +36,9 @@ data FeedEntry = FeedEntry
 topicToFeed :: [Topic] -> AppHandler Feed
 topicToFeed ts = do
     entries <- mapM topicToFeedEntry ts
+    feedTopicTitle <- lookupI18NValue "feed.topic.title"
     return
-        Feed { feedTitle = "HaskellCNOrg Topics"
+        Feed { feedTitle = feedTopicTitle
              -- TODO: retrieve host address here
              , feedLinkSelf = "/feed/topic"
              , feedLinkHome = "/"
@@ -61,8 +63,9 @@ topicToFeedEntry t = do
 replyToFeed :: [Reply] -> AppHandler Feed
 replyToFeed rs = do
     entries <- mapM replyToFeedEntry rs
+    feedCommentTitle <- lookupI18NValue "feed.comment.title"
     return
-        Feed { feedTitle = "HaskellCNOrg Comments"
+        Feed { feedTitle = feedCommentTitle
              , feedLinkSelf = "/feed/comment"
              , feedLinkHome = "/"
              , feedUpdated = _replyCreateAt $ head rs
