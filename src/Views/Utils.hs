@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 {-
@@ -29,8 +30,8 @@ import           System.Locale
 import           Text.Digestive
 import           Text.Digestive.Heist
 ----------------------------------------------------------------
-
 import           Application
+
 import           Models.Utils
 import           Text.Digestive.HeistExt
 
@@ -85,15 +86,23 @@ decodedParamNum p = (eitherToMaybe . decimal)
 
 ------------------------------------------------------------------------------
 
--- | UTCTime to Text
---
-formatUTCTime :: UTCTime -> T.Text
-formatUTCTime = T.pack . formatTime defaultTimeLocale "%F %H:%M"
-
 -- | per Timezone format
 formatUTCTimePerTZ :: TimeZone -> UTCTime -> T.Text
 formatUTCTimePerTZ tz tm = T.pack . formatTime defaultTimeLocale "%F %H:%M" $ utcToLocalTime tz tm
 
+formatUTCTimeChina :: UTCTime -> T.Text
+formatUTCTimeChina = formatUTCTimePerTZ timezoneChina
+
+timezoneChina :: TimeZone
+timezoneChina = TimeZone 480 False "CST"
+
+-- | UTCTime to Text as Beijing time.
+-- TODO: cpp compile doesnt work, why??
+--       #if TIMEZONE==CST
+--
+formatUTCTime :: UTCTime -> T.Text
+formatUTCTime = formatUTCTimeChina
+-- formatUTCTime = T.pack . formatTime defaultTimeLocale "%F %H:%M"
 
 ------------------------------------------------------------------------------
 -- JSON Response

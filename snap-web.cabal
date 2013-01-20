@@ -1,5 +1,5 @@
 Name:                Snap-Web
-Version:             0.2
+Version:             0.2.6
 Synopsis:            snap web
 Description:         A light weight forum
 License:             BSD3
@@ -64,7 +64,7 @@ Executable snap-web
     regex-pcre-builtin           == 0.94.4.3.8.31,
     xss-sanitize                 >= 0.3   && < 0.4
 
-
+  cpp-options: -DTIMEZONE=CST
   if flag(development)
     build-depends:
       snap-loader-dynamic >= 0.9
@@ -93,3 +93,7 @@ Test-suite hcn-tests
     test-framework-hunit >= 0.2  && < 0.3,
     -- Copied from regular dependencies:
     base                 >= 4    && < 5
+
+
+
+
