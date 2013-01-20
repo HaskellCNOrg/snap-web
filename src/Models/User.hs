@@ -1,6 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
 
+-- | TODO
+-- instance as MongoDBPersistent and do a clean up of this file.
+--
 module Models.User
     ( LoginUser(..)
     , User(..)

@@ -108,10 +108,12 @@ findOneTag oid = mongoFindById $ emptyTag { _tagId = Just oid }
 findSomeTags :: [ObjectId] -> AppHandler [Tag]
 findSomeTags = mongoFindIds emptyTag
 
+-- | Notes:
+-- `map.textToS` is because T.Text is not a Val instance but Internal.Text and String.
+--
 findSomeTagsName :: [Text] -> AppHandler [Tag]
 findSomeTagsName = mongoFindSomeBy "name" emptyTag . map textToS
 
--- `map.textToS` is because T.Text is not a Val instance but Internal.Text and String.
 
 --------------------------------------------------------------------------------
 -- Instances

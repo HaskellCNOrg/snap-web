@@ -21,8 +21,6 @@ import           Models.Utils
 import           Snap.Snaplet.MongoDB
 
 
--- |
---
 data Reply = Reply
     { _replyId        :: Maybe ObjectId  -- ^ Reply obj id
     , _replyToTopicId :: ObjectId        -- ^ The Topic that reply to
@@ -38,6 +36,11 @@ replyCollection = "replies"
 emptyReply :: Reply
 emptyReply = Reply { _replyId = Nothing }
 
+
+--------------------------------------------------------------------------------
+-- Implement of Mongo Persistent
+--------------------------------------------------------------------------------
+
 instance MongoDBPersistent Reply where
   mongoColl _  = replyCollection
   toMongoDoc   = replyToDocument
@@ -46,27 +49,29 @@ instance MongoDBPersistent Reply where
   mongoGetId = _replyId
 
 
------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- CRUD
+--------------------------------------------------------------------------------
 
 -- | Save a reply which is to reply.
 --
 createReplyToTopic :: Reply -> AppHandler Reply
-createReplyToTopic reply = do
-    res <- eitherWithDB $ DB.insert replyCollection $ replyToDocument reply
-    either failureToUE (return . updateOid) res
-    where updateOid v = reply { _replyId = objectIdFromValue v }
+createReplyToTopic = mongoInsert
+--    res <- eitherWithDB $ DB.insert replyCollection $ replyToDocument reply
+--    either failureToUE (return . updateOid) res
+--    where updateOid v = reply { _replyId = objectIdFromValue v }
 
 
 -- | Find all Replies under a topic.
 --
 findReplyPerTopic :: ObjectId -> AppHandler [Reply]
 findReplyPerTopic tid = do
-    let queryReply = select [ "topic_id" =: tid ] replyCollection
-    res <- eitherWithDB $ rest =<< find (queryReply { sort = sortByCreateAtAsc })
-    liftIO $ mapM replyFromDocumentOrThrow $ either (const []) id res
+    let query' = select [ "topic_id" =: tid ] replyCollection
+        sort' = [ "create_at" =: 1, "reply_id" =: 1 ]
+    mongoFindAllBy emptyReply (query' { sort = sort' })
 
-sortByCreateAtAsc :: Order
-sortByCreateAtAsc = [ "create_at" =: 1, "reply_id" =: 1 ]
+--    res <- eitherWithDB $ rest =<< find (
+--    liftIO $ mapM replyFromDocumentOrThrow $ either (const []) id res
 
 
 findAllReply :: AppHandler [Reply]
@@ -75,8 +80,6 @@ findAllReply =
         sort' = [ "create_at" =: -1, "reply_id" =: -1 ]
     in
      mongoFindAllBy emptyReply (query' { sort = sort' })
-
------------------------------------------------------------------------
 
 -- | Delete a reply
 --
@@ -87,7 +90,9 @@ deleteReply rid =
     where query = [ "$or" =: [ [ "_id" =: rid ], ["reply_id" =: rid] ] ]
 
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- mongo document transform
+--------------------------------------------------------------------------------
 
 -- | Transform @Reply@ to mongoDB document.
 --   Nothing of id mean new reply thus empty "_id" let mongoDB generate objectId.
@@ -122,7 +127,9 @@ replyFromDocumentOrThrow d = case parseEither documentToreply d of
     Left e  -> throw $ UserException e
     Right r -> return r
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- Shortcuts
+--------------------------------------------------------------------------------
 
 getReplyId :: Reply -> T.Text
 getReplyId = objectIdToText . _replyId
