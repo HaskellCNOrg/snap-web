@@ -2,7 +2,7 @@ online demo: <http://demo.haskellcn.org>
 
 ## Travis CI
 
-- branch/0.2 [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.2)](http://travis-ci.org/HaskellCNOrg/snap-web)
+- branch/0.2.5 [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.2.5)](http://travis-ci.org/HaskellCNOrg/snap-web)
 
 ## Features
 ### 0.1
@@ -16,6 +16,8 @@ online demo: <http://demo.haskellcn.org>
   - Add tag per topic
   - Literature Haskell
   - XSS
+  - enable Math support
+  - UI change
 
 ## Installation
 
@@ -46,8 +48,6 @@ online demo: <http://demo.haskellcn.org>
 
 1. Customization files
   - `prod.cfg`, `devel.cfg`
-  - `data/main.cfg`
-  - `data/message-*.cfg`
 
 ## License
 
@@ -58,3 +58,4 @@ Check the LICENSE file
 Feel free ask questiones and contribute.
 
 
+ 
