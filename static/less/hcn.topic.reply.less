@@ -45,11 +45,6 @@
           section:last-child {
               .grayBorderDotted;             
           }
-          section:hover {
-            a.btn-link {
-              visibility: visible;
-            }
-          }
           .wmd-input {
                height: @mdEditorHeight;
           }
@@ -62,16 +57,12 @@
          cursor: pointer;
        }
 
-       &:hover {
-         color: @grayDark;
-         > a.btn-link {
-           visibility: visible;
-         }
-       }
-
-
     }
-    
+}
+
+.author:hover > a.btn-link,
+.reply:hover > a.btn-link {
+  visibility: visible;
 }
 
 .reply-editor {
