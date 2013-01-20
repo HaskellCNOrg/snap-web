@@ -21,8 +21,6 @@ import           Models.Utils
 import           Snap.Snaplet.MongoDB
 
 
---import           Control.Monad.Trans
-
 -- |
 --
 data Reply = Reply
@@ -32,11 +30,13 @@ data Reply = Reply
     , _replyContent   :: T.Text
     , _replyAuthor    :: ObjectId
     , _replyCreateAt  :: UTCTime
-    -- MAYBE: column for soft deletion.
     } deriving (Show, Eq)
 
 replyCollection :: Collection
 replyCollection = "replies"
+
+emptyReply :: Reply
+emptyReply = Reply { _replyId = Nothing }
 
 instance MongoDBPersistent Reply where
   mongoColl _  = replyCollection
@@ -56,7 +56,6 @@ createReplyToTopic reply = do
     either failureToUE (return . updateOid) res
     where updateOid v = reply { _replyId = objectIdFromValue v }
 
------------------------------------------------------------------------
 
 -- | Find all Replies under a topic.
 --
@@ -69,15 +68,13 @@ findReplyPerTopic tid = do
 sortByCreateAtAsc :: Order
 sortByCreateAtAsc = [ "create_at" =: 1, "reply_id" =: 1 ]
 
-emptyReply :: Reply
-emptyReply = Reply { _replyId = Nothing }
 
 findAllReply :: AppHandler [Reply]
-findAllReply = do
-    let replySelection = select [] replyCollection
-    mongoFindAllBy
-      emptyReply
-      (replySelection { sort = [ "create_at" =: -1, "reply_id" =: -1 ] })
+findAllReply =
+    let query' = (select [] replyCollection)
+        sort' = [ "create_at" =: -1, "reply_id" =: -1 ]
+    in
+     mongoFindAllBy emptyReply (query' { sort = sort' })
 
 -----------------------------------------------------------------------
 

@@ -12,6 +12,7 @@ import           Database.MongoDB
 import qualified Database.MongoDB          as DB
 import           Snap
 import           Snap.Snaplet.MongoDB
+import           Snap.Snaplet.Environments
 
 import           Models.Internal.Exception
 import           Models.Internal.JSON
@@ -65,7 +66,7 @@ mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
 --
 -- MAYBE:
 -- 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
--- 
+--
 mongoSave :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
              => a    -- ^ new model that will be save
              -> m a  -- ^ saved model with id.
@@ -77,23 +78,26 @@ mongoSave x = eitherWithDB (DB.save (mongoColl x) (toMongoDoc x))
 --
 -- ?? WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
 --
-mongoFindAll :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
-                => a       -- ^ an empty model. (work around for the concern below.
-                -> m [a]   -- ^ list of model data that has been retrieved.
-mongoFindAll x  =
-  eitherWithDB (rest =<< find (select [] (mongoColl x)))
-  >>= liftIO . mapM fromMongoDoc . either (const []) id
+mongoFindAll :: (MonadIO (m b v), MonadState app (m b v),
+                 MonadSnaplet m, HasMongoDB app, MongoDBPersistent a)
+                => a       -- ^ an empty model. (work around for the concern above.
+                -> m b v [a]   -- ^ list of model data that has been retrieved.
+mongoFindAll x = do
+  mongoFindAllBy x (select [] (mongoColl x))
 
 
 -- | Fetch All items in the collection per user defined selector(query).
 --
-mongoFindAllBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
-                  => a       -- ^ an empty model. (work around for the concern below.
+mongoFindAllBy :: (MonadIO (m b v), MonadState app (m b v),
+                   MonadSnaplet m, HasMongoDB app, MongoDBPersistent a)
+                  => a
                   -> Query
-                  -> m [a]   -- ^ list of model data that has been retrieved.
-mongoFindAllBy _ query =
-  eitherWithDB (rest =<< find query)
-  >>= liftIO . mapM fromMongoDoc . either (const []) id
+                  -> m b v [a]   -- ^ list of model data that has been retrieved.
+mongoFindAllBy _ query = do
+  defaultBatchSize <- lookupConfigDefault "db.batchSize" 20
+  let query' = query { batchSize = defaultBatchSize }
+  res <- eitherWithDB (rest =<< find query')
+  liftIO . mapM fromMongoDoc $ either (const []) id res
 
 
 -- | Find One item.
