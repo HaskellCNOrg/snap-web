@@ -12,6 +12,11 @@ import qualified Text.XmlHtml              as X
 import           Application
 import           Models.Utils
 
+-- TODO: refactoring
+-- 0. find total number
+-- 1. Maybe PageNum
+-- 2. search topic per PageNum (for skip) and PageSize
+-- 3. generate pagination splice
 
 -- | Select items for particular page base on Page Size, Current Page
 --
