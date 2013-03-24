@@ -5,7 +5,6 @@ module Text.Digestive.HeistExt where
 
 import           Data.Text             (Text)
 import           Text.Digestive
-import           Heist
 import qualified Heist.Interpreted as I
 import qualified Text.XmlHtml          as X
 

@@ -4,10 +4,10 @@
 module Controllers.Feed
 where
 
-import           Control.Monad   (mapM)
-import qualified Data.ByteString as BS
-import           Snap.Core       (writeBuilder)
-import           Snap.Snaplet    (Handler)
+import           Control.Monad             (mapM)
+import qualified Data.ByteString           as BS
+import           Snap.Core                 (writeBuilder)
+import           Snap.Snaplet              (Handler)
 import           Snap.Snaplet.Environments
 
 import           Application

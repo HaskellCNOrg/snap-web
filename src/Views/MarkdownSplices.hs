@@ -14,7 +14,6 @@ import qualified Codec.Binary.UTF8.String as UTF8
 import           Control.Monad.Trans
 import qualified Data.ByteString.Char8    as BS
 import qualified Data.Text                as T
-import           Heist
 import qualified Heist.Interpreted        as I
 import           Models.Utils
 import           Text.HTML.SanitizeXSS

@@ -82,8 +82,7 @@ mongoFindAll :: (MonadIO (m b v), MonadState app (m b v),
                  MonadSnaplet m, HasMongoDB app, MongoDBPersistent a)
                 => a       -- ^ an empty model. (work around for the concern above.
                 -> m b v [a]   -- ^ list of model data that has been retrieved.
-mongoFindAll x = do
-  mongoFindAllBy x (select [] (mongoColl x))
+mongoFindAll x = mongoFindAllBy x (select [] (mongoColl x))
 
 
 -- | Fetch All items in the collection per user defined selector(query).

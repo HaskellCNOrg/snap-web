@@ -13,8 +13,8 @@ clean:
 	rm -rf $(DIST)
 
 hlint:
-	hlint src/ tests/ --report=$(DIST)/hlint.html
 	$(STYLE) -i src/**/*.hs
+	hlint src/ tests/ --report=$(DIST)/hlint.html
 
 doc:
 	cabal haddock --executable

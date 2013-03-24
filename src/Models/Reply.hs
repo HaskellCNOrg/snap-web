@@ -7,7 +7,6 @@ module Models.Reply where
 import           Application
 import           Control.Applicative       ((<$>), (<*>))
 import           Control.Monad.CatchIO     (throw)
-import           Control.Monad.State
 import           Data.Baeson.Types
 import           Data.Bson
 import           Data.Maybe                (isJust, isNothing)

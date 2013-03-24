@@ -17,7 +17,8 @@ db.users.find().forEach(function(data) {
 });
 
 db.auth_user.find({"login": "admin@test.com"}).forEach(function (data) {
-     db.auth_user.update({_id:data._id}, {$push: {roles: ["admin"]}});
+     db.auth_user.update({_id:data._id}, {$set: {roles: ["admin"]}});
+                                         //$push
   });
 db.auth_user.find({"login": "admin@test.com"}).forEach(function (data) {
    db.users.update({_id:data._id}, {$unset: {roles: ["admin"]}});

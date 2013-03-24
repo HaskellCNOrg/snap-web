@@ -153,8 +153,7 @@ findUserOrCurrent = maybe USER.findCurrentUser (USER.findOneUser . textToObjectI
 
 
 toUserDetailPage :: Either UserException USER.User -> AppHandler ()
-toUserDetailPage user = do
-  heistLocal (I.bindSplices (userDetailSplices user)) $ render "user-detail"
+toUserDetailPage user = heistLocal (I.bindSplices (userDetailSplices user)) $ render "user-detail"
 
 
 ------------------------------------------------------------------------------

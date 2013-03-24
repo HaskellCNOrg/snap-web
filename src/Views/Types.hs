@@ -4,7 +4,6 @@ module Views.Types where
 
 import           Application
 import qualified Data.Text         as T
-import           Heist
 import qualified Heist.Interpreted as I
 import           Models.Exception
 

@@ -4,15 +4,15 @@ module Models.Feed
 where
 
 import           Data.Maybe
-import qualified Data.Text    as T
-import           Data.Time    (UTCTime)
+import qualified Data.Text         as T
+import           Data.Time         (UTCTime)
 
 import           Application
-import Snap.Snaplet.I18N
 import           Models.Reply
 import           Models.Topic
 import           Models.User
-import           Models.Utils (sToText)
+import           Models.Utils      (sToText)
+import           Snap.Snaplet.I18N
 
 
 data Feed = Feed
