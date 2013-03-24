@@ -29,7 +29,7 @@
         </isAuthUser>
         
         <userEditable>
-            <p><a href="/userput"><i18n name="site.edit" /></a></p>
+            <p><a href="/userput/${userId}"><i18n name="site.edit" /></a></p>
         </userEditable>
         
     </ifFound>

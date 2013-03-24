@@ -13,6 +13,7 @@ import           Snap.Snaplet.Auth
 import           Application
 import           Models.Exception
 import           Models.User
+import           Models.Utils
 import           Views.Types
 import           Views.Utils
 
@@ -47,6 +48,7 @@ renderUser user = I.runChildrenWith $
                      , ("userEmail",       _userEmail user)
                      , ("userDisplayName", _userDisplayName user)
                      , ("userSite", fromMaybe "" $ _userSite user)
+                     , ("userId", maybe "error-no-user-id-found" sToText $ getUserId' user)
                      ]
 
 formatUTCTimeMaybe Nothing  = ""

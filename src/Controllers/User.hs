@@ -8,18 +8,14 @@ module Controllers.User
        , withAuthUser ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative   ((<$>), (<*>))
 import           Control.Monad.CatchIO (try)
 import qualified Data.ByteString       as BS
-import           Data.Maybe            (fromJust, isNothing)
 import           Data.Text             (Text)
+import qualified Data.Text             as T
 import qualified Heist.Interpreted     as I
 import           Snap
-import           Snap.Core
-import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Heist
-import           Snap.Snaplet.I18N
 import           Text.Digestive
 import           Text.Digestive.Snap   hiding (method)
 
@@ -44,7 +40,7 @@ routes =  [
           ----
           , ("/user",      method GET viewUserH)
           , ("/user/:uid", method GET viewUserH)
-          , ("/userput", method GET editUserH)
+          , ("/userput/:uid", method GET editUserH)
           , ("/userput", method POST saveUserH)
           ]
 
@@ -52,7 +48,10 @@ uidP :: BS.ByteString
 uidP = "uid"
 
 redirectToUserDetailPage :: AppHandler ()
-redirectToUserDetailPage = redirect303 "/user"
+redirectToUserDetailPage = redirectToUserDetailPage' ""
+
+redirectToUserDetailPage' :: BS.ByteString -> AppHandler ()
+redirectToUserDetailPage' = redirect303 . BS.append "/user/"
 
 ------------------------------------------------------------------------------
 
@@ -145,12 +144,17 @@ signout = with appAuth logout >> redirectToHome
 -- | Fetch @User@ details. As this handler used with @withAuthUser@.
 --
 viewUserH :: AppHandler ()
-viewUserH = withAuthUser $ decodedParamTextMaybe uidP >>= try . findUserOrCurrent >>= toUserDetailPage
-            where findUserOrCurrent = maybe USER.findCurrentUser (USER.findOneUser . textToObjectId)
+viewUserH = withAuthUser $ decodedParamTextMaybe uidP
+            >>= try . findUserOrCurrent
+            >>= toUserDetailPage
+
+findUserOrCurrent :: Maybe Text -> AppHandler USER.User
+findUserOrCurrent = maybe USER.findCurrentUser (USER.findOneUser . textToObjectId)
 
 
 toUserDetailPage :: Either UserException USER.User -> AppHandler ()
-toUserDetailPage user = heistLocal (I.bindSplices (userDetailSplices user)) $ render "user-detail"
+toUserDetailPage user = do
+  heistLocal (I.bindSplices (userDetailSplices user)) $ render "user-detail"
 
 
 ------------------------------------------------------------------------------
@@ -159,9 +163,11 @@ toUserDetailPage user = heistLocal (I.bindSplices (userDetailSplices user)) $ re
 --
 editUserH :: AppHandler ()
 editUserH = withAuthUser $ do
-    user <- try USER.findCurrentUser
+    uid <- decodedParamTextMaybe uidP
+    user <- try (findUserOrCurrent uid)
     either (const $ toUserDetailPage user) runFormToFormPage' user
-    where runFormToFormPage' u = runForm "edit-user-form" (userDetailForm u) >>= (toUserFormPage . fst)
+    where runFormToFormPage' u = runForm "edit-user-form" (userDetailForm u)
+                                 >>= (toUserFormPage . fst)
 
 
 toUserFormPage :: View Text -> AppHandler ()
@@ -175,20 +181,21 @@ saveUserH = withAuthUser $ do
     (_, result) <- runForm "edit-user-form" userForm
     case result of
       Just usrVo -> doUpdateUser usrVo
-      Nothing    -> editUserH  -- return to detail view page.
+      Nothing    -> editUserH  -- TODO:This is silence failue to detail view page of current user.
     where doUpdateUser vo    = userVoToUser' vo >>= (try . USER.saveUser) >>= eitherSuccess'
           eitherSuccess' res = case res of
                                  Left _  -> toUserDetailPage res
-                                 Right _ -> redirectToUserDetailPage
+                                 Right u  -> redirectToUserDetailPage' (uidBS u)
+          uidBS = textToBS . USER.getUserIdText
 
 -- | Transform @UserVo@ to @User@.
 --   Update email is not allowed thus just get from authUser
 --   because it is designed that loginName is email address.
 --
 userVoToUser' :: UserVo -> AppHandler USER.User
-userVoToUser' vo = do
-                  (Just authUser) <- with appAuth currentUser
-                  return $ USER.User (Just authUser) (userLogin authUser)
-                                     (userDisplayName vo) (Just $ userSite vo)
-
+userVoToUser' (UserVo vid _ vname vsite) = do
+                  user <- USER.findOneUser $ textToObjectId vid
+                  return user { USER._userDisplayName = vname
+                              , USER._userSite = Just vsite
+                              }
 ------------------------------------------------------------------------------

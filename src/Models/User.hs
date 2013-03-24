@@ -14,6 +14,8 @@ module Models.User
     , findCurrentUser
     , findCurrentUserId
     , findOneUser
+    , getUserId'
+    , getUserIdText
     , saveUser
     , hasUpdatePermission
     , isCurrentUserAdmin ) where
@@ -102,7 +104,7 @@ createAuthUser' usr = do
     case result of
       Left l -> throw $ UserException $ show l
       Right r -> return r
-  where passLength = T.length . password
+  where -- passLength = T.length . password
         password'  = textToBS . password
 
 -- http://hpaste.org/69009, failure piece of code about `withBackend`.
@@ -155,13 +157,20 @@ findCurrentAuthUser = liftM fromJust (with appAuth currentUser)
 findCurrentUserId :: AppHandler (Maybe ObjectId)
 findCurrentUserId = liftM (join . fmap getUserId) (with appAuth currentUser)
 
+findAuthUserById :: ObjectId -> AppHandler (Maybe AuthUser)
+findAuthUserById uid = with appAuth $ withBackend $ \ r ->
+                       liftIO $ lookupByUserId r $ objectIdToUserId uid
 
 -- | Find One User without initlize its _authUser field. Usually for user basic information.
 --
 findOneUser :: ObjectId -> AppHandler User
 findOneUser oid = do
     res <- withFindUser' oid
-    either failureToUE (liftIO . userFromDocumentOrThrow (userToTopic Nothing)) res
+    authUser <- findAuthUserById oid
+    either
+      failureToUE
+      (liftIO . userFromDocumentOrThrow (userToTopic authUser))
+      res
 
 withFindUser' oid = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid ] authUserCollection)
 
@@ -171,6 +180,9 @@ withFindUser' oid = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid ] authUser
 --
 saveUser :: User -> AppHandler User
 saveUser lu = do
+             liftIO $ print "==="
+             liftIO $ print lu
+             liftIO $ print "==="
              res <- eitherWithDB $ DB.save authUserCollection $ userToDocument lu
              either failureToUE (const $ return lu) res
 
@@ -207,6 +219,13 @@ userFromDocumentOrThrow f d = case parseEither f d of
 
 getUserId :: AuthUser -> Maybe ObjectId
 getUserId = fmap SM.userIdToObjectId . userId
+
+getUserId' :: User -> Maybe ObjectId
+getUserId' user = _authUser user
+                  >>= getUserId
+
+getUserIdText :: User -> T.Text
+getUserIdText = objectIdToText . getUserId'
 
 -- | Basically email of user is a unique because it is used as loginName of AuthUser.
 --   In additions, some @User@ doesn't get its @_authUser@ populated.

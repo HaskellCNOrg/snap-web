@@ -22,7 +22,9 @@
         <div class="controls">
           <dfInputText class="input-large" ref="userSite" />
         </div>
-      </div>
+    </div>
+
+    <dfInputHidden ref="userVoId" />
 
     <div class="form-actions">
         <i18n name="user.submit">

@@ -8,13 +8,15 @@ import           Text.Digestive
 import           Text.Digestive.FormExt
 
 import           Models.User
+import           Models.Utils
 
 -- |
 data UserVo = UserVo
-              { userEmail       :: Text
+              { userVoId        :: Text
+              , userEmail       :: Text
               , userDisplayName :: Text
               , userSite        :: Text
-              }
+              } deriving (Show)
 
 ------------------------------------------------------------------
 --
@@ -54,7 +56,8 @@ passwordRequired = "Password is required"
 --
 userDetailForm :: Monad m => User -> Form Text m UserVo
 userDetailForm u = UserVo
-    <$> "userEmail"       .: text (Just $ _userEmail u)
+    <$> "userVoId"       .: text (Just $ objectIdToText $ getUserId' u)
+    <*> "userEmail"       .: text (Just $ _userEmail u)
     <*> "userDisplayName" .: text (Just $ _userDisplayName u)
     <*> "userSite"        .: text (Just $ fromMaybe "" $ _userSite u)
 
@@ -62,8 +65,9 @@ userDetailForm u = UserVo
 --
 userForm :: Monad m => Form Text m UserVo
 userForm  = UserVo
-    <$> "userEmail"          .: text Nothing    -- update email is disallowed.
-    <*> "userDisplayName"    .: text Nothing
-    <*> "userSite"           .: text Nothing
+    <$> "userVoId"        .: text Nothing
+    <*> "userEmail"       .: text Nothing
+    <*> "userDisplayName" .: text Nothing
+    <*> "userSite"        .: text Nothing
 
 ------------------------------------------------------------------
