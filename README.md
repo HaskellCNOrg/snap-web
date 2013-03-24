@@ -1,4 +1,4 @@
-online demo: <http://demo.haskellcn.org>
+The site used this project: <http://a.haskellcn.org>
 
 ## Travis CI
 
