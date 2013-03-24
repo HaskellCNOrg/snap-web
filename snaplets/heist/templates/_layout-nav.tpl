@@ -15,6 +15,9 @@
 
       <ul class="nav pull-right">
           <li>
+              <a target="_blank" href="http://haskellnews.org/grouped"><i18n name="site.haskellnews" /></a>
+          </li>
+          <li>
               <a target="_blank" href="http://www.haskellcn.org/study.html"><i18n name="site.study" /></a>
           </li>
           <ifLoggedOut>
