@@ -64,7 +64,7 @@ build:
 	echo "Start building" >$(LOG_FILE)
 	date >>$(LOG_FILE)
 	$(CBD) configure
-	# $(CBD) build 1>>$(LOG_FILE) 2>>&1
+	$(CBD) build 1>>$(LOG_FILE) 2>&1
 	date >>$(LOG_FILE)
 	echo "End building" >>$(LOG_FILE)
 
