@@ -180,9 +180,6 @@ withFindUser' oid = eitherWithDB $ DB.fetch (DB.select [ "_id" =: oid ] authUser
 --
 saveUser :: User -> AppHandler User
 saveUser lu = do
-             liftIO $ print "==="
-             liftIO $ print lu
-             liftIO $ print "==="
              res <- eitherWithDB $ DB.save authUserCollection $ userToDocument lu
              either failureToUE (const $ return lu) res
 
