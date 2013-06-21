@@ -20,6 +20,7 @@ import qualified Data.Text               as T
 import qualified Data.Text.Encoding      as T
 import           Data.Text.Read
 import           Data.Time
+import           Data.Time.Relative
 import           Heist
 import qualified Heist.Interpreted       as I
 import           Prelude                 hiding (lookup)
@@ -99,10 +100,13 @@ timezoneChina = TimeZone 480 False "CST"
 -- | UTCTime to Text as Beijing time.
 -- TODO: cpp compile doesnt work, why??
 --       #if TIMEZONE==CST
+--       formatUTCTime = T.pack . formatTime defaultTimeLocale "%F %H:%M"
 --
 formatUTCTime :: UTCTime -> T.Text
 formatUTCTime = formatUTCTimeChina
--- formatUTCTime = T.pack . formatTime defaultTimeLocale "%F %H:%M"
+
+relativeUTCTime :: UTCTime -> UTCTime -> T.Text
+relativeUTCTime t1 t2 = T.pack $ relative t1 t2 True
 
 ------------------------------------------------------------------------------
 -- JSON Response

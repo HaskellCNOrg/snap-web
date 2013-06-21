@@ -10,6 +10,7 @@ import           Data.Function         (on)
 import           Data.List
 import qualified Data.Map              as MP
 import qualified Data.Text             as T
+import           Data.Time
 import           Heist
 import qualified Heist.Interpreted     as I
 
@@ -38,12 +39,13 @@ allReplyPerTopicSplice xs = I.mapSplices replySpliceWithChildren (splitReplies x
 --
 replySpliceWithChildren :: ReplyWithReply -> I.Splice AppHandler
 replySpliceWithChildren (r, rs) = do
+    now <- liftIO getCurrentTime
     user <- findReplyAuthor r
     I.runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
                       , ("replyToReply", I.mapSplices replyToReplySplice rs)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
                       ]
-                      ++ map (second I.textSplice) (replySpliceImpl r user)
+                      ++ map (second I.textSplice) (replySpliceImpl r user now)
 
 
 ------------------------------------------------------------------------------
@@ -53,23 +55,26 @@ replySpliceWithChildren (r, rs) = do
 --
 replyToReplySplice :: Reply -> I.Splice AppHandler
 replyToReplySplice r = do
+    now <- liftIO getCurrentTime
     user <- findReplyAuthor r
     I.runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
                       , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
                       ]
-                      ++  map (second I.textSplice) (replySpliceImpl r user)
+                      ++  map (second I.textSplice) (replySpliceImpl r user now)
 
 
 replySpliceImpl :: Reply
                 -> User   -- ^ UserName
+                -> UTCTime
                 -> [(T.Text, T.Text)]
-replySpliceImpl r user =
+replySpliceImpl r user now =
                     [ ("replyAuthor", _userDisplayName user)
                     , ("replyAuthorId", sToText $ _replyAuthor r)
                     , ("replyId", getReplyId r)
                     , ("replyToTopicId", sToText $ _replyToTopicId r)
                     , ("replyToReplyId", objectIdToText $ _replyToReplyId r)
-                    , ("replyCreateAt", formatUTCTime $ _replyCreateAt r)]
+                    , ("replyCreateAt", relativeUTCTime (_replyCreateAt r) now)
+                    ]
 --                    , ("replyContent",  _replyContent r) ]
 
 

@@ -10,6 +10,7 @@ import           Control.Arrow           (second)
 import           Control.Monad.Trans
 import           Data.Maybe              (isJust)
 import qualified Data.Text               as T
+import           Data.Time
 import           Heist
 import qualified Heist.Interpreted       as I
 import           Models.Exception
@@ -78,16 +79,18 @@ topicDetailSplices = eitherToSplices
 renderTopicSimple :: Topic -> I.Splice AppHandler
 renderTopicSimple tag = do
     usr <- findTopicAuthor tag
-    I.runChildrenWithText (topicToSpliceContent tag usr)
+    now <- liftIO getCurrentTime
+    I.runChildrenWithText (topicToSpliceContent tag usr now)
 
 -- | Render a Topic with its replies.
 --
 renderTopic :: Topic -> I.Splice AppHandler
 renderTopic topic = do
+    now <- liftIO getCurrentTime
     rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId topic)
     user <- findTopicAuthor topic
     I.runChildrenWith $
-      map (second I.textSplice) (topicToSpliceContent topic user)
+      map (second I.textSplice) (topicToSpliceContent topic user now)
       ++ [ ("topicContent", markdownToHtmlSplice $ _content topic)
          , ("replyPerTopic", allReplyPerTopicSplice rs)
          , ("topicEditable", hasEditPermissionSplice user)
@@ -107,10 +110,11 @@ findTopicAuthor topic = lift (findUser' topic)
 
 -- | Topic to Splice "VO"
 --
-topicToSpliceContent :: Topic -> User -> [(T.Text, T.Text)]
-topicToSpliceContent topic user = [ ("topicTitle", _title topic)
-                              , ("topicAuthor", _userDisplayName user)
-                              , ("topicAuthorId", sToText $ _author topic)
-                              , ("topicCreateAt", formatUTCTime $ _createAt topic)
-                              , ("topicUpdateAt", formatUTCTime $ _updateAt topic)
-                              , ("topicId", getTopicId topic) ]
+topicToSpliceContent :: Topic -> User -> UTCTime -> [(T.Text, T.Text)]
+topicToSpliceContent topic user now =
+  [ ("topicTitle", _title topic)
+  , ("topicAuthor", _userDisplayName user)
+  , ("topicAuthorId", sToText $ _author topic)
+  , ("topicCreateAt", relativeUTCTime (_createAt topic) now)
+  , ("topicUpdateAt", relativeUTCTime (_updateAt topic) now)
+  , ("topicId", getTopicId topic) ]
