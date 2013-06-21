@@ -32,9 +32,7 @@
           <apply template="_layout-footer" />
       </div>
 
-      <script type="text/javascript" src="/js/libs/jquery.js"></script>
-      <script type="text/javascript" src="/js/libs/bootstrap-button.js"></script>
-      <script type="text/javascript" src="/js/libs/bootstrap-collapse.js"></script>
+      <apply template="_layout-js" />
       <bottom-scripts />
 
   </body>

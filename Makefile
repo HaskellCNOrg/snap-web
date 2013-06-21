@@ -78,6 +78,8 @@ rebuild: clean build
 ##       5. [ ] md5sum
 ##
 
+JS_FILES=jquery.js bootstrap-collapse.js bootstrap-button.js
+
 create-site:
 	rm -rf $(SITE)
 	mkdir -p $(SITE)/log
@@ -92,14 +94,20 @@ create-site:
 		uglifyjs $$x > $$x.min.js ; \
 		mv -f $$x.min.js $$x ; \
 	done
-	cd $(SITE)/static/js/libs && for x in *.js ; do \
-		uglifyjs $$x > $$x.min.js ; \
-		mv -f $$x.min.js $$x ; \
+
+	# uglifyjs $$x > $$x.min.js
+	# mv -f $$x.min.js $$x
+
+	cd $(SITE)/static/js/libs && for x in $(JS_FILES) ; do \
+		uglifyjs $$x >> m.js ; \
+		rm -f $$x ;\
 	done
+
+	mv -f $(SITE)/snaplets/heist/templates/_layout-js-prod.tpl $(SITE)/snaplets/heist/templates/_layout-js.tpl
 
 	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
 	lessc --compress static/less/responsive.less > $(SITE)/static/css/responsive.css
-	cp -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
+	mv -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
 
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
 		perl -i -p -e  's/[\r\n]+|[ ]{2}|<!--(.|\s)*?--.*>//gs' $$x ; \
