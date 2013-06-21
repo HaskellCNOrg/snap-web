@@ -93,7 +93,7 @@ mongoFindAllBy :: (MonadIO (m b v), MonadState app (m b v),
                   -> Query
                   -> m b v [a]   -- ^ list of model data that has been retrieved.
 mongoFindAllBy _ query = do
-  defaultBatchSize <- lookupConfigDefault "db.batchSize" 20
+  defaultBatchSize <- lookupConfigDefault "db.batchSize" 100
   let query' = query { batchSize = defaultBatchSize }
   res <- eitherWithDB (rest =<< find query')
   liftIO . mapM fromMongoDoc $ either (const []) id res
