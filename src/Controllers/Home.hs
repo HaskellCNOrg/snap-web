@@ -20,7 +20,7 @@ import           Views.Utils
 --
 index :: Handler App App ()
 index = ifTop $ do
-    page <- decodedParamNum "pagenum"
+    page <- decodedParamNum "p"
     topics <- findAllTopic
     heistLocal (I.bindSplices $ topicSplices topics page) $ render "index"
 

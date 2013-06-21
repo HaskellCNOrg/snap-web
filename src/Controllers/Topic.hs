@@ -138,7 +138,7 @@ renderTopicDetailPage result view = renderDfPageSplices
 viewTopicsByTagH :: AppHandler ()
 viewTopicsByTagH = do
   tagId  <- decodedParamText tagIdParam
-  page   <- decodedParamNum "pagenum"
+  page   <- decodedParamNum "p"
   result <- try (findTopicByTag (textToObjectId tagId))
   either exceptionH (toTopicListPerTagPage page) result
 

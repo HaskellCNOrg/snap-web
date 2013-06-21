@@ -78,7 +78,7 @@ urlGen :: T.Text -> T.Text -> T.Text
 urlGen t = T.append (t `T.append` topicHref)
 
 topicHref :: T.Text
-topicHref = "?pagenum="
+topicHref = "?p="
 
 
 ---------------------------------------------------------------
