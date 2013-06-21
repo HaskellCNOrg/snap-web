@@ -23,7 +23,7 @@
     <apply template="_google-a" />
 
   </head>
-  
+
   <body>
       <apply template="_layout-nav"/>
 
@@ -34,6 +34,7 @@
 
       <script type="text/javascript" src="/js/libs/jquery.js"></script>
       <script type="text/javascript" src="/js/libs/bootstrap-button.js"></script>
+      <script type="text/javascript" src="/js/libs/bootstrap-collapse.js"></script>
       <bottom-scripts />
 
   </body>
