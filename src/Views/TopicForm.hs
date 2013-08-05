@@ -24,6 +24,13 @@ data TopicVo = TopicVo
                } deriving (Show)
 
 
+maxTitleLength, minTitleLength, minContentLength, maxTagsCount :: Int
+maxTitleLength = 100
+minTitleLength = 5
+minContentLength = 10
+maxTagsCount = 8
+
+
 -- | FIXME: Need a better design to get message from i18n snaplet.
 --
 topicForm :: Monad m => Form Text m TopicVo
@@ -52,19 +59,19 @@ tagsToText = text . Just . T.intercalate " " . map _tagName
 -- | Topic Title Validation. (Required + minlength 5)
 --
 titleValidation :: Monad m => Form Text m Text -> Form Text m Text
-titleValidation = checkMaxLengthWith 30 "Title"
-                  . checkMinLengthWith 5 "Title"
+titleValidation = checkMaxLengthWith maxTitleLength "Title"
+                  . checkMinLengthWith minTitleLength "Title"
                   . checkRequired "title is required"
 
 
 -- | Topic Content Validation. (Required + minlength 10)
 --
 contentValidation :: Monad m => Form Text m Text -> Form Text m Text
-contentValidation = checkMinLength 10 . checkRequired "content is required"
+contentValidation = checkMinLength minContentLength . checkRequired "content is required"
 
 
 -- | Tags Validation. (no more than 8 tags)
 --
 tagsValidation :: Monad m => Form Text m Text -> Form Text m Text
-tagsValidation = check "No more than 8 Tags" (maxListValidator 8 splitOnSpaceOrComma)
+tagsValidation = check "No more than 8 Tags" (maxListValidator maxTagsCount splitOnSpaceOrComma)
 
