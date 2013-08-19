@@ -1,7 +1,7 @@
 <apply template="layout">
 
 <ifNotFound>
-  <div class="alert alert-error"> 
+  <div class="alert alert-error">
     <ul>
       <li><exceptionValue/></li>
     </ul>
@@ -29,7 +29,9 @@
     <ifLoggedIn>
       <topicEditable>
         <div class="btn-group topic-toolbar">
-            <a class="btn btn-link" href="/topicput/${topicId}"><i18n name="site.edit" /></a>
+          <a class="btn btn-link" href="/topicput/${topicId}"><i18n name="site.edit" /></a>
+          <a class="btn btn-link" href="/topicdelete/${topicId}"><i18n name="site.delete" /></a>
+          <!-- FIXME: confirmation when deletion -->
         </div>
       </topicEditable>
     </ifLoggedIn>
@@ -50,14 +52,14 @@
             <!-- JS impl in @initReplyToReplyBtn@ -->
             <a class="btn btn-link invisible" id="add-comment-${replyId}" data-topic="${topicId}" data-reply="${replyId}"><i18n name="reply.reply.add" /></a>
           </ifLoggedIn>
-          
+
         </section>
 
       </replyPerTopic>
     </div>
 
   </div>
-  
+
   <ifLoggedIn>
       <hr />
       <div class="reply-editor">
@@ -72,5 +74,5 @@
   <script type="text/javascript" src="/js/markdown.js"></script>
   <script type="text/javascript" src="/js/topic.js"></script>
 </bind>
-  
+
 </apply>

@@ -22,7 +22,7 @@ import           Text.Digestive
 import           Text.Digestive.Snap
 
 import           Application
-import           Controllers.Exception (exceptionH)
+import           Controllers.Exception (fourofourH, exceptionH)
 import           Controllers.Home      (redirect303)
 import           Controllers.Tag       (saveTags)
 import           Controllers.User      hiding (routes)
@@ -51,6 +51,7 @@ routes =  [ ("/topic",  createTopicH)                          -- save new topic
           , ("/topic/:topicid", Snap.method GET viewTopicH)    -- view a topic
           , ("/topicput/:topicid", Snap.method GET editTopicH) -- show detail for editing
           , ("/topicput/topic", Snap.method POST saveTopicH)   -- save editing changes.
+          , ("/topicdelete/:topicid", deleteTopicH)            -- soft delete a topic
           , ("/tag/:tagid",  Snap.method GET viewTopicsByTagH) -- list topic per tag
           , ("/topic/preview",  previewTopicH)                          -- preview content via pandoc
           ]
@@ -193,6 +194,8 @@ doUpdateTopic' tv = do
 
         Right t -> redirectTopicDetailPage (textToS $ getTopicId t)
 
+deleteTopicH :: AppHandler ()
+deleteTopicH = withAuthUser fourofourH
 
 ------------------------------------------------------------------------------
 
