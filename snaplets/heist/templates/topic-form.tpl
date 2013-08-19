@@ -2,10 +2,10 @@
 
 <div class="registration">
 
-<dfForm class="form-horizontal" action="topic">
+<dfForm class="form-horizontal1" action="topic">
 
     <dfIfChildErrors>
-      <div class="alert alert-error"> 
+      <div class="alert alert-error">
         <!-- <dfChildErrorListRef /> -->
          <dfChildErrorList />
       </div>
@@ -19,13 +19,13 @@
     </div>
 
     <div class="control-group">
-      <dfLabel class="control-label" ref="content" for="wmd-input"><i18n name="topic.content"/></dfLabel>
+      <dfLabel class="control-label" ref="content" for="wmd-input">
+        <i18n name="topic.content"/>
+        (<a class="markdown-helper" href="http://daringfireball.net/projects/markdown/" target="_blank" rel="nofollow" tabindex=100><i18n name="site.markdownHelper" /></a>)
+      </dfLabel>
 
       <div class="controls">
           <apply template="_markdown-input" />
-        <!-- <dfInputTextArea ref="content" class="wmd-input input-xxlarge" id="wmd-input" required /> -->
-        <!-- <apply template="_markdown-helper" /> -->
-        <!-- <div id="wmd-preview" class="input-xxlarge wmd-preview"></div> -->
       </div>
     </div>
 
