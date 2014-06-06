@@ -15,7 +15,7 @@
 
         <ul class="nav">
           <li>
-            <a href="/topic"><i18n name="topic.new" /></a>
+              <a href="/topic"><i18n name="topic.new" /></a>
           </li>
           <li>
             <a href="/tags"><i18n name="tag.list" /></a>
@@ -31,8 +31,8 @@
           </li>
 
           <ifLoggedOut>
-          <li><a href="/signin"><i18n name="user.signin" /></a></li>
-          <li><a href="/signup"><i18n name="user.signup" /></a></li>
+          <li><a href="/signin${goto}"><i18n name="user.signin" /></a></li>
+          <li><a href="/signup${goto}"><i18n name="user.signup" /></a></li>
           </ifLoggedOut>
 
           <ifLoggedIn>

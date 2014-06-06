@@ -3,10 +3,10 @@
 <ifLoggedOut>
 <div class="registration">
 
-<dfForm class="form-horizontal" action="/signin">
+<dfForm class="form-horizontal" action="/signin" name="signin-form">
 
     <dfIfChildErrors>
-      <div class="alert alert-error"> 
+      <div class="alert alert-error">
          <dfChildErrorList ref=""></dfChildErrorList>
       </div>
     </dfIfChildErrors>
@@ -21,14 +21,16 @@
           <dfInputText class="input-large" ref="loginName" type="email" required autofocus placeholder="me@example.com" />
         </div>
       </div>
-      
+
       <div class="control-group">
         <dfLabel class="control-label" ref="password"><i18n name="user.password"/></dfLabel>
         <div class="controls">
           <dfInputPassword class="input-large" ref="password" required />
         </div>
       </div>
-      
+
+      <dfInputHidden ref="nextPageUri" />
+
       <div class="form-actions">
         <i18n name="user.login">
           <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>

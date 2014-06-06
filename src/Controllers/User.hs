@@ -27,6 +27,7 @@ import qualified Models.User           as USER
 import           Models.Utils
 import           Views.UserForm
 import           Views.UserSplices
+import           Views.SharedSplices
 import           Views.Utils
 
 
@@ -66,7 +67,10 @@ withAuthUser = requireUser appAuth redirectToSignin
 -- | Redirect to signin page.
 --
 redirectToSignin :: AppHandler ()
-redirectToSignin = redirect303 "/signin"
+redirectToSignin = do
+  v <- genNextPageParam
+  redirect303 $ BS.append "/signin" v
+
 
 ------------------------------------------------------------------------------
 
@@ -98,15 +102,21 @@ signup = do
 --
 signin :: AppHandler ()
 signin = do
-    (view, result) <- runForm "form" signinForm
+    nextPageURI <- decodedParamMaybe nextPageParam
+    (view, result) <- runForm "form" (signinForm $ fmap bsToText nextPageURI)
     case result of
         Just usr -> do
-                  result' <- try (with appAuth $ USER.loginUser usr)
-                  either (toPage . updateViewErrors view . showUE) toHome result'
+                  result' <- try (with appAuth $ USER.loginUser $ loginFormUserToUser' usr)
+                  either (toPage . updateViewErrors view . showUE) (toHome $ _nextPageUri usr) result'
         Nothing -> toPage view
     where toPage = renderDfPage "signin"
-          toHome = const redirectToHome
+          -- | TODO: validate URIs
+          toHome uri
+            | T.null uri = const redirectToHome
+            | otherwise = const (redirect $ textToBS uri)
 
+loginFormUserToUser' :: LoginFormUser -> USER.LoginUser
+loginFormUserToUser' (LoginFormUser n p _) = USER.LoginUser n p ""
 
 
 ------------------------------------------------------------------------------

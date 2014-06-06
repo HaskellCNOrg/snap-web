@@ -18,13 +18,21 @@ data UserVo = UserVo
               , userSite        :: Text
               } deriving (Show)
 
+data LoginFormUser = LoginFormUser
+                     { _loginName      :: Email
+                     , _password       :: Text
+                     , _nextPageUri    :: Text
+                     } deriving (Show)
+
 ------------------------------------------------------------------
 --
-signinForm :: Monad m => Form Text m LoginUser
-signinForm = LoginUser
+signinForm :: Monad m
+              => Maybe Text
+              -> Form Text m LoginFormUser
+signinForm nextPageUri = LoginFormUser
     <$> "loginName"      .: checkRequired loginNameRequired (text Nothing)
     <*> "password"       .: checkRequired passwordRequired (text Nothing)
-    <*> "repeatPassword" .: text Nothing
+    <*> "nextPageUri"    .: text nextPageUri
 
 signupForm :: Monad m => Form Text m LoginUser
 signupForm = check "Two Input password must be same" samePasswordValidator $

@@ -72,7 +72,7 @@ topicDetailSplices :: Either UserException Topic -> [(T.Text, I.Splice AppHandle
 topicDetailSplices = eitherToSplices
 
 
-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 -- | Single Topic to Splice
 --

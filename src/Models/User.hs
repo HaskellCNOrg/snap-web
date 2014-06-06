@@ -8,6 +8,7 @@ module Models.User
     ( LoginUser(..)
     , User(..)
     , UserObjId
+    , Email
     , createNewUser
     , loginUser
     , resetPassword
