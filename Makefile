@@ -2,6 +2,7 @@ CBD=cabal
 STYLE=stylish-haskell
 
 PROG_PREV = ./dist/build/snap-web/snap-web
+PROD_PROD = .cabal-sandbox/bin/snap-web
 PROG_NAME = ./snap-web
 
 DIST=dist
@@ -63,7 +64,7 @@ build-prod: clean
 	echo "Start building" >$(LOG_FILE)
 	date >>$(LOG_FILE)
 	$(CBD) configure
-	$(CBD) build 1>>$(LOG_FILE) 2>&1
+	$(CBD) install 1>>$(LOG_FILE) 2>&1
 	date >>$(LOG_FILE)
 	echo "End building" >>$(LOG_FILE)
 
@@ -104,8 +105,7 @@ create-site:
 
 	mv -f $(SITE)/snaplets/heist/templates/_layout-js-prod.tpl $(SITE)/snaplets/heist/templates/_layout-js.tpl
 
-	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
-	lessc --compress static/less/responsive.less > $(SITE)/static/css/responsive.css
+	lessc --compress static/bootstrap/bootstrap.less > $(SITE)/static/css/main.css
 	mv -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
 
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
@@ -113,7 +113,7 @@ create-site:
 		perl -i -p -e  's/<!--(.|\s)*?-->//gs' $$x ; \
 	done
 
-	cp $(PROG_PREV) $(SITE)
+	cp $(PROD_PROD) $(SITE)
 
 
 prod:
