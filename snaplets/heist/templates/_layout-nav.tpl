@@ -45,3 +45,8 @@
     </div>
   </div>
 </div>
+<div>
+<a href="https://github.com/HaskellCNOrg/snap-web.git" target="_blank">
+    <img style="position: absolute; top: 42px; right: 0; border: 0" src="https://i.alipayobjects.com/e/201211/1dbSqT9ykm.png" width="149" height="149" alt="Fork me on GitHub">
+    </a>
+</div>
