@@ -132,10 +132,9 @@ resetPassword user = with appAuth $ withBackend $ \r -> liftIO (resetPassword' u
 
 loginUser :: LoginUser -> Handler b (AuthManager b) AuthUser
 loginUser lu = do
-              res <- loginByUsername (username' lu) (password' lu) True
+              res <- loginByUsername (loginName lu) (password' lu) True
               either throwUE return res
-              where username' = textToBS . loginName
-                    password' = ClearText . textToBS . password
+              where password' = ClearText . textToBS . password
 
 
 ------------------------------------------------------------------------------

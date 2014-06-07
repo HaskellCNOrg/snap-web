@@ -9,6 +9,7 @@ import           Control.Monad.Trans
 import           Data.Function         (on)
 import           Data.List
 import qualified Data.Map              as MP
+import           Data.Monoid           (mconcat)
 import qualified Data.Text             as T
 import           Data.Time
 import           Heist
@@ -41,11 +42,12 @@ replySpliceWithChildren :: ReplyWithReply -> I.Splice AppHandler
 replySpliceWithChildren (r, rs) = do
     now <- liftIO getCurrentTime
     user <- findReplyAuthor r
-    I.runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
-                      , ("replyToReply", I.mapSplices replyToReplySplice rs)
-                      , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
-                      ]
-                      ++ map (second I.textSplice) (replySpliceImpl r user now)
+    I.runChildrenWith $ foldSplices $
+      [ ("replyEditable", hasEditPermissionSplice user)
+      , ("replyToReply", I.mapSplices replyToReplySplice rs)
+      , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
+      ]
+      ++ map (second I.textSplice) (replySpliceImpl r user now)
 
 
 ------------------------------------------------------------------------------
@@ -57,10 +59,11 @@ replyToReplySplice :: Reply -> I.Splice AppHandler
 replyToReplySplice r = do
     now <- liftIO getCurrentTime
     user <- findReplyAuthor r
-    I.runChildrenWith $ [ ("replyEditable", hasEditPermissionSplice user)
-                      , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
-                      ]
-                      ++  map (second I.textSplice) (replySpliceImpl r user now)
+    I.runChildrenWith $ foldSplices $
+      [ ("replyEditable", hasEditPermissionSplice user)
+      , ("replyContentMD", markdownToHtmlSplice $ _replyContent r)
+      ]
+      ++  map (second I.textSplice) (replySpliceImpl r user now)
 
 
 replySpliceImpl :: Reply

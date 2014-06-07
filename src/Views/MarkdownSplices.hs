@@ -13,6 +13,7 @@ module Views.MarkdownSplices
 import qualified Codec.Binary.UTF8.String as UTF8
 import           Control.Monad.Trans
 import qualified Data.ByteString.Char8    as BS
+import           Data.Set
 import qualified Data.Text                as T
 import qualified Heist.Interpreted        as I
 import           Models.Utils
@@ -50,17 +51,19 @@ markdownToHtmlText =  xss . BS.pack . writeDoc . readDoc . tabFilter4 . T.unpack
 readDoc :: String -> Pandoc
 readDoc = readMarkdown parserOptions
 
-parserOptions :: ParserState
-parserOptions = defaultParserState { stateLiterateHaskell = True
-                                   }
+parserOptions :: ReaderOptions
+parserOptions = let d = def
+                    ext = insert Ext_literate_haskell (readerExtensions d)
+                in
+                d { readerExtensions = ext }
 
 writeDoc :: Pandoc -> String
 writeDoc = UTF8.encodeString . writeHtmlString writerOptions
 
 writerOptions :: WriterOptions
-writerOptions = defaultWriterOptions { writerHighlight = True
-                                     , writerHTMLMathMethod = googleApiMathMethod
-                                     }
+writerOptions = def { writerHighlight = True
+                    , writerHTMLMathMethod = googleApiMathMethod
+                    }
 
 googleApiMathMethod :: HTMLMathMethod
 googleApiMathMethod = WebTeX "http://chart.apis.google.com/chart?cht=tx&chl="

@@ -22,7 +22,7 @@ import           Text.Digestive
 import           Text.Digestive.Snap
 
 import           Application
-import           Controllers.Exception (fourofourH, exceptionH)
+import           Controllers.Exception (exceptionH, fourofourH)
 import           Controllers.Home      (redirect303)
 import           Controllers.Tag       (saveTags)
 import           Controllers.User      hiding (routes)

@@ -4,7 +4,7 @@
 module Controllers.Feed
 where
 
-import           Control.Monad             (mapM)
+--import           Control.Monad             (mapM)
 import qualified Data.ByteString           as BS
 import           Snap.Core                 (writeBuilder)
 import           Snap.Snaplet              (Handler)

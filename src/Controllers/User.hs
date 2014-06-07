@@ -25,9 +25,9 @@ import           Controllers.Home
 import           Models.Exception
 import qualified Models.User           as USER
 import           Models.Utils
+import           Views.SharedSplices
 import           Views.UserForm
 import           Views.UserSplices
-import           Views.SharedSplices
 import           Views.Utils
 
 

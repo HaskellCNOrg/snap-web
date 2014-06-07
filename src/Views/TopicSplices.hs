@@ -42,9 +42,9 @@ instance SpliceRenderable Topic where
 topicSplices :: Integral a
                 => [Topic]
                 -> Maybe a
-                -> [(T.Text, I.Splice AppHandler)]
-topicSplices topics page = [ ("homeTopics", allTopicsSplice topics page)
-                           , ("ifNoTopics", ifNoTopicsSplice (length topics)) ]
+                -> Splices (I.Splice AppHandler)
+topicSplices topics page = foldSplices [ ("homeTopics", allTopicsSplice topics page)
+                                       , ("ifNoTopics", ifNoTopicsSplice (length topics)) ]
 
 allTopicsSplice :: Integral a
                    => [Topic]
@@ -53,10 +53,9 @@ allTopicsSplice :: Integral a
 allTopicsSplice topics page = do
     let t = filter (isJust . _topicId) topics
     (i, xs, splice) <- lift $ paginationHandler currentPage' t
-    I.runChildrenWith
-      [ ("allTopics", I.mapSplices renderTopicSimple xs)
-      , ("pagination", splice)
-      , ("startIndex", I.textSplice $ sToText i) ]
+    I.runChildrenWith $ foldSplices [ ("allTopics", I.mapSplices renderTopicSimple xs)
+                                    , ("pagination", splice)
+                                    , ("startIndex", I.textSplice $ sToText i) ]
     where currentPage' :: Integral a => a
           currentPage' = maybe 1 fromIntegral page
 
@@ -68,7 +67,7 @@ ifNoTopicsSplice n = if n <= 0 then I.runChildren else return []
 -- | Splices used at Topic Detail page.
 --   Display either a topic or error msg.
 --
-topicDetailSplices :: Either UserException Topic -> [(T.Text, I.Splice AppHandler)]
+topicDetailSplices :: Either UserException Topic -> Splices (I.Splice AppHandler)
 topicDetailSplices = eitherToSplices
 
 
@@ -80,7 +79,8 @@ renderTopicSimple :: Topic -> I.Splice AppHandler
 renderTopicSimple tag = do
     usr <- findTopicAuthor tag
     now <- liftIO getCurrentTime
-    I.runChildrenWithText (topicToSpliceContent tag usr now)
+    I.runChildrenWith $ foldSplices $
+      map (second I.textSplice) (topicToSpliceContent tag usr now)
 
 -- | Render a Topic with its replies.
 --
@@ -89,7 +89,7 @@ renderTopic topic = do
     now <- liftIO getCurrentTime
     rs <- lift $ findReplyPerTopic (textToObjectId $ getTopicId topic)
     user <- findTopicAuthor topic
-    I.runChildrenWith $
+    I.runChildrenWith $ foldSplices $
       map (second I.textSplice) (topicToSpliceContent topic user now)
       ++ [ ("topicContent", markdownToHtmlSplice $ _content topic)
          , ("replyPerTopic", allReplyPerTopicSplice rs)

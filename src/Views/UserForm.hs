@@ -19,9 +19,9 @@ data UserVo = UserVo
               } deriving (Show)
 
 data LoginFormUser = LoginFormUser
-                     { _loginName      :: Email
-                     , _password       :: Text
-                     , _nextPageUri    :: Text
+                     { _loginName   :: Email
+                     , _password    :: Text
+                     , _nextPageUri :: Text
                      } deriving (Show)
 
 ------------------------------------------------------------------

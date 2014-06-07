@@ -27,6 +27,7 @@ import           Snap.Snaplet.Session.Backends.CookieSession
 import           Application
 import           Controllers.Routes
 import           Views.SharedSplices
+import           Views.Utils
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
@@ -47,7 +48,7 @@ app = makeSnaplet "app" "Happy Haskell, Happy Snap." Nothing $ do
     a  <- nestSnaplet "auth" appAuth $ initMongoAuth appSession d (Just dbkey)
 
     addRoutes routes
-    addAuthSplices appAuth
+    addAuthSplices h appAuth
     addSplices sharedSplices
     return $ App h i s d a ar
   where

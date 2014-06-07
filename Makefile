@@ -1,4 +1,4 @@
-CBD=cabal-dev
+CBD=cabal
 STYLE=stylish-haskell
 
 PROG_PREV = ./dist/build/snap-web/snap-web
@@ -7,10 +7,10 @@ PROG_NAME = ./snap-web
 DIST=dist
 SITE=_site
 
-default: build-dev
+default: build
 
 clean:
-	rm -rf $(DIST)
+	cabal clean
 
 hlint:
 	$(STYLE) -i src/**/*.hs
@@ -25,18 +25,17 @@ doc:
 ##
 ###########################
 
-dryrun:
-	$(CBD) install --only-dependencies --dry-run
-
 init:
-	cabal update
-	$(CBD) install --only-dependencies
+	test -e cabal.sandbox.config || $(CBD) sandbox init
+	$(CBD) install --only-dependencies --enable-tests --job=2
 
-build-dev:
+conf:
 	$(CBD) --flags="development" configure
+
+build: conf
 	$(CBD) build
 
-install-dev: build-dev
+install: conf
 	$(CBD) install
 
 test:
@@ -47,11 +46,11 @@ test:
 p:
 	$(PROG_PREV) -p 9900
 
-cb: clean build-dev
+cb: clean build
 
-bp: build-dev p
+bp: build p
 
-rp: clean build-dev p
+rp: clean build p
 
 ###########################
 ## PRODUCTION
@@ -60,7 +59,7 @@ rp: clean build-dev p
 
 LOG_FILE=./log/build.log
 
-build:
+build-prod: clean
 	echo "Start building" >$(LOG_FILE)
 	date >>$(LOG_FILE)
 	$(CBD) configure
@@ -68,7 +67,7 @@ build:
 	date >>$(LOG_FILE)
 	echo "End building" >>$(LOG_FILE)
 
-rebuild: clean build
+rebuild: clean build-prod
 
 ##
 ##       1. create new dir _sites
