@@ -1,26 +1,26 @@
 The site used this project: <http://a.haskellcn.org>
 
-## Travis CI
+# Travis CI
 
 - master [![master](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=master)](http://travis-ci.org/HaskellCNOrg/snap-web)
 - branch/0.3.0 [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.3.0)](http://travis-ci.org/HaskellCNOrg/snap-web)
 
-## Features
-### 0.1
+# Features
+## 0.1
  - User Registration
  - Add/Update New Posts
  - Add Comment to either a Topic or Comment
  - Pagination for Posts
  - i18n support
 
-### 0.2
+## 0.2
   - Add tag per topic
   - Literature Haskell
   - XSS
   - enable Math support
   - UI change
 
-## Installation
+# Installation
 
 **Assume OS is \*inux with make otherwise figure out yourself by reading Makefile**
 
@@ -35,7 +35,7 @@ The site used this project: <http://a.haskellcn.org>
     
   2. Open browser to <http://localhost:9900>
 
-## Production Deployment
+# Production Deployment
 
   0. Assume have done all steps in Installation section
   1. install `nodejs`; 
@@ -50,13 +50,10 @@ The site used this project: <http://a.haskellcn.org>
 1. Customization files
   - `prod.cfg`, `devel.cfg`
 
-## License
+# License
 
 Check the LICENSE file
 
-## Contribute
+# Contribute
 
 Feel free ask questiones and contribute.
-
-
- 
