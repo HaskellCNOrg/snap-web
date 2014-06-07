@@ -2,7 +2,8 @@ The site used this project: <http://a.haskellcn.org>
 
 ## Travis CI
 
-- branch/0.2.5 [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.2.5)](http://travis-ci.org/HaskellCNOrg/snap-web)
+- master [![master](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=master)](http://travis-ci.org/HaskellCNOrg/snap-web)
+- branch/0.3.0 [![branch-0.2](https://secure.travis-ci.org/HaskellCNOrg/snap-web.png?branch=branch/0.3.0)](http://travis-ci.org/HaskellCNOrg/snap-web)
 
 ## Features
 ### 0.1
