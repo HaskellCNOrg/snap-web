@@ -140,7 +140,13 @@ viewTopicsByTagH :: AppHandler ()
 viewTopicsByTagH = do
   tagId  <- decodedParamText tagIdParam
   page   <- decodedParamNum "p"
-  result <- try (findTopicByTag (textToObjectId tagId))
+  let oid' = textToObjectIdMaybe tagId
+  result <- case oid' of
+    Just tagId' -> try (findTopicByTag tagId')
+    _ -> redirect' "/tags" 301
+
+  liftIO $ print result
+
   either exceptionH (toTopicListPerTagPage page) result
 
 toTopicListPerTagPage :: Integral a => Maybe a -> [Topic] -> AppHandler ()

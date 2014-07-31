@@ -56,10 +56,19 @@ bsToText = T.decodeUtf8
 
 ------------------------------------------------------------------------------
 
--- | NOTE: exception "no parse" if failed to convert.
+-- | FIXME: exception "no parse" if failed to convert.
+--  DEPRECATED to textToObjectIdMaybe
 --
 textToObjectId :: T.Text -> ObjectId
 textToObjectId = read . textToS
+
+textToObjectIdMaybe :: T.Text -> Maybe ObjectId
+textToObjectIdMaybe = readMaybe . textToS
+
+readMaybe :: Read a => String -> Maybe a
+readMaybe s = case reads s of
+  [(x, "")] -> Just x
+  _         -> Nothing
 
 -- | Maybe ObjectId to Text
 --
