@@ -21,7 +21,7 @@
               </li>
             </allTopics>
           </ol>
-          <div class="pagination">
+          <div>
             <pagination />
           </div>
         </homeTopics>

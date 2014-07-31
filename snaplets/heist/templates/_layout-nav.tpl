@@ -1,4 +1,4 @@
-<div class="navbar navbar-default navbar-fixed-topnav" role="navigation">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
 
         <div class="navbar-header">
@@ -9,7 +9,10 @@
             <span class="icon-bar"></span>
           </button>
 
-          <a class="navbar-brand" href="/"><i18n name="site.name" /></a>
+          <i18n name="site.name" >
+              <a class="navbar-brand" href="/" title="${i18nValue}" alt="${i18nValue}"><i18nValue/></a>
+          </i18n>
+
 
         </div>
         <div class="navbar-collapse collapse">
@@ -18,7 +21,10 @@
                   <a href="/topic"><i18n name="topic.new" /></a>
               </li>
               <li>
-                  <a href="/tags"><i18n name="tag.list" /></a>
+                  <i18n name="tag.list">
+                      <a title="${i18nValue}" alt="${i18nValue}" href="/tags"><i18nValue/></a>
+                  </i18n>
+
               </li>
           </ul>
 
@@ -27,7 +33,10 @@
                   <a target="_blank" href="http://haskellnews.org/grouped"><i18n name="site.haskellnews" /></a>
               </li>
               <li>
-                  <a target="_blank" href="http://www.haskellcn.org/study.html"><i18n name="site.study" /></a>
+                  <i18n name="site.study">
+                      <a target="_blank" title="${i18nValue}" alt="${i18nValue}" href="/study"><i18nValue/></a>
+                  </i18n>
+
               </li>
 
               <ifLoggedOut>

@@ -61,7 +61,7 @@ paginationNode :: (Show a, Integral a)
 paginationNode _ [] _ = X.Comment "insufficient data for pagination"
 paginationNode i xs gen =
     let cp = sToText i
-        doNode = X.Element "ul" [] lis
+        doNode = X.Element "ul" [("class", "pagination pagination-lg")] lis
         lis = map (f . sToText) xs
         f n
           | cp == n   = X.Element "li" [("class","active")] [a n]
