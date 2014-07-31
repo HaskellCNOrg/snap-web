@@ -15,7 +15,7 @@ Stability:           Experimental
 Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.10
-tested-with:         GHC == 7.4.1
+tested-with:         GHC >= 7.4.1
 Homepage:            https://github.com/HaskellCNOrg/snap-web
 
 Source-Repository head
