@@ -11,11 +11,11 @@
 
 <ifFound>
 
-  <div class="topic-content">
+  <div class="topic-content" itemscope itemtype="http://schema.org/Article">
 
     <article class="topic">
-      <h1><topicTitle /></h1>
-      <p><topicContent/></p>
+      <h1 itemprop="name"><topicTitle /></h1>
+      <div itemprop="articleBody"><topicContent/></div>
     </article>
 
     <apply template="_topic-author" />
