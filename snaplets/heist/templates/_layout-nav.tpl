@@ -45,7 +45,7 @@
 </div>
 
 <div>
-<a href="https://github.com/HaskellCNOrg/snap-web.git" target="_blank">
-    <img style="position: absolute; top: 52px; right: 0; border: 0" src="https://i.alipayobjects.com/e/201211/1dbSqT9ykm.png" width="149" height="149" alt="Fork me on GitHub">
+    <a href="https://github.com/HaskellCNOrg/snap-web.git" target="_blank">
+        <img style="position: fixed; top: 52px; right: 0; border: 0; width: 149px; height: 149px; z-index:2000;" src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-graphite@2x.png" alt="Fork me on GitHub">
     </a>
 </div>
