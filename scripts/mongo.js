@@ -47,3 +47,5 @@ db.replies.update( { "_id" : ObjectId("4f9") },
                    }
                    }
                  );
+
+db.tags.remove({"_id" : ObjectId("5331a8ed98942416ea000070")});
