@@ -1,4 +1,6 @@
 user-agent: *
 Disallow: /user
+Disallow: /signin
+Disallow: /signup
 Disallow: /topic
 Allow: /topic/
