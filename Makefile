@@ -86,6 +86,7 @@ create-site:
 	mkdir -p $(SITE)/static/css
 	cp Makefile $(SITE)/
 	cp devel.cfg $(SITE)/prod.cfg
+	cp robots.txt $(SITE)/static/
 	cp -r snaplets data $(SITE)
 	cp -r static/img $(SITE)/static/img
 	cp -r static/js $(SITE)/static/js
