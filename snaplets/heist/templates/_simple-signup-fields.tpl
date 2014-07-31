@@ -1,20 +1,20 @@
-<div class="control-group">
-    <dfLabel class="control-label" ref="loginName"><i18n name="user.email"/></dfLabel>
-    <div class="controls">
-        <dfInputText class="input-large" ref="loginName" type="email" required autofocus placeholder="me@example.com"/>
+<div class="form-group">
+    <dfLabel class="col-sm-2 control-label" ref="loginName"><i18n name="user.email"/></dfLabel>
+    <div class="col-sm-4">
+        <dfInputText class="form-control" ref="loginName" type="email" required autofocus placeholder="me@example.com"/>
     </div>
 </div>
 
-<div class="control-group">
-    <dfLabel class="control-label" ref="password"><i18n name="user.password"/></dfLabel>
-    <div class="controls">
-        <dfInputPassword class="input-large" ref="password" required />
+<div class="form-group">
+    <dfLabel class="control-label col-sm-2" ref="password"><i18n name="user.password"/></dfLabel>
+    <div class="col-sm-4">
+        <dfInputPassword class="form-control" ref="password" required />
     </div>
 </div>
 
-<div class="control-group">
-    <label class="control-label" ref="repeatPassword"><i18n name="user.repeatPassword"/></label>
-    <div class="controls">
-        <dfInputPassword class="input-large" ref="repeatPassword" required />
+<div class="form-group">
+    <label class="control-label col-sm-2" ref="repeatPassword"><i18n name="user.repeatPassword"/></label>
+    <div class="col-sm-4">
+        <dfInputPassword class="form-control" ref="repeatPassword" required />
     </div>
 </div>

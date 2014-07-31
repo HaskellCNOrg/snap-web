@@ -2,7 +2,7 @@
 
 <div class="registration">
 
-<dfForm class="form-horizontal1" action="topic">
+<dfForm class="form-horizontal1" action="topic" role="form">
 
     <dfIfChildErrors>
       <div class="alert alert-error">
@@ -11,14 +11,14 @@
       </div>
     </dfIfChildErrors>
 
-    <div class="control-group">
+    <div class="form-group">
       <dfLabel class="control-label" ref="title"><i18n name="topic.title"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-xxlarge" ref="title" autofocus required />
+        <dfInputText class="form-control" ref="title" autofocus required />
       </div>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
       <dfLabel class="control-label" ref="content" for="wmd-input">
         <i18n name="topic.content"/>
         (<a class="markdown-helper" href="http://daringfireball.net/projects/markdown/" target="_blank" rel="nofollow" tabindex=100><i18n name="site.markdownHelper" /></a>)
@@ -29,21 +29,21 @@
       </div>
     </div>
 
-    <div class="control-group">
+    <div class="form-group">
       <dfLabel class="control-label" ref="tags"><i18n name="topic.tag"/></dfLabel>
       <div class="controls">
-        <dfInputText class="input-xxlarge" ref="tags" />
+        <dfInputText class="form-control" ref="tags" />
       </div>
     </div>
 
     <dfInputHidden ref="tid" />
 
-    <div class="form-actions">
+    <div class="form-group">
         <i18n name="topic.preview">
-          <input class="btn btn-large btn-success" value="${i18nValue}" type="button" id="preview" />
+            <button class="btn btn-success btn-lg" value="${i18nValue}" id="preview"><i18nValue/></button>
         </i18n>
         <i18n name="topic.submit">
-          <dfInputSubmit class="btn btn-large" value="${i18nValue}"></dfInputSubmit>
+          <dfInputSubmit class="btn btn-default btn-lg" value="${i18nValue}"></dfInputSubmit>
         </i18n>
     </div>
 
