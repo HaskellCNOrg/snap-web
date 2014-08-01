@@ -40,7 +40,7 @@
 
     <div class="form-group">
         <i18n name="topic.preview">
-            <button class="btn btn-success btn-lg" value="${i18nValue}" id="preview"><i18nValue/></button>
+            <input class="btn btn-lg btn-success" value="${i18nValue}" type="button" id="preview" />
         </i18n>
         <i18n name="topic.submit">
           <dfInputSubmit class="btn btn-default btn-lg" value="${i18nValue}"></dfInputSubmit>
