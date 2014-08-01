@@ -15,7 +15,7 @@
     <input class="btn btn-lg btn-success" value="${i18nValue}" type="button" id="preview" />
   </i18n>
   <i18n name="reply.add">
-    <dfInputSubmit class="btn btn-lg" value="${i18nValue}"></dfInputSubmit>
+    <dfInputSubmit class="btn btn-lg btn-default" value="${i18nValue}"></dfInputSubmit>
   </i18n>
   
 </dfForm>
