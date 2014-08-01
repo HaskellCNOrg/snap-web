@@ -145,8 +145,6 @@ viewTopicsByTagH = do
     Just tagId' -> try (findTopicByTag tagId')
     _ -> redirect' "/tags" 301
 
-  liftIO $ print result
-
   either exceptionH (toTopicListPerTagPage page) result
 
 toTopicListPerTagPage :: Integral a => Maybe a -> [Topic] -> AppHandler ()
