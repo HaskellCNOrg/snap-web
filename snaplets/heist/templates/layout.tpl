@@ -24,7 +24,7 @@
 
   </head>
 
-  <body>
+  <body itemscope="" itemtype="http://schema.org/WebPage">
       <apply template="_layout-nav"/>
 
       <div class="container">
