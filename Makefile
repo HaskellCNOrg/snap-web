@@ -26,6 +26,8 @@ doc:
 ##
 ###########################
 
+## need manual config pandoc because of https://github.com/jgm/pandoc/issues/1526
+##
 init:
 	test -e cabal.sandbox.config || $(CBD) sandbox init
 	cabal install -fthree transformers-compat
