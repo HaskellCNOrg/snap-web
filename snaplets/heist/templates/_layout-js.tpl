@@ -2,3 +2,4 @@
 <script type="text/javascript" src="/js/libs/bootstrap-button.js"></script>
 <script type="text/javascript" src="/js/libs/bootstrap-transition.js"></script>
 <script type="text/javascript" src="/js/libs/bootstrap-collapse.js"></script>
+<script type="text/javascript" src="/js/nav.js"></script>

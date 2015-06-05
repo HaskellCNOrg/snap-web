@@ -87,7 +87,7 @@ rebuild: clean build-prod
 ##       5. [ ] md5sum
 ##
 
-JS_FILES=jquery.js bootstrap-collapse.js bootstrap-button.js
+JS_FILES=jquery.js bootstrap-collapse.js bootstrap-button.js bootstrap-transition.js
 
 create-site:
 	rm -rf $(SITE)

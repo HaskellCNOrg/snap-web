@@ -34,7 +34,7 @@
               </li>
               <li>
                   <i18n name="site.study">
-                      <a target="_blank" title="${i18nValue}" alt="${i18nValue}" href="/study"><i18nValue/></a>
+                      <a title="${i18nValue}" alt="${i18nValue}" href="/study"><i18nValue/></a>
                   </i18n>
 
               </li>
