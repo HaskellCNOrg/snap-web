@@ -1,4 +1,8 @@
 language: haskell
+ghc: 7.4
 notifications:
   email: false
-
+before_install:
+  - "cp cabal.config.ghc-7.4 cabal.config"
+install:
+  - "make init"
