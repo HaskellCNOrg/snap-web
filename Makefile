@@ -30,6 +30,7 @@ init:
 	test -e cabal.sandbox.config || $(CBD) sandbox init
 	cabal install -fthree transformers-compat
 	cabal install scientific-0.3.2.1 -f -bytestring-builder
+	mkdir data log
 	$(CBD) install --only-dependencies --enable-tests --job=2
 
 conf:
