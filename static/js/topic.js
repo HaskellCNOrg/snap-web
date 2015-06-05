@@ -61,16 +61,16 @@ $.hcn.initReplyToReply = function () {
           yesBtn = deleteBtn.next(),
           noBtn = yesBtn.next();
       deleteBtn.hide();
-      yesBtn.show();
-      noBtn.show();
+      yesBtn.removeClass('hide');
+      noBtn.removeClass('hide');
    });
 
    $('.reply-per-topic').delegate('a.delete-no', 'click', function () {
       var noBtn = $(this),
           yesBtn = noBtn.prev(),
           deleteBtn = yesBtn.prev();
-      yesBtn.hide();
-      noBtn.hide();
+      yesBtn.addClass('hide');
+      noBtn.addClass('hide');
       deleteBtn.show();
    });
 
@@ -78,7 +78,7 @@ $.hcn.initReplyToReply = function () {
       var yesBtn = $(this),
           noBtn = yesBtn.next();
       yesBtn.button('loading');
-      noBtn.button('loading');
+      noBtn.addClass('hide');
    });
 
 });
