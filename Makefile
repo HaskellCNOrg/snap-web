@@ -1,3 +1,7 @@
+## DOCKER
+## docker run -it -p 9900:9900 --workdir=/root/snap-web freizl/snap-web-ghc7.4:v3 /bin/bash
+##
+
 CBD=cabal
 STYLE=stylish-haskell
 
