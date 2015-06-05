@@ -4,7 +4,6 @@
 module Views.Feed where
 
 import           Blaze.ByteString.Builder (Builder)
-import qualified Data.Text                as T
 import           Text.XmlHtml
 
 import           Models.Feed

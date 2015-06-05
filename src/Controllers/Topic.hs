@@ -22,7 +22,7 @@ import           Text.Digestive
 import           Text.Digestive.Snap
 
 import           Application
-import           Controllers.Exception (fourofourH, exceptionH)
+import           Controllers.Exception (exceptionH, fourofourH)
 import           Controllers.Home      (redirect303)
 import           Controllers.Tag       (saveTags)
 import           Controllers.User      hiding (routes)
@@ -140,7 +140,11 @@ viewTopicsByTagH :: AppHandler ()
 viewTopicsByTagH = do
   tagId  <- decodedParamText tagIdParam
   page   <- decodedParamNum "p"
-  result <- try (findTopicByTag (textToObjectId tagId))
+  let oid' = textToObjectIdMaybe tagId
+  result <- case oid' of
+    Just tagId' -> try (findTopicByTag tagId')
+    _ -> redirect' "/tags" 301
+
   either exceptionH (toTopicListPerTagPage page) result
 
 toTopicListPerTagPage :: Integral a => Maybe a -> [Topic] -> AppHandler ()

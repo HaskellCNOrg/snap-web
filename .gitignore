@@ -9,3 +9,7 @@ data/auth.json
 data/env.cfg
 report.html
 cabal-dev*
+
+.cabal-sandbox
+cabal.sandbox.config
+.tern-port

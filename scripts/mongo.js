@@ -1,4 +1,3 @@
-
 //MONGODB
 
 //The $in operator indicates a "where value in ..." expression.  For expressions of the form x == a OR x == b, this can be represented as
@@ -36,3 +35,17 @@ mongo haskellcn-mongodb --eval "db.dropDatabase()"
 var coll = ["users", "auth_user", "topics", "replies"];
 
 // lets do it is shell;
+
+// ========================================
+// Update certain fields
+
+b.replies.find({"topic_id": ObjectId("4f8de")});
+
+db.replies.update( { "_id" : ObjectId("4f9") },
+                   { $set: {
+                      "content" : "aaaaaaa"
+                   }
+                   }
+                 );
+
+db.tags.remove({"_id" : ObjectId("5331a8ed98942416ea000070")});

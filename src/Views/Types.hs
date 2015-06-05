@@ -3,7 +3,7 @@
 module Views.Types where
 
 import           Application
-import qualified Data.Text         as T
+import           Heist
 import qualified Heist.Interpreted as I
 import           Models.Exception
 
@@ -18,15 +18,24 @@ class SpliceRenderable a where
 
 -- | FIXME: What if at some exception case, should both should content and error??
 --
-eitherToSplices :: SpliceRenderable a => Either UserException a -> [(T.Text, I.Splice AppHandler)]
-eitherToSplices (Left l) = [ ("ifFound"   , return [])
-                           , ("ifNotFound", toSplice l) ]
+eitherToSplices :: SpliceRenderable a => Either UserException a -> Splices (I.Splice AppHandler)
+eitherToSplices (Left l) = do
+  "ifFound" ## return []
+  "ifNotFound" ## toSplice l
 
-eitherToSplices (Right r) = [ ("ifFound"   , toSplice r)
-                            , ("ifNotFound", return []) ]
+eitherToSplices (Right r) = do
+  "ifFound" ## toSplice r
+  "ifNotFound" ## return []
+
+--eitherToSplices :: SpliceRenderable a => Either UserException a -> [(T.Text, I.Splice AppHandler)]
+--eitherToSplices (Left l) = [ ("ifFound"   , return [])
+--                           , ("ifNotFound", toSplice l) ]
+--
+--eitherToSplices (Right r) = [ ("ifFound"   , toSplice r)
+--                            , ("ifNotFound", return []) ]
 
 
 --------------------------------------------------------------
 
 instance SpliceRenderable UserException where
-    toSplice a = I.runChildrenWithText [ ("exceptionValue", showUE a) ]
+    toSplice a = I.runChildrenWithText  ("exceptionValue" ## showUE a)

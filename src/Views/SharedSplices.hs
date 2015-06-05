@@ -5,13 +5,13 @@
 module Views.SharedSplices where
 
 import           Application
+import qualified Data.ByteString    as BS
 import qualified Data.Text          as T
 import qualified Heist.Interpreted  as I
 import           Models.User
+import           Models.Utils       (bsToText)
 import           Snap
 import           Snap.Snaplet.Heist
-import qualified Data.ByteString       as BS
-import Models.Utils (bsToText)
 
 ----------------------------------------------------------------------------
 

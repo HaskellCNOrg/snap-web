@@ -7,6 +7,8 @@ import           Control.Arrow       (second)
 import           Control.Monad.Trans
 import           Data.Maybe          (fromMaybe)
 import qualified Data.Text           as T
+import           Data.Time
+import           Heist
 import qualified Heist.Interpreted   as I
 import           Snap.Snaplet.Auth
 
@@ -28,7 +30,7 @@ instance SpliceRenderable User where
 --   Display either a user or error msg.
 --
 
-userDetailSplices :: Either UserException User -> [(T.Text, I.Splice AppHandler)]
+userDetailSplices :: Either UserException User -> Splices (I.Splice AppHandler)
 userDetailSplices = eitherToSplices
 
 
@@ -37,7 +39,7 @@ userDetailSplices = eitherToSplices
 -- | Single user to Splice.
 --
 renderUser :: User -> I.Splice AppHandler
-renderUser user = I.runChildrenWith $
+renderUser user = I.runChildrenWith $ foldSplices $
                      [ ("userEditable", hasEditPermissionSplice user)
                      --, ("userLastLoginAt", userLastLoginAtSplice $ _authUser user)
                      , ("isAuthUser", isAuthUserRetrieved $ _authUser user)
@@ -51,6 +53,7 @@ renderUser user = I.runChildrenWith $
                      , ("userId", maybe "error-no-user-id-found" sToText $ getUserId' user)
                      ]
 
+formatUTCTimeMaybe :: Maybe UTCTime -> T.Text
 formatUTCTimeMaybe Nothing  = ""
 formatUTCTimeMaybe (Just x) = formatUTCTime x
 
@@ -59,10 +62,9 @@ isAuthUserRetrieved :: Maybe AuthUser
                        -> I.Splice AppHandler
 isAuthUserRetrieved Nothing = return []
 isAuthUserRetrieved (Just authusr) =
-  I.runChildrenWithText
-  [ ("lastLoginTime", formatUTCTimeMaybe $ userLastLoginAt authusr)
-  , ("createdAt", formatUTCTimeMaybe $ userCreatedAt authusr)
-  ]
+  I.runChildrenWithText $ do
+  "lastLoginTime" ## formatUTCTimeMaybe $ userLastLoginAt authusr
+  "createdAt" ## formatUTCTimeMaybe $ userCreatedAt authusr
 
 ----------------------------------------------------------------------------
 

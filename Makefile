@@ -1,16 +1,21 @@
-CBD=cabal-dev
+## DOCKER
+## docker run -it -p 9900:9900 --workdir=/root/snap-web freizl/snap-web-ghc7.4:v3 /bin/bash
+##
+
+CBD=cabal
 STYLE=stylish-haskell
 
 PROG_PREV = ./dist/build/snap-web/snap-web
+PROD_PROD = .cabal-sandbox/bin/snap-web
 PROG_NAME = ./snap-web
 
 DIST=dist
 SITE=_site
 
-default: build-dev
+default: build
 
 clean:
-	rm -rf $(DIST)
+	cabal clean
 
 hlint:
 	$(STYLE) -i src/**/*.hs
@@ -25,18 +30,22 @@ doc:
 ##
 ###########################
 
-dryrun:
-	$(CBD) install --only-dependencies --dry-run
-
+## need manual config pandoc because of https://github.com/jgm/pandoc/issues/1526
+##
 init:
-	cabal update
-	$(CBD) install --only-dependencies
+	test -e cabal.sandbox.config || $(CBD) sandbox init
+	cabal install -fthree transformers-compat
+	cabal install scientific-0.3.2.1 -f -bytestring-builder
+	mkdir data log
+	$(CBD) install --only-dependencies --enable-tests --job=2
 
-build-dev:
+conf:
 	$(CBD) --flags="development" configure
+
+build: conf
 	$(CBD) build
 
-install-dev: build-dev
+install: conf
 	$(CBD) install
 
 test:
@@ -47,11 +56,11 @@ test:
 p:
 	$(PROG_PREV) -p 9900
 
-cb: clean build-dev
+cb: clean build
 
-bp: build-dev p
+bp: build p
 
-rp: clean build-dev p
+rp: clean build p
 
 ###########################
 ## PRODUCTION
@@ -60,15 +69,15 @@ rp: clean build-dev p
 
 LOG_FILE=./log/build.log
 
-build:
+build-prod: clean
 	echo "Start building" >$(LOG_FILE)
 	date >>$(LOG_FILE)
 	$(CBD) configure
-	$(CBD) build 1>>$(LOG_FILE) 2>&1
+	$(CBD) install 1>>$(LOG_FILE) 2>&1
 	date >>$(LOG_FILE)
 	echo "End building" >>$(LOG_FILE)
 
-rebuild: clean build
+rebuild: clean build-prod
 
 ##
 ##       1. create new dir _sites
@@ -86,6 +95,7 @@ create-site:
 	mkdir -p $(SITE)/static/css
 	cp Makefile $(SITE)/
 	cp devel.cfg $(SITE)/prod.cfg
+	cp robots.txt $(SITE)/static/
 	cp -r snaplets data $(SITE)
 	cp -r static/img $(SITE)/static/img
 	cp -r static/js $(SITE)/static/js
@@ -105,8 +115,7 @@ create-site:
 
 	mv -f $(SITE)/snaplets/heist/templates/_layout-js-prod.tpl $(SITE)/snaplets/heist/templates/_layout-js.tpl
 
-	lessc --compress static/less/bootstrap.less > $(SITE)/static/css/main.css
-	lessc --compress static/less/responsive.less > $(SITE)/static/css/responsive.css
+	lessc --compress static/bootstrap/bootstrap.less > $(SITE)/static/css/main.css
 	mv -f $(SITE)/snaplets/heist/templates/_layout-css-prod.tpl $(SITE)/snaplets/heist/templates/_layout-css.tpl
 
 	for x in `find $(SITE)/ -name '*.tpl' ` ; do \
@@ -114,7 +123,7 @@ create-site:
 		perl -i -p -e  's/<!--(.|\s)*?-->//gs' $$x ; \
 	done
 
-	cp $(PROG_PREV) $(SITE)
+	cp $(PROD_PROD) $(SITE)
 
 
 prod:

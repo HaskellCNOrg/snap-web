@@ -8,6 +8,7 @@ import           Control.Monad.Trans
 import           Data.Bson           (ObjectId)
 import           Data.Maybe          (fromMaybe)
 import qualified Data.Text           as T
+import           Heist
 import qualified Heist.Interpreted   as I
 import           Models.Tag
 import           Models.Utils
@@ -26,9 +27,10 @@ tagSplice :: Tag -> I.Splice AppHandler
 tagSplice = I.runChildrenWithText . tagSpliceImpl
 
 
-tagSpliceImpl :: Tag -> [(T.Text, T.Text)]
-tagSpliceImpl (Tag tid name _) = [ ("tagId", objectIdToText tid)
-                                , ("tagName", name) ]
+tagSpliceImpl :: Tag -> Splices T.Text
+tagSpliceImpl (Tag tid name _) = do
+  "tagId" ## objectIdToText tid
+  "tagName" ## name
 
 tagsSplice :: [Tag] -> I.Splice AppHandler
 tagsSplice = I.mapSplices tagSplice

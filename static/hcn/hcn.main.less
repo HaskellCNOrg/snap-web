@@ -1,0 +1,66 @@
+
+// -----
+
+body {
+  padding-top: 80px;
+  padding-bottom: 40px;
+}
+
+
+.error {
+    font-size: 16px;
+    color: #FF0000;
+}
+
+.right-border {
+  border-right: 2px solid #C0C0C0;
+  margin-right: 5px;
+  padding-right: 5px;
+}
+
+
+.registration {
+    margin-top: 50px;
+    .form-actions {
+        background-color: transparent;
+        border-top: none;
+    }
+    .input-tag {
+      min-width: 500px;
+    }
+}
+
+.author {
+  .small-font;        
+}
+
+.btn + .btn {
+  margin-left: 5px;
+}
+
+// =============== Tag
+
+@tag-column-count: 3;
+
+.all-tags-list {
+  column-count: @tag-column-count;
+  -webkit-column-count: @tag-column-count;
+  -moz-column-count: @tag-column-count;
+  
+  .label {
+    font-size: 100%;
+  }
+  li {
+    margin-top: 10px;
+    
+    a:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.tag-list {
+  a {
+    margin-right: 5px;
+  }
+}
