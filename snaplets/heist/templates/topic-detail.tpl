@@ -1,6 +1,8 @@
 <apply template="layout">
 
 <ifNotFound>
+    <bind tag="subtitle"> :: <i18n name="page.topicnotfound" /></bind>
+
   <div class="alert alert-error">
     <ul>
       <li><exceptionValue/></li>
@@ -10,6 +12,8 @@
 </ifNotFound>
 
 <ifFound>
+
+  <bind tag="subtitle"> :: <topicTitle /></bind>
 
   <div class="topic-content" itemscope itemtype="http://schema.org/Article">
 

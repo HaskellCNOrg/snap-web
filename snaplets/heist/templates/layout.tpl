@@ -2,7 +2,7 @@
 <html lang="zh">
   <head>
     <meta charset="utf-8" />
-    <title><i18n name="site.name" /></title>
+    <title><i18n name="site.name" /><subtitle /></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <i18n name="site.description">
       <meta name="description" content="${i18nValue}"/>

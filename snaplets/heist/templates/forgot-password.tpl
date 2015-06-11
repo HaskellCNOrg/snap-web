@@ -1,5 +1,7 @@
 <apply template="layout">
 
+    <bind tag="subtitle"> :: <i18n name="page.forgotpassword"/></bind>
+
 <ifLoggedOut>
     <dfForm class="form-horizontal" action="/forgotPassword">
 

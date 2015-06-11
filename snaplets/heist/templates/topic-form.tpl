@@ -1,5 +1,7 @@
 <apply template="layout">
 
+    <bind tag="subtitle"> :: <i18n name="page.newtopic" /></bind>
+
 <div class="registration">
 
 <dfForm class="form-horizontal1" action="topic" role="form">
