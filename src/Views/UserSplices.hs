@@ -23,6 +23,7 @@ import           Views.Utils
 
 instance SpliceRenderable User where
    toSplice = renderUser
+   getSubTitle = userSubTitle
 
 ------------------------------------------------------------------------------
 
@@ -52,6 +53,9 @@ renderUser user = I.runChildrenWith $ foldSplices $
                      , ("userSite", fromMaybe "" $ _userSite user)
                      , ("userId", maybe "error-no-user-id-found" sToText $ getUserId' user)
                      ]
+
+userSubTitle :: User -> I.Splice AppHandler
+userSubTitle = I.textSplice . _userDisplayName
 
 formatUTCTimeMaybe :: Maybe UTCTime -> T.Text
 formatUTCTimeMaybe Nothing  = ""

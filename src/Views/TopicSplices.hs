@@ -31,6 +31,7 @@ import           Views.Utils
 
 instance SpliceRenderable Topic where
    toSplice = renderTopic
+   getSubTitle = topicSubTitle
 
 ------------------------------------------------------------------------------
 
@@ -95,6 +96,9 @@ renderTopic topic = do
          , ("replyPerTopic", allReplyPerTopicSplice rs)
          , ("topicEditable", hasEditPermissionSplice user)
          , ("topicTagList", topicTagSplice $ _topicTags topic)]
+
+topicSubTitle :: Topic -> I.Splice AppHandler
+topicSubTitle = I.textSplice . _title
 
 ------------------------------------------------------------------------------
 

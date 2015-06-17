@@ -9,10 +9,12 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.CatchIO (throw, try)
 import           Control.Monad.Trans
+import Data.Monoid (mappend)
 import qualified Data.ByteString       as BS
 import           Data.Maybe            (fromJust, fromMaybe, isNothing)
 import qualified Data.Text             as T
 import           Data.Time
+import Heist
 import qualified Heist.Interpreted     as I
 import           Snap.Core
 import qualified Snap.Core             as Snap
@@ -141,14 +143,23 @@ viewTopicsByTagH = do
   tagId  <- decodedParamText tagIdParam
   page   <- decodedParamNum "p"
   let oid' = textToObjectIdMaybe tagId
-  result <- case oid' of
-    Just tagId' -> try (findTopicByTag tagId')
+  (result, tag) <- case oid' of
+    Just tagId' -> do
+    	 	   ts <- try (findTopicByTag tagId')
+		   tg <- Tag.findOneTag tagId'
+		   return (ts, tg)
     _ -> redirect' "/tags" 301
 
-  either exceptionH (toTopicListPerTagPage page) result
+  either exceptionH (toTopicListPerTagPage page tag) result
 
-toTopicListPerTagPage :: Integral a => Maybe a -> [Topic] -> AppHandler ()
-toTopicListPerTagPage page topics = heistLocal (I.bindSplices $ topicSplices topics page) $ render "index"
+toTopicListPerTagPage :: Integral a => Maybe a -> Tag.Tag -> [Topic] -> AppHandler ()
+toTopicListPerTagPage page tag topics = 
+  let tSplices = topicSplices topics page
+      -- FIXME: i18n of "Tag"
+      tagSplices = subTitleSplice $ Just ("Tag :: " `T.append` Tag._tagName tag)
+      splices = I.bindSplices (tSplices `mappend` tagSplices)
+  in
+   heistLocal splices (render "index")
 
 
 ------------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 
 <ifFound>
 
-  <bind tag="subtitle"> :: <topicTitle /></bind>
+  <bind tag="subtitle"> :: <subTitle /></bind>
 
   <div class="topic-content" itemscope itemtype="http://schema.org/Article">
 

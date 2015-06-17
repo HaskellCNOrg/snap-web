@@ -1,6 +1,6 @@
 <apply template="layout">
 
-    <bind tag="subtitle"></bind>
+    <bind tag="subtitle"><subTitle/></bind>
 
     <div id="content">
 

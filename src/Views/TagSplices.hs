@@ -20,7 +20,6 @@ import           Models.Utils
 topicTagSplice :: Maybe [ObjectId] -> I.Splice AppHandler
 topicTagSplice ids =
     lift (findSomeTags $ fromMaybe [] ids)
-    -- >>= mapSplices tagSplice
     >>= tagsSplice
 
 tagSplice :: Tag -> I.Splice AppHandler

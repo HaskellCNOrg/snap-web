@@ -1,6 +1,6 @@
 <apply template="layout">
 
-    <bind tag="subtitle"> :: <i18n name="page.userdetail"/></bind>
+    <bind tag="subtitle"> :: <i18n name="page.userdetail"/> :: <subTitle /></bind>
 
     <ifFound>
         

@@ -4,6 +4,7 @@
 module Controllers.Home where
 
 import           Application
+import Data.Monoid (mappend)
 import           Data.ByteString    (ByteString)
 import qualified Heist.Interpreted  as I
 import           Snap.Core
@@ -22,7 +23,8 @@ index :: Handler App App ()
 index = ifTop $ do
     page <- decodedParamNum "p"
     topics <- findAllTopic
-    heistLocal (I.bindSplices $ topicSplices topics page) $ render "index"
+    let splices = I.bindSplices $ topicSplices topics page `mappend` subTitleSplice Nothing
+    heistLocal splices $ render "index"
 
 redirectToHome :: Handler App App ()
 redirectToHome = redirect303 "/"

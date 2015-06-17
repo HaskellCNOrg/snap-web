@@ -148,3 +148,9 @@ foldSplices = mconcat . map (uncurry (##))
 addSplices :: [(T.Text, I.Splice AppHandler)]
               -> Initializer App v ()
 addSplices = modifyHeistState . I.bindSplices . foldSplices
+
+subTitleSplice :: Maybe T.Text -> Splices (I.Splice AppHandler)
+subTitleSplice maybeVal = let val = maybe "" (T.append " :: ") maybeVal
+	       		  in
+	       		   "subTitle" ## I.textSplice val
+

@@ -13,6 +13,8 @@ import           Models.Exception
 --
 class SpliceRenderable a where
     toSplice :: a -> I.Splice AppHandler
+    getSubTitle :: a -> I.Splice AppHandler
+    getSubTitle _ = I.textSplice ""
 
 --------------------------------------------------------------
 
@@ -22,20 +24,15 @@ eitherToSplices :: SpliceRenderable a => Either UserException a -> Splices (I.Sp
 eitherToSplices (Left l) = do
   "ifFound" ## return []
   "ifNotFound" ## toSplice l
+  "subTitle" ## getSubTitle l
 
 eitherToSplices (Right r) = do
   "ifFound" ## toSplice r
   "ifNotFound" ## return []
-
---eitherToSplices :: SpliceRenderable a => Either UserException a -> [(T.Text, I.Splice AppHandler)]
---eitherToSplices (Left l) = [ ("ifFound"   , return [])
---                           , ("ifNotFound", toSplice l) ]
---
---eitherToSplices (Right r) = [ ("ifFound"   , toSplice r)
---                            , ("ifNotFound", return []) ]
-
+  "subTitle" ## getSubTitle r
 
 --------------------------------------------------------------
 
 instance SpliceRenderable UserException where
     toSplice a = I.runChildrenWithText  ("exceptionValue" ## showUE a)
+    getSubTitle _ = I.textSplice "Application Error"
