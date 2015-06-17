@@ -1,5 +1,7 @@
 <apply template="layout">
 
+    <bind tag="subtitle"></bind>
+
     <div id="content">
 
       <!-- if count of topics > 0 -->
