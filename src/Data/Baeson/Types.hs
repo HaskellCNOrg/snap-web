@@ -331,13 +331,13 @@ instance FromBSON a => FromBSON (Maybe a) where
   {-# INLINE fromBSON #-}
 
 instance (FromBSON a, FromBSON b) => FromBSON (a,b) where
-  fromBSON (BSON.Array (a:b:[])) = (,) <$> fromBSON a <*> fromBSON b
+  fromBSON (BSON.Array [a, b]) = (,) <$> fromBSON a <*> fromBSON b
   fromBSON (BSON.Array b) = fail "Expected array of size 2"
   fromBSON b = typeMismatch "Array" b
   {-# INLINE fromBSON #-}
 
 instance (FromBSON a, FromBSON b, FromBSON c) => FromBSON (a,b,c) where
-  fromBSON (BSON.Array (a:b:c:[])) = (,,) <$> fromBSON a <*>
+  fromBSON (BSON.Array [a, b, c]) = (,,) <$> fromBSON a <*>
                                    fromBSON b <*> fromBSON c
   fromBSON (BSON.Array b) = fail "Expected array of size 3"
   fromBSON b = typeMismatch "Array" b

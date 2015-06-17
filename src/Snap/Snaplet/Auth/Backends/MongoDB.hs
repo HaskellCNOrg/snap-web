@@ -114,7 +114,7 @@ mongoSave mong usr =
                             Left (WriteFailure 11000 _) -> return $ Left DuplicateLogin
                             Left v  -> throwBE v
                             Right r -> return $ Right (insertId' r)
-         insertId' x = usr { userId = fmap objectIdToUserId $ BSON.cast' x}
+         insertId' x = usr { userId = objectIdToUserId <$> BSON.cast' x}
          saveUser' u = do
                        res <- dbQuery mong $ M.save (mongoCollection mong) $ usrToMong u
                        case res of

@@ -4,8 +4,8 @@
 module Controllers.Home where
 
 import           Application
-import Data.Monoid (mappend)
 import           Data.ByteString    (ByteString)
+import           Data.Monoid        (mappend)
 import qualified Heist.Interpreted  as I
 import           Snap.Core
 import           Snap.Snaplet

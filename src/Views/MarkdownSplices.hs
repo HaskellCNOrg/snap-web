@@ -13,7 +13,7 @@ module Views.MarkdownSplices
 import qualified Codec.Binary.UTF8.String as UTF8
 import           Control.Monad.Trans
 import qualified Data.ByteString.Char8    as BS
-import qualified Data.Set as Set
+import qualified Data.Set                 as Set
 import qualified Data.Text                as T
 import qualified Heist.Interpreted        as I
 import           Models.Utils

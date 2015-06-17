@@ -9,12 +9,12 @@ module Controllers.Topic
 import           Control.Monad
 import           Control.Monad.CatchIO (throw, try)
 import           Control.Monad.Trans
-import Data.Monoid (mappend)
 import qualified Data.ByteString       as BS
 import           Data.Maybe            (fromJust, fromMaybe, isNothing)
+import           Data.Monoid           (mappend)
 import qualified Data.Text             as T
 import           Data.Time
-import Heist
+import           Heist
 import qualified Heist.Interpreted     as I
 import           Snap.Core
 import qualified Snap.Core             as Snap
@@ -153,7 +153,7 @@ viewTopicsByTagH = do
   either exceptionH (toTopicListPerTagPage page tag) result
 
 toTopicListPerTagPage :: Integral a => Maybe a -> Tag.Tag -> [Topic] -> AppHandler ()
-toTopicListPerTagPage page tag topics = 
+toTopicListPerTagPage page tag topics =
   let tSplices = topicSplices topics page
       -- FIXME: i18n of "Tag"
       tagSplices = subTitleSplice $ Just ("Tag :: " `T.append` Tag._tagName tag)

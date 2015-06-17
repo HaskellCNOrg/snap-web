@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE OverloadedStrings    #-}
 

@@ -87,6 +87,7 @@ defaultReply = Reply
         }
 
 mockUTCTime :: UTCTime
+{-# NOINLINE mockUTCTime #-}
 mockUTCTime = unsafePerformIO getCurrentTime
 
 toObjId :: String -> Maybe ObjectId

@@ -75,7 +75,7 @@ findReplyPerTopic tid = do
 
 findAllReply :: AppHandler [Reply]
 findAllReply =
-    let query' = (select [] replyCollection)
+    let query' = select [] replyCollection
         sort' = [ "create_at" =: -1, "reply_id" =: -1 ]
     in
      mongoFindAllBy emptyReply (query' { sort = sort' })

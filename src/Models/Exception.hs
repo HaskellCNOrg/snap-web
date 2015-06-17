@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
 
 module Models.Exception
        (module Models.Internal.Exception)
