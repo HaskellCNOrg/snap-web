@@ -1,4 +1,4 @@
-Name:                Snap-Web
+Name:                snap-web
 Version:             0.3.1
 Synopsis:            snap web
 Description:         
@@ -32,45 +32,44 @@ Executable snap-web
   main-is: Main.hs
 
   Build-depends:
-    base                         >= 4     && < 5,
+      base                         >= 4     && < 5
+    , MonadCatchIO-transformers    
+    , aeson                        
+    , bson                         
+    , bytestring                   
+    , case-insensitive             
+    , clientsession                
+    , compact-string-fix           
+    , configurator                 
+    , containers                   
+    , mtl                          
+    , old-locale                   
+    , pandoc                       
+    , resource-pool                
+    , lens                         
+    , text                         
+    , time                         
+    , unordered-containers         
+    , utf8-string                  
+    , mongoDB                      
 
-    MonadCatchIO-transformers    >= 0.3     && < 0.4,
-    aeson                        >= 0.6     && < 0.7,
-    bson                         >= 0.1.7   && < 0.2.2,
-    bytestring                   >= 0.9.1   && < 0.12,
-    case-insensitive             >= 0.4.0.4 && < 0.5,
-    clientsession                >= 0.7.4   && < 1.0,
-    compact-string-fix           >= 0.3     && < 0.4,
-    configurator                 >= 0.2     && < 0.3,
-    containers                   >= 0.4     && < 0.6,
-    mtl                          >= 2       && < 3,
-    old-locale                   >= 1.0     && < 1.1,
-    pandoc                       >= 1.9,
-    resource-pool                >= 0.2     && < 0.3,
-    lens                         >= 3.7.0.1 && < 3.8,
-    text                         >= 0.11    && < 1.2,
-    time                         >= 1.1     && < 1.5,
-    unordered-containers         >= 0.2.3.0 && < 0.3,
-    utf8-string                  >= 0.3.7   && < 0.4,
-    mongoDB                      >= 1.3     && < 2.0,
-
-    snap-loader-dynamic          >= 0.9     && < 0.11,
-    snap-loader-static           >= 0.9     && < 0.11,
-    blaze-builder                >= 0.3.1.0 && < 0.4,
-    digestive-functors           >= 0.5     && < 1.0,
-    digestive-functors-heist     >= 0.5     && < 1.0,
-    digestive-functors-snap      >= 0.5     && < 1.0,
-    heist                        >= 0.10    && < 0.14,
-    snap                         >= 0.10    && < 0.14,
-    snap-core                    >= 0.9     && < 0.14,
-    snap-server                  >= 0.9     && < 0.14,
-    snaplet-i18n                 >= 0.0.5   && < 0.1,
-    snaplet-mongodb-minimalistic >= 0.0.6.6 && < 0.0.7,
-    xmlhtml                      >= 0.2     && < 0.3,
-    xss-sanitize                 >= 0.3.3   && < 0.4,
+    , snap-loader-dynamic          
+    , snap-loader-static           
+    , blaze-builder                
+    , digestive-functors           
+    , digestive-functors-heist     
+    , digestive-functors-snap      
+    , heist                        
+    , snap                         
+    , snap-core                    
+    , snap-server                  
+    , snaplet-i18n                 
+    , snaplet-mongodb-minimalistic 
+    , xmlhtml                      
+    , xss-sanitize                 
 
     -- Workaround for failing to link at wider version
-    attoparsec                   >= 0.10 && < 0.12
+    --attoparsec                   
 
   cpp-options: -DTIMEZONE=CST
   if flag(development)
@@ -91,8 +90,7 @@ Test-suite hcn-tests
   Main-is:        TestSuite.hs
   Ghc-options:    -Wall -isrc
   Build-depends:
-    HUnit                >= 1.2  && < 1.3,
-    test-framework       >= 0.6  && < 0.7,
-    test-framework-hunit >= 0.2  && < 0.3,
-    -- Copied from regular dependencies:
     base                 >= 4    && < 5
+    , HUnit                
+    , test-framework       
+    , test-framework-hunit 
