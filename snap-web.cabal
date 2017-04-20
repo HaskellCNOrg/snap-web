@@ -32,7 +32,7 @@ Executable snap-web
   main-is: Main.hs
 
   Build-depends:
-      base                         >= 4     && < 5
+      base                         >= 4     
     , MonadCatchIO-transformers    
     , aeson                        
     , bson                         
@@ -66,7 +66,8 @@ Executable snap-web
     , snaplet-i18n                 
     , snaplet-mongodb-minimalistic 
     , xmlhtml                      
-    , xss-sanitize                 
+    , xss-sanitize
+    , monad-control                
 
     -- Workaround for failing to link at wider version
     --attoparsec                   

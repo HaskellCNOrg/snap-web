@@ -22,6 +22,7 @@ import qualified Data.Text.Encoding      as T
 import           Data.Text.Read
 import           Data.Time
 import           Data.Time.Relative
+import qualified Data.Time as Time
 import           Heist
 import qualified Heist.Interpreted       as I
 import           Prelude                 hiding (lookup)
@@ -91,7 +92,7 @@ decodedParamNum p = (eitherToMaybe . decimal)
 
 -- | per Timezone format
 formatUTCTimePerTZ :: TimeZone -> UTCTime -> T.Text
-formatUTCTimePerTZ tz tm = T.pack . formatTime defaultTimeLocale "%F %H:%M" $ utcToLocalTime tz tm
+formatUTCTimePerTZ tz tm = T.pack . formatTime Time.defaultTimeLocale "%F %H:%M" $ utcToLocalTime tz tm
 
 formatUTCTimeChina :: UTCTime -> T.Text
 formatUTCTimeChina = formatUTCTimePerTZ timezoneChina

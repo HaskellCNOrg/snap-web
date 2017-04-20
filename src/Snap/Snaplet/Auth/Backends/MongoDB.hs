@@ -28,7 +28,10 @@ import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import qualified Snap.Snaplet.MongoDB        as SM
 import           Snap.Snaplet.Session
-import           System.IO.Pool              (Pool, aResource)
+-- import           System.IO.Pool              (Pool, aResource)
+import Data.Pool
+import Control.Monad.Trans.Control
+
 import           Web.ClientSession
 
 import           Database.MongoDB            (AccessMode (UnconfirmedWrites),
@@ -124,7 +127,7 @@ mongoSave mong usr =
          throwBE = return . Left . AuthError . show
 
 
-mongoAct :: MongoBackend -> Action IO a -> (a -> IO b) -> IO b
+mongoAct :: MonadBaseControl IO m => MongoBackend -> Action m a -> (a -> IO b) -> IO b
 mongoAct mong act' conv = do
   res <- dbQuery mong act'
   case res of
@@ -163,9 +166,9 @@ instance IAuthBackend MongoBackend where
   lookupByRememberToken = mongoLookupByToken
   destroy = mongoDestroy
 
-dbQuery :: (MonadIO m)
+dbQuery :: (MonadIO m, MonadBaseControl IO m)
            => MongoBackend
-           -> Action IO a
+           -> Action m a
            -> m (Either Failure a)
 dbQuery mong action = do
   let

@@ -20,6 +20,7 @@ import           Models.Utils
 import           Text.HTML.SanitizeXSS
 import           Text.Pandoc
 import           Text.Pandoc.Shared       (tabFilter)
+import           Text.Pandoc.Error
 import qualified Text.XmlHtml             as X
 
 ----------------------------------------------------------------------
@@ -48,7 +49,7 @@ markdownToHtmlBS = textToBS . markdownToHtmlText
 markdownToHtmlText :: T.Text -> T.Text
 markdownToHtmlText =  xss . BS.pack . writeDoc . readDoc . tabFilter4 . T.unpack
 
-readDoc :: String -> Pandoc
+readDoc :: String ->  Either PandocError Pandoc
 readDoc = readMarkdown parserOptions
 
 parserOptions :: ReaderOptions
@@ -57,8 +58,9 @@ parserOptions = let d = def
                 in
                 d { readerExtensions = ext }
 
-writeDoc :: Pandoc -> String
-writeDoc = UTF8.encodeString . writeHtmlString writerOptions
+writeDoc ::  Either PandocError Pandoc -> String
+writeDoc (Right doc) = UTF8.encodeString $ writeHtmlString writerOptions doc
+writeDoc (Left err) = show err
 
 writerOptions :: WriterOptions
 writerOptions = def { writerHighlight = True

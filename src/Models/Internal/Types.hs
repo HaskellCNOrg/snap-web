@@ -1,11 +1,14 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE FlexibleContexts     #-}
 
 -- | (Try) to be Generic Operation for DB operations
 --
 
 module Models.Internal.Types where
 
+import Control.Monad.State.Class
+import Control.Monad
 import           Control.Monad.Trans
 import           Data.Bson
 import           Database.MongoDB
@@ -13,6 +16,7 @@ import qualified Database.MongoDB          as DB
 import           Snap
 import           Snap.Snaplet.MongoDB
 import           Snap.Snaplet.Environments
+import Control.Monad.Trans.Control
 
 import           Models.Internal.Exception
 import           Models.Internal.JSON
@@ -53,7 +57,7 @@ class MongoDBPersistent a where
 
 -- | Simple MongoDB Insert Operation
 --
-mongoInsert :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+mongoInsert :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, MonadBaseControl IO m)
                => a    -- ^ new model that will be save
                -> m a  -- ^ saved model with id.
 mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
@@ -67,7 +71,7 @@ mongoInsert x = eitherWithDB (DB.insert (mongoColl x) (toMongoDoc x))
 -- MAYBE:
 -- 1. better to make sure _id exists because Nothing objectId will cause error other when viewing.
 --
-mongoSave :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+mongoSave :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, MonadBaseControl IO m)
              => a    -- ^ new model that will be save
              -> m a  -- ^ saved model with id.
 mongoSave x = eitherWithDB (DB.save (mongoColl x) (toMongoDoc x))
@@ -79,7 +83,7 @@ mongoSave x = eitherWithDB (DB.save (mongoColl x) (toMongoDoc x))
 -- ?? WHY IT FAILED: let selection = select [] (getSchemaP (undefined::a))
 --
 mongoFindAll :: (MonadIO (m b v), MonadState app (m b v),
-                 MonadSnaplet m, HasMongoDB app, MongoDBPersistent a)
+                 MonadSnaplet m, HasMongoDB app, MongoDBPersistent a, MonadBaseControl IO (m b v))
                 => a       -- ^ an empty model. (work around for the concern above.
                 -> m b v [a]   -- ^ list of model data that has been retrieved.
 mongoFindAll x = mongoFindAllBy x (select [] (mongoColl x))
@@ -88,7 +92,7 @@ mongoFindAll x = mongoFindAllBy x (select [] (mongoColl x))
 -- | Fetch All items in the collection per user defined selector(query).
 --
 mongoFindAllBy :: (MonadIO (m b v), MonadState app (m b v),
-                   MonadSnaplet m, HasMongoDB app, MongoDBPersistent a)
+                   MonadSnaplet m, HasMongoDB app, MongoDBPersistent a, MonadBaseControl IO (m b v))
                   => a
                   -> Query
                   -> m b v [a]   -- ^ list of model data that has been retrieved.
@@ -101,7 +105,7 @@ mongoFindAllBy _ query = do
 
 -- | Find One item.
 --
-mongoFindById :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+mongoFindById :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, MonadBaseControl IO m)
                  => a
                  -> m a
 mongoFindById x =
@@ -111,7 +115,7 @@ mongoFindById x =
 
 -- | Find some via list of IDs.
 --
-mongoFindIds :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a)
+mongoFindIds :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, MonadBaseControl IO m)
                  => a
                  -> [ObjectId]
                  -> m [a]
@@ -121,7 +125,7 @@ mongoFindIds = mongoFindSomeBy "_id"
 -- | Find some via list of certain column name.
 --   MAYBE: this turns out to be complicated.
 --
-mongoFindSomeBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, Val b)
+mongoFindSomeBy :: (MonadIO m, MonadState app m, HasMongoDB app, MongoDBPersistent a, Val b, MonadBaseControl IO m)
                  => Label     -- ^ Column name
                  -> a         -- ^ The Persistent target
                  -> [b]       -- ^ List of values
